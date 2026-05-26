@@ -1,0 +1,98 @@
+<div class="dashboard-container">
+  
+  <header class="topbar">
+    <h1>🏀 MyCareer NBA Simulator</h1>
+    <div class="user-menu">
+      <span>Bem-vindo, <strong>{{ nickname }}</strong>!</span>
+      <button class="btn-sair" (click)="sair()">Sair</button>
+    </div>
+  </header>
+
+  <main class="content">
+    
+    <div class="actions-header">
+      <h2>Minhas Ligas</h2>
+      <div class="buttons">
+        <button class="btn-create" (click)="abrirModal()">➕ Criar Nova Liga</button>
+        <button class="btn-join" (click)="abrirModalEntrar()">🤝 Entrar com Código</button>
+      </div>
+    </div>
+
+    <div class="ligas-grid" *ngIf="!carregando && ligas.length > 0">
+      <div class="liga-card" *ngFor="let liga of ligas">
+        
+        <div class="card-header">
+          <h3>{{ liga.nome }}</h3>
+          <span class="badge">{{ liga.era_2k }}</span>
+        </div>
+        
+        <div class="card-body">
+          <p><strong>Início:</strong> {{ liga.ano_inicio }}</p>
+          <p><strong>Código:</strong> <span class="codigo">{{ liga.codigo_convite }}</span></p>
+        </div>
+        
+        <div class="card-footer">
+          <button class="btn-entrar-save" (click)="acessarLiga(liga.id)">Acessar Tracker ➔</button>        
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="modal-overlay" *ngIf="mostrarModalCriar">
+    <div class="modal-content">
+      <h2>Criar Nova Liga</h2>
+      
+      <div class="form-group">
+        <label>Nome do Save</label>
+        <input type="text" [(ngModel)]="novaLiga.nome" placeholder="Ex: A Grande Rivalidade">
+      </div>
+
+      <div class="form-group">
+        <label>Era do NBA 2K</label>
+        <select [(ngModel)]="novaLiga.era">
+          <option value="" disabled selected>Selecione a Era</option>
+          <option value="Magic vs Bird">Magic vs Bird Era</option>
+          <option value="Jordan">Jordan Era</option>
+          <option value="Kobe">Kobe Era</option>
+          <option value="LeBron">LeBron Era</option>
+          <option value="Modern">Modern Era</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Ano de Início</label>
+        <input type="text" [(ngModel)]="novaLiga.ano" placeholder="Ex: 1983-84 ou 2002-03">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="fecharModal()" [disabled]="salvandoLiga">Cancelar</button>
+        <button class="btn-confirm" (click)="criarNovaLiga()" [disabled]="salvandoLiga">
+          {{ salvandoLiga ? 'Salvando...' : 'Criar Liga' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarModalEntrar">
+    <div class="modal-content">
+      <h2>Entrar em um Save</h2>
+      <p class="modal-desc">
+        Peça o código para o administrador da liga (ex: LIGA-X7B9K) e digite abaixo para acessar o Tracker.
+      </p>
+      
+      <div class="form-group">
+        <label>Código de Convite</label>
+        <input type="text" [(ngModel)]="codigoConvite" placeholder="LIGA-XXXXXX">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="fecharModalEntrar()" [disabled]="entrandoLiga">Cancelar</button>
+        <button class="btn-confirm" (click)="entrarLiga()" [disabled]="entrandoLiga">
+          {{ entrandoLiga ? 'Verificando...' : 'Entrar na Liga' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

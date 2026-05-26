@@ -1,0 +1,41 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>{{ isLoginMode ? 'Entrar no Sistema' : 'Criar Nova Conta' }}</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      
+      <div class="form-group" *ngIf="!isLoginMode">
+        <label>Nickname</label>
+        <input type="text" name="nickname" [(ngModel)]="nickname" placeholder="Como quer ser chamado?">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" [(ngModel)]="email" required placeholder="seu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" name="password" [(ngModel)]="password" required placeholder="Mínimo de 6 caracteres">
+      </div>
+
+      <div class="form-group" *ngIf="!isLoginMode">
+        <label>Confirmar Senha</label>
+        <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" placeholder="Digite a senha novamente">
+      </div>
+
+      <div *ngIf="errorMessage" class="error-msg">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Carregando...' : (isLoginMode ? 'Entrar' : 'Cadastrar') }}
+      </button>
+    </form>
+
+    <p class="toggle-text">
+      {{ isLoginMode ? 'Ainda não tem conta?' : 'Já tem uma conta?' }}
+      <a (click)="toggleMode()">{{ isLoginMode ? 'Cadastre-se aqui' : 'Faça Login' }}</a>
+    </p>
+  </div>
+</div>
