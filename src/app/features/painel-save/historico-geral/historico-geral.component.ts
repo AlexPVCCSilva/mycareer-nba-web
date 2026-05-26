@@ -6,7 +6,44 @@ import { SupabaseService } from '../../../core/services/supabase.service';
 
 // Dicionário Oficial de IDs da NBA (Jogadores 88+ OVR desde 1984)
 const NBA_PLAYERS: { [key: string]: string } = {
-  // --- A ERA ATUAL (Superestrelas e Jovens Monstros) ---
+  // --- DRAFT 2024 ---
+  "zaccharie risacher": "1642277",
+  "alex sarr": "1642278",
+  "reed sheppard": "1642279",
+  "stephon castle": "1642280",
+  "ron holland": "1642281",
+  "matas buzelis": "1642282",
+  "donovan clingan": "1642283",
+  "rob dillingham": "1642284",
+  "zach edey": "1642285",
+  "cody williams": "1642286",
+  "dalton knecht": "1642287",
+  "devin carter": "1642288",
+  "bub carrington": "1642289",
+  "kel'el ware": "1642290",
+  "nikola topic": "1642291",
+  "jared mccain": "1642292",
+  "kyshawn george": "1642293",
+  "tristan da silva": "1642294",
+  "ja'kobe walter": "1642295",
+  "tyler smith": "1642296",
+  "daron holmes ii": "1642297",
+  "rj davis": "1642500", 
+  "cooper flagg": "1642843",
+
+  // --- BRASILEIROS NA NBA ---
+  "gui santos": "1630611",
+  "leandro barbosa": "2571",
+  "nene": "2403",
+  "anderson varejao": "2760",
+  "tiago splitter": "201168",
+  "raul neto": "203526",
+  "cristiano felicio": "1626245",
+  "bruno caboclo": "203998",
+  "didi louzada": "1629683",
+  "marcelinho huertas": "1626273",
+
+  // --- SUPERESTRELAS E ALL-STARS ATUAIS ---
   "lebron james": "2544",
   "stephen curry": "201939",
   "kevin durant": "201142",
@@ -36,49 +73,147 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "tyrese haliburton": "1630169",
   "jalen brunson": "1628973",
   "victor wembanyama": "1641705",
+  "rudy gobert": "203497",
+  "jamal murray": "1627750",
+  "domantas sabonis": "1627734",
+  "pascal siakam": "1627783",
+  "lauri markkanen": "1628374",
+  "kristaps porzingis": "204001",
+  "jrue holiday": "201950",
+  "demar derozan": "201942",
+  "bradley beal": "203078",
+  "zach lavine": "203897",
+  "julius randle": "203944",
+  "brandon ingram": "1627742",
+  "khris middleton": "203114",
+  "cj mccollum": "203468",
+  "dejounte murray": "1627749",
+  "aaron gordon": "203932",
+  "myles turner": "1626167",
+  "fred vanvleet": "1627832",
+  "derrick white": "1628401",
+  "draymond green": "203110",
+  "klay thompson": "202691",
 
-  // --- ANOS 2010s (Auge do Heat, Warriors e Spurs) ---
+  // --- A NOVA GERAÇÃO (Jovens Estrelas) ---
+  "tyrese maxey": "1630178",
+  "paolo banchero": "1631094",
+  "chet holmgren": "1631096",
+  "jalen williams": "1631114",
+  "scottie barnes": "1630567",
+  "evan mobley": "1630596",
+  "franz wagner": "1630532",
+  "alperen sengun": "1630578",
+  "jalen green": "1630224",
+  "lamelo ball": "1630163",
+  "darius garland": "1629636",
+  "tyler herro": "1629639",
+  "desmond bane": "1630217",
+  "jaren jackson jr": "1628991",
+  "mikal bridges": "1628969",
+  "josh giddey": "1630581",
+  "brandon miller": "1641706",
+  "scoot henderson": "1641707",
+  "cade cunningham": "1630595",
+  "jalen suggs": "1630591",
+  "ausar thompson": "1641709",
+  "amen thompson": "1641708",
+  "dereck lively ii": "1641726",
+
+  // --- BONS TITULARES E ROLE PLAYERS ATUAIS ---
+  "rui hachimura": "1629060",
+  "austin reaves": "1630559",
+  "d'angelo russell": "1626156",
+  "marcus smart": "203935",
+  "jarrett allen": "1628386",
+  "john collins": "1628381",
+  "kyle kuzma": "1628398",
+  "og anunoby": "1628384",
+  "dillon brooks": "1628415",
+  "anfernee simons": "1629014",
+  "wendell carter jr": "1628976",
+  "donte divincenzo": "1628408",
+  "rj barrett": "1628392",
+  "jordan poole": "1629673",
+  "cam johnson": "1629023",
+  "alex caruso": "1630527",
+  "luguentz dort": "1629652",
+  "naz reid": "1629675",
+  "max strus": "1629622",
+  "gabe vincent": "1629216",
+  "caleb martin": "1628997",
+  "duncan robinson": "1629130",
+  "grant williams": "1629684",
+  "pj washington": "1629020",
+  "brook lopez": "201572",
+  "tobias harris": "202699",
+  "nikola vucevic": "202696",
+  "buddy hield": "1627741",
+
+  // --- ANOS 2010s ---
   "russell westbrook": "201566",
   "carmelo anthony": "2546",
   "chris paul": "101108",
   "derrick rose": "201565",
   "blake griffin": "201933",
-  "klay thompson": "202691",
-  "draymond green": "203110",
-  "demar derozan": "201942",
   "john wall": "202322",
   "lamarcus aldridge": "200746",
   "marc gasol": "201188",
-  "zach lavine": "203897",
-  "rudy gobert": "203497",
-  "bradley beal": "203078",
+  "dwyane wade": "2548",
+  "dwight howard": "2746",
+  "chris bosh": "2547",
+  "tony parker": "2225",
+  "manu ginobili": "1938",
+  "pau gasol": "2200",
+  "dirk nowitzki": "1717",
+  "rajon rondo": "200765",
+  "kevin love": "201567",
+  "andre iguodala": "2738",
+  "demarcus cousins": "202326",
+  "joakim noah": "201149",
+  "kyle lowry": "200768",
+  "kemba walker": "202689",
+  "isaiah thomas": "202738",
+  "serge ibaka": "201586",
+  "zach randolph": "2216",
+  "mike conley": "201144",
+  "deron williams": "101114",
+  "joe johnson": "2207",
+  "al horford": "201143",
+  "paul millsap": "200794",
+  "deandre jordan": "201599",
+  "goran dragic": "201609",
+  "lou williams": "201150",
 
-  // --- ANOS 2000s (Era Kobe, Shaq e Duncan) ---
+  // --- ANOS 2000s ---
   "kobe bryant": "977",
   "shaquille o'neal": "406",
   "tim duncan": "1495",
-  "allen iverson": "970",
-  "dwyane wade": "2548",
+  "allen iverson": "947",
   "kevin garnett": "708",
-  "dirk nowitzki": "1717",
   "paul pierce": "1718",
   "ray allen": "951",
   "vince carter": "1713",
   "tracy mcgrady": "1503",
   "steve nash": "961",
-  "jason kidd": "429",
+  "jason kidd": "467",
   "yao ming": "2397",
-  "manu ginobili": "1938",
-  "tony parker": "2225",
-  "pau gasol": "2200",
-  "chris bosh": "2547",
-  "dwight howard": "2730",
   "amar'e stoudemire": "2405",
   "chris webber": "185",
   "grant hill": "258",
   "penny hardaway": "305",
-
-  // --- ANOS 90s & 80s (Era Jordan, Magic e Bird) ---
+  "gilbert arenas": "2240",
+  "chauncey billups": "1497",
+  "ben wallace": "739",
+  "rasheed wallace": "198",
+  "stephon marbury": "950",
+  "steve francis": "948",
+  "jason terry": "478",
+  "jamal crawford": "1890",
+  "jr smith": "2747",
+  "kyle korver": "202684",
+  "jj redick": "2594",
+  "richard jefferson": "2210",
   "michael jordan": "893",
   "magic johnson": "77142",
   "larry bird": "76168",
@@ -96,7 +231,108 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "dikembe mutombo": "87",
   "dennis rodman": "14",
   "gary payton": "56",
-  "shawn kemp": "431"
+  "shawn kemp": "431",
+  "isiah thomas": "77372",
+  "kareem abdul-jabbar": "76003",
+  "julius erving": "76622",
+  "moses malone": "77319",
+  "tim hardaway": "422",
+  "mitch richmond": "297",
+  "david thompson": "78648",
+  "george gervin": "76837",
+  "bill russell": "78049",
+  "wilt chamberlain": "76311",
+  "joe dumars": "73",
+  "chris mullin": "193",
+  "vlade divac": "124",
+   "Elton Brand": "1882",
+  "antoine rigaudeau": "2658",
+  "carlos boozer": "2430",
+  "boris diaw": "2564",
+  "drazen petrovic": "382",
+  "vinnie johnson": "77143",
+  "kevin mchale": "77536",
+  "sidney moncrief": "77626",
+  "terry cummings": "184",
+  "arvydas sabonis": "717", // Sabonis Pai
+
+  "toni kukoc": "314",
+  "peja stojakovic": "1712",
+  "andrei kirilenko": "1905",
+  "luis scola": "2449",
+  "sarunas marciulionis": "260",
+  "detlef schrempf": "30",
+  "ricky rubio": "201937",
+  "andres nocioni": "1733",
+  "mehmet okur": "2246",
+  "hedo turkoglu": "2045",
+  "zydrunas ilgauskas": "980",
+  "Andre Miller": "1889",
+  "Tristan Thompson": "202684",
+  "shawn marion": "1890",
+  "richard hamilton": "1888",
+  "jason williams": "1715",
+  "kenyon martin": "2030",
+  "lamar odom": "2084",
+  "corey maggette": "2034",
+  "ron artest": "1897",
+  "stephen jackson": "1536",
+  "tayshaun prince": "1886",
+  "mike bibby": "1710",
+  "ben gordon": "1894",
+  "luol deng": "2736",
+  "udonis haslem": "2617",
+  "jermaine o'neal": "979",
+  "michael redd": "2072",
+  "shane battier": "2203",
+  "elton brand": "1882",
+  "gerald wallace": "2222",
+  "david west": "2561",
+  "danny granger": "101147",
+  "jason richardson": "2243",
+  "baron davis": "2883",
+  "marcus camby": "1711",
+  "steve franchise": "948", // Steve Francis
+  "carlos arroyo": "1889",
+
+  // --- ANOS 90s (Tough Guys, Atiradores e Coadjuvantes de Luxo) ---
+  "dan majerle": "160",
+  "larry johnson": "187", // Grandmama
+  "glen rice": "20",
+  "horace grant": "270",
+  "rik smits": "53",
+  "mark jackson": "349",
+  "ron harper": "351",
+  "john starks": "136",
+  "steve kerr": "31",
+  "muggsy bogues": "163",
+  "cliff robinson": "194",
+  "dennis scott": "182",
+  "nick anderson": "107",
+  "bj armstrong": "167",
+  "terry porter": "45",
+  "sean elliott": "251",
+  "lorenzen wright": "964",
+  "dale davis": "208",
+  "antonio davis": "213",
+  "jerry stackhouse": "2754",
+
+  // --- ANOS 80s (Bad Boys, Showtime e Celtics Bench) ---
+  "bill laimbeer": "77328",
+  "rick mahorn": "77443",
+  "dennis johnson": "77138",
+  "james worthy": "78621", // Big Game James
+  "byron scott": "144",
+  "michael cooper": "76442",
+  "robert parish": "77800", // The Chief
+  "bernard king": "77264",
+  "alex english": "76673",
+  "kiki vandeweghe": "78401",
+  "danny ainge": "76017",
+  "bob mcadoo": "77508",
+  "jamaal wilkes": "78523",
+  "bill walton": "78450", // Anos 70/80
+  "maurice cheeks": "76383"
 };
 
 const NBA_TEAMS_INFO: { [key: string]: { abrev: string, sec: string } } = {
@@ -117,6 +353,8 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string, sec: string } } = {
   "jazz": { abrev: "utah", sec: "#F9A01B" }, "wizards": { abrev: "was", sec: "#E31837" }
 };
 
+
+
 @Component({
   selector: 'app-historico-geral',
   standalone: true,
@@ -129,6 +367,14 @@ export class HistoricoGeralComponent implements OnInit {
   temporadas: any[] = [];
   carregando = true;
 
+  public expandido = {
+    campeoes: false,
+    mvps: false,
+    dpoys: false
+  };
+
+public mostrarModalRankings = false;
+  
   // --- Controle do Modal de Times ---
   modoPersonalizado = false;
   campanhasTime: any[] = [];
@@ -606,39 +852,105 @@ editandoIdGeral: string | null = null;
   }
 
   calcularTop3() {
-    const contagemMVP: { [key: string]: number } = {};
-    const contagemDPOY: { [key: string]: number } = {};
-    const contagemTimes: { [key: string]: number } = {};
+    // --- HISTÓRICO REAL DA NBA ATÉ O INÍCIO DA TEMPORADA 1983-84 ---
+    const baseTimes: { [key: string]: number } = {
+      'Boston Celtics': 14, 'Los Angeles Lakers': 8, 'Philadelphia 76ers': 3,
+      'Golden State Warriors': 3, 'New York Knicks': 2, 'Milwaukee Bucks': 1,
+      'Portland Trail Blazers': 1, 'Seattle SuperSonics': 1, 'Washington Bullets': 1,
+      'Sacramento Kings': 1, 'Atlanta Hawks': 1, 'Baltimore Bullets': 1
+    };
 
+    const baseMVP: { [key: string]: number } = {
+      'Kareem Abdul-Jabbar': 6, 'Bill Russell': 5, 'Wilt Chamberlain': 4,
+      'Moses Malone': 3, 'Bob Pettit': 2, 'Julius Erving': 1, 'Bob Cousy': 1,
+      'Oscar Robertson': 1, 'Wes Unseld': 1, 'Willis Reed': 1, 'Dave Cowens': 1,
+      'Bob McAdoo': 1, 'Bill Walton': 1
+    };
+
+    const baseDPOY: { [key: string]: number } = {
+      'Sidney Moncrief': 1 // O prêmio de DPOY foi criado em 1982-83
+    };
+
+    // Clona as bases para podermos somar com os dados do seu save
+    const contagemTimes = { ...baseTimes };
+    const contagemMVP = { ...baseMVP };
+    const contagemDPOY = { ...baseDPOY };
+
+    // 👇 O SEGREDO ESTÁ AQUI: Dicionário de Apelidos dos Times 👇
+    const normalizarTime = (nome: string) => {
+      if (!nome || nome === '-') return null;
+      let nomeLimpo = nome.toLowerCase().trim();
+      
+      const mapaTimes: { [key: string]: string } = {
+        'lakers': 'Los Angeles Lakers', 'la lakers': 'Los Angeles Lakers', 'los angeles lakers': 'Los Angeles Lakers',
+        'celtics': 'Boston Celtics', 'boston': 'Boston Celtics', 'boston celtics': 'Boston Celtics',
+        'sixers': 'Philadelphia 76ers', '76ers': 'Philadelphia 76ers', 'philly': 'Philadelphia 76ers', 'philadelphia 76ers': 'Philadelphia 76ers',
+        'warriors': 'Golden State Warriors', 'golden state': 'Golden State Warriors', 'golden state warriors': 'Golden State Warriors',
+        'knicks': 'New York Knicks', 'ny knicks': 'New York Knicks', 'new york': 'New York Knicks', 'new york knicks': 'New York Knicks',
+        'bucks': 'Milwaukee Bucks', 'milwaukee': 'Milwaukee Bucks', 'milwaukee bucks': 'Milwaukee Bucks',
+        'blazers': 'Portland Trail Blazers', 'portland': 'Portland Trail Blazers', 'portland trail blazers': 'Portland Trail Blazers',
+        'sonics': 'Seattle SuperSonics', 'seattle': 'Seattle SuperSonics', 'seattle supersonics': 'Seattle SuperSonics',
+        'bullets': 'Washington Bullets', 'washington': 'Washington Wizards', 'wizards': 'Washington Wizards', 'washington wizards': 'Washington Wizards',
+        'kings': 'Sacramento Kings', 'sacramento': 'Sacramento Kings', 'sacramento kings': 'Sacramento Kings',
+        'hawks': 'Atlanta Hawks', 'atlanta': 'Atlanta Hawks', 'atlanta hawks': 'Atlanta Hawks',
+        'bulls': 'Chicago Bulls', 'chicago': 'Chicago Bulls', 'chicago bulls': 'Chicago Bulls',
+        'spurs': 'San Antonio Spurs', 'san antonio': 'San Antonio Spurs', 'san antonio spurs': 'San Antonio Spurs',
+        'pistons': 'Detroit Pistons', 'detroit': 'Detroit Pistons', 'detroit pistons': 'Detroit Pistons',
+        'rockets': 'Houston Rockets', 'houston': 'Houston Rockets', 'houston rockets': 'Houston Rockets',
+        'heat': 'Miami Heat', 'miami': 'Miami Heat', 'miami heat': 'Miami Heat',
+        'mavs': 'Dallas Mavericks', 'dallas': 'Dallas Mavericks', 'dallas mavericks': 'Dallas Mavericks',
+        'nuggets': 'Denver Nuggets', 'denver': 'Denver Nuggets', 'denver nuggets': 'Denver Nuggets',
+        'suns': 'Phoenix Suns', 'phoenix': 'Phoenix Suns', 'phoenix suns': 'Phoenix Suns',
+        'jazz': 'Utah Jazz', 'utah': 'Utah Jazz', 'utah jazz': 'Utah Jazz',
+        'pacers': 'Indiana Pacers', 'indiana': 'Indiana Pacers', 'indiana pacers': 'Indiana Pacers',
+        'magic': 'Orlando Magic', 'orlando': 'Orlando Magic', 'orlando magic': 'Orlando Magic',
+        'cavs': 'Cleveland Cavaliers', 'cleveland': 'Cleveland Cavaliers', 'cleveland cavaliers': 'Cleveland Cavaliers',
+        'raptors': 'Toronto Raptors', 'toronto': 'Toronto Raptors', 'toronto raptors': 'Toronto Raptors',
+        'hornets': 'Charlotte Hornets', 'charlotte': 'Charlotte Hornets', 'charlotte hornets': 'Charlotte Hornets',
+        'nets': 'Brooklyn Nets', 'brooklyn': 'Brooklyn Nets', 'new jersey nets': 'Brooklyn Nets', 'new jersey': 'Brooklyn Nets', 'brooklyn nets': 'Brooklyn Nets',
+        'timberwolves': 'Minnesota Timberwolves', 'wolves': 'Minnesota Timberwolves', 'minnesota': 'Minnesota Timberwolves', 'minnesota timberwolves': 'Minnesota Timberwolves',
+        'pelicans': 'New Orleans Pelicans', 'new orleans': 'New Orleans Pelicans', 'new orleans pelicans': 'New Orleans Pelicans',
+        'grizzlies': 'Memphis Grizzlies', 'memphis': 'Memphis Grizzlies', 'vancouver grizzlies': 'Memphis Grizzlies', 'memphis grizzlies': 'Memphis Grizzlies',
+        'clippers': 'LA Clippers', 'la clippers': 'LA Clippers', 'los angeles clippers': 'LA Clippers', 'san diego clippers': 'LA Clippers'
+      };
+
+      return mapaTimes[nomeLimpo] || nome.trim();
+    };
+
+    // Função normal para jogadores (ignora Case)
+    const normalizarJogador = (nome: string, base: { [key: string]: number }) => {
+      if (!nome || nome === '-') return null;
+      let nomeLimpo = this.limparNomeJogador(nome).trim();
+      const chaveExistente = Object.keys(base).find(k => k.toLowerCase() === nomeLimpo.toLowerCase());
+      return chaveExistente ? chaveExistente : nomeLimpo;
+    };
+
+    // Percorre tudo o que aconteceu NO SEU SAVE e soma na base
     this.temporadas.forEach(temp => {
-      // Conta os Times Campeões da NBA
-      if (temp.campeao_nba && temp.campeao_nba !== '-') {
-        const time = temp.campeao_nba.trim();
-        contagemTimes[time] = (contagemTimes[time] || 0) + 1;
-      }
-      // Conta os MVPs
-      if (temp.mvp && temp.mvp !== '-') {
-        const mvp = this.limparNomeJogador(temp.mvp);
-        contagemMVP[mvp] = (contagemMVP[mvp] || 0) + 1;
-      }
-      // Conta os DPOYs
-      if (temp.dpoy && temp.dpoy !== '-') {
-        const dpoy = this.limparNomeJogador(temp.dpoy);
-        contagemDPOY[dpoy] = (contagemDPOY[dpoy] || 0) + 1;
-      }
+      // Usa o normalizador de TIMES
+      const time = normalizarTime(temp.campeao_nba);
+      if (time) contagemTimes[time] = (contagemTimes[time] || 0) + 1;
+
+      // Usa o normalizador de JOGADORES
+      const mvp = normalizarJogador(temp.mvp, contagemMVP);
+      if (mvp) contagemMVP[mvp] = (contagemMVP[mvp] || 0) + 1;
+
+      const dpoy = normalizarJogador(temp.dpoy, contagemDPOY);
+      if (dpoy) contagemDPOY[dpoy] = (contagemDPOY[dpoy] || 0) + 1;
     });
 
+    // Ordena tudo
     this.topCampeoes = Object.keys(contagemTimes)
       .map(nome => ({ nome, total: contagemTimes[nome] }))
-      .sort((a, b) => b.total - a.total).slice(0, 3);
+      .sort((a, b) => b.total - a.total);
 
     this.topMVPs = Object.keys(contagemMVP)
       .map(nome => ({ nome, total: contagemMVP[nome] }))
-      .sort((a, b) => b.total - a.total).slice(0, 3);
+      .sort((a, b) => b.total - a.total);
 
     this.topDPOYs = Object.keys(contagemDPOY)
       .map(nome => ({ nome, total: contagemDPOY[nome] }))
-      .sort((a, b) => b.total - a.total).slice(0, 3);
+      .sort((a, b) => b.total - a.total);
   }
 
 
@@ -778,5 +1090,20 @@ editandoIdGeral: string | null = null;
         alert('Erro ao excluir.');
       }
     }
+  }
+
+  toggleVerMais(categoria: 'campeoes' | 'mvps' | 'dpoys') {
+    this.expandido[categoria] = !this.expandido[categoria];
+  }
+
+
+  abrirModalRankings() {
+    this.mostrarModalRankings = true;
+  }
+
+  fecharModalRankings() {
+    this.mostrarModalRankings = false;
+    // Opcional: Fecha as listas expandidas ao fechar o modal
+    this.expandido = { campeoes: false, mvps: false, dpoys: false };
   }
 }
