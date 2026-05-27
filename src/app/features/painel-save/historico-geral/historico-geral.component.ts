@@ -372,6 +372,8 @@ export class HistoricoGeralComponent implements OnInit {
     mvps: false,
     dpoys: false
   };
+  temaEscuro = true;
+
 
 public mostrarModalRankings = false;
   
@@ -475,6 +477,11 @@ editandoIdGeral: string | null = null;
       return;
     }
 
+    const temaSalvo = localStorage.getItem('tema');
+      if (temaSalvo === 'light') {
+        this.temaEscuro = false;
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
     await this.carregarHistorico();
     await this.carregarFranquias();
   }
@@ -1106,4 +1113,70 @@ editandoIdGeral: string | null = null;
     // Opcional: Fecha as listas expandidas ao fechar o modal
     this.expandido = { campeoes: false, mvps: false, dpoys: false };
   }
+  trackById(index: number, item: any): any {
+  return item.id || index;
+}
+
+  toggleTema(): void {
+    this.temaEscuro = !this.temaEscuro;
+    document.documentElement.setAttribute(
+      'data-theme', 
+      this.temaEscuro ? 'dark' : 'light'
+    );
+    localStorage.setItem('tema', this.temaEscuro ? 'dark' : 'light');
+  }
+
+  
+
+        getCorTimaNBA(nomeTime: string): string | null {
+        if (!nomeTime || nomeTime === '—' || nomeTime === '-') return null;
+
+        // Primeiro tenta nas suas franquias cadastradas
+        const franquia = this.getCorFranquia(nomeTime);
+        if (franquia) return franquia;
+
+        // Senão busca no dicionário global de times
+        const busca = nomeTime.toLowerCase().trim();
+        const mapaCoresprimarias: { [key: string]: string } = {
+          'lakers': '#552583', 'los angeles lakers': '#552583',
+          'celtics': '#007A33', 'boston celtics': '#007A33',
+          'warriors': '#1D428A', 'golden state warriors': '#1D428A',
+          'bulls': '#CE1141', 'chicago bulls': '#CE1141',
+          'spurs': '#C4CED4', 'san antonio spurs': '#C4CED4',
+          'heat': '#98002E', 'miami heat': '#98002E',
+          'cavaliers': '#860038', 'cleveland cavaliers': '#860038',
+          'cavs': '#860038',
+          'pistons': '#C8102E', 'detroit pistons': '#C8102E',
+          'rockets': '#CE1141', 'houston rockets': '#CE1141',
+          'mavericks': '#00538C', 'dallas mavericks': '#00538C', 'mavs': '#00538C',
+          'nuggets': '#0E2240', 'denver nuggets': '#0E2240',
+          'bucks': '#00471B', 'milwaukee bucks': '#00471B',
+          'suns': '#1D1160', 'phoenix suns': '#1D1160',
+          'knicks': '#006BB6', 'new york knicks': '#006BB6',
+          'sixers': '#006BB6', '76ers': '#006BB6', 'philadelphia 76ers': '#006BB6',
+          'raptors': '#CE1141', 'toronto raptors': '#CE1141',
+          'jazz': '#002B5C', 'utah jazz': '#002B5C',
+          'thunder': '#007AC1', 'oklahoma city thunder': '#007AC1',
+          'clippers': '#C8102E', 'la clippers': '#C8102E',
+          'hawks': '#E03A3E', 'atlanta hawks': '#E03A3E',
+          'nets': '#000000', 'brooklyn nets': '#000000',
+          'hornets': '#1D1160', 'charlotte hornets': '#1D1160',
+          'grizzlies': '#5D76A9', 'memphis grizzlies': '#5D76A9',
+          'timberwolves': '#0C2340', 'minnesota timberwolves': '#0C2340',
+          'pelicans': '#0C2340', 'new orleans pelicans': '#0C2340',
+          'magic': '#0077C0', 'orlando magic': '#0077C0',
+          'blazers': '#E03A3E', 'portland trail blazers': '#E03A3E',
+          'kings': '#5A2D81', 'sacramento kings': '#5A2D81',
+          'pacers': '#002D62', 'indiana pacers': '#002D62',
+          'wizards': '#002B5C', 'washington wizards': '#002B5C',
+          'sonics': '#00653A', 'seattle supersonics': '#00653A',
+          'bullets': '#002B5C', 'washington bullets': '#002B5C',
+        };
+
+        const chave = Object.keys(mapaCoresprimarias).find(k =>
+          busca.includes(k) || k.includes(busca)
+        );
+
+        return chave ? mapaCoresprimarias[chave] : null;
+      }
 }
