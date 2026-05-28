@@ -126,25 +126,40 @@
           <label for="temp-resultado">Resultado Finais</label>
           <input id="temp-resultado" type="text" [(ngModel)]="novaTemporada.resultado_finais" placeholder="Ex: 4-2">
         </div>
-        <div class="input-group">
-          <label for="temp-mvp">MVP</label>
-          <input id="temp-mvp" type="text" [(ngModel)]="novaTemporada.mvp">
+        <div class="input-group input-group-premiacao">
+          <label for="temp-mvp">MVP + Time</label>
+          <div class="award-field">
+            <input id="temp-mvp" type="text" [(ngModel)]="novaTemporada.mvp" placeholder="Jogador">
+            <input type="text" [(ngModel)]="novaTemporada.mvp_time" placeholder="Time do prêmio">
+          </div>
         </div>
-        <div class="input-group">
-          <label for="temp-roy">ROY (Rookie)</label>
-          <input id="temp-roy" type="text" [(ngModel)]="novaTemporada.rookie_of_the_year">
+        <div class="input-group input-group-premiacao">
+          <label for="temp-roy">ROY + Time</label>
+          <div class="award-field">
+            <input id="temp-roy" type="text" [(ngModel)]="novaTemporada.rookie_of_the_year" placeholder="Jogador">
+            <input type="text" [(ngModel)]="novaTemporada.rookie_of_the_year_time" placeholder="Time do prêmio">
+          </div>
         </div>
-        <div class="input-group">
-          <label for="temp-sixth">6th Man</label>
-          <input id="temp-sixth" type="text" [(ngModel)]="novaTemporada.sixth_man">
+        <div class="input-group input-group-premiacao">
+          <label for="temp-sixth">6th Man + Time</label>
+          <div class="award-field">
+            <input id="temp-sixth" type="text" [(ngModel)]="novaTemporada.sixth_man" placeholder="Jogador">
+            <input type="text" [(ngModel)]="novaTemporada.sixth_man_time" placeholder="Time do prêmio">
+          </div>
         </div>
-        <div class="input-group">
-          <label for="temp-dpoy">DPOY</label>
-          <input id="temp-dpoy" type="text" [(ngModel)]="novaTemporada.dpoy">
+        <div class="input-group input-group-premiacao">
+          <label for="temp-dpoy">DPOY + Time</label>
+          <div class="award-field">
+            <input id="temp-dpoy" type="text" [(ngModel)]="novaTemporada.dpoy" placeholder="Jogador">
+            <input type="text" [(ngModel)]="novaTemporada.dpoy_time" placeholder="Time do prêmio">
+          </div>
         </div>
-        <div class="input-group">
-          <label for="temp-mip">MIP</label>
-          <input id="temp-mip" type="text" [(ngModel)]="novaTemporada.mip">
+        <div class="input-group input-group-premiacao">
+          <label for="temp-mip">MIP + Time</label>
+          <div class="award-field">
+            <input id="temp-mip" type="text" [(ngModel)]="novaTemporada.mip" placeholder="Jogador">
+            <input type="text" [(ngModel)]="novaTemporada.mip_time" placeholder="Time do prêmio">
+          </div>
         </div>
       </div>
 
@@ -202,11 +217,41 @@
                 {{ temp.campeao_nba || '—' }}
               </td>
             <td>{{ temp.resultado_finais     || '—' }}</td>
-            <td>{{ temp.mvp                  || '—' }}</td>
-            <td>{{ temp.rookie_of_the_year   || '—' }}</td>
-            <td>{{ temp.sixth_man            || '—' }}</td>
-            <td>{{ temp.dpoy                 || '—' }}</td>
-            <td>{{ temp.mip                  || '—' }}</td>
+            <td>
+              <div class="award-cell" *ngIf="temp.mvp; else mvpEmpty">
+                <img *ngIf="getLogoTime(temp.mvp_time)" [src]="getLogoTime(temp.mvp_time)" class="award-logo" [alt]="'Logo ' + temp.mvp_time">
+                <span>{{ temp.mvp }}</span>
+              </div>
+              <ng-template #mvpEmpty><span>—</span></ng-template>
+            </td>
+            <td>
+              <div class="award-cell" *ngIf="temp.rookie_of_the_year; else royEmpty">
+                <img *ngIf="getLogoTime(temp.rookie_of_the_year_time)" [src]="getLogoTime(temp.rookie_of_the_year_time)" class="award-logo" [alt]="'Logo ' + temp.rookie_of_the_year_time">
+                <span>{{ temp.rookie_of_the_year }}</span>
+              </div>
+              <ng-template #royEmpty><span>—</span></ng-template>
+            </td>
+            <td>
+              <div class="award-cell" *ngIf="temp.sixth_man; else sixthManEmpty">
+                <img *ngIf="getLogoTime(temp.sixth_man_time)" [src]="getLogoTime(temp.sixth_man_time)" class="award-logo" [alt]="'Logo ' + temp.sixth_man_time">
+                <span>{{ temp.sixth_man }}</span>
+              </div>
+              <ng-template #sixthManEmpty><span>—</span></ng-template>
+            </td>
+            <td>
+              <div class="award-cell" *ngIf="temp.dpoy; else dpoyEmpty">
+                <img *ngIf="getLogoTime(temp.dpoy_time)" [src]="getLogoTime(temp.dpoy_time)" class="award-logo" [alt]="'Logo ' + temp.dpoy_time">
+                <span>{{ temp.dpoy }}</span>
+              </div>
+              <ng-template #dpoyEmpty><span>—</span></ng-template>
+            </td>
+            <td>
+              <div class="award-cell" *ngIf="temp.mip; else mipEmpty">
+                <img *ngIf="getLogoTime(temp.mip_time)" [src]="getLogoTime(temp.mip_time)" class="award-logo" [alt]="'Logo ' + temp.mip_time">
+                <span>{{ temp.mip }}</span>
+              </div>
+              <ng-template #mipEmpty><span>—</span></ng-template>
+            </td>
             <td>
               <button
                 class="btn-base"
@@ -323,19 +368,108 @@
 
       <div class="form-section">
         <h4>Quinteto Titular, 6º Homem e Draft</h4>
-        <div class="form-grid">
-          <div class="input-group"><label>PG</label><input type="text" [(ngModel)]="novaCampanha.pg"></div>
-          <div class="input-group"><label>SG</label><input type="text" [(ngModel)]="novaCampanha.sg"></div>
-          <div class="input-group"><label>SF</label><input type="text" [(ngModel)]="novaCampanha.sf"></div>
-          <div class="input-group"><label>PF</label><input type="text" [(ngModel)]="novaCampanha.pf"></div>
-          <div class="input-group"><label>C</label> <input type="text" [(ngModel)]="novaCampanha.c"></div>
-          <div class="input-group"><label>6º Homem</label><input type="text" [(ngModel)]="novaCampanha.sexto_homem"></div>
-          <div class="input-group"><label>Draftado</label><input type="text" [(ngModel)]="novaCampanha.draftado" placeholder="Escolhas Principais"></div>
+        <div class="hierarquia-grid">
+          <div class="hierarquia-card" *ngFor="let campo of camposHierarquiaElenco; trackBy: trackByCampo">
+            <div class="input-group">
+              <label>{{ campo.label }}</label>
+              <input type="text" [(ngModel)]="novaCampanha[campo.key]" [placeholder]="'Jogador de ' + campo.label">
+            </div>
+            <div class="input-group">
+              <label>Status no Elenco</label>
+              <select [(ngModel)]="novaCampanha[campo.statusKey]">
+                <option *ngFor="let statusOpt of statusElencoOptions" [value]="statusOpt.value">
+                  {{ statusOpt.label }}
+                </option>
+              </select>
+            </div>
+          </div>
           <div class="input-group" style="grid-column:span 2">
             <label>Observações</label>
             <input type="text" [(ngModel)]="novaCampanha.observacoes" placeholder="Trocas, lesões, destaques…">
           </div>
         </div>
+      </div>
+
+      <div class="form-section roster-photo-section">
+        <div class="roster-photo-header">
+          <div>
+            <h4>Fotos do Elenco desta Campanha</h4>
+            <p class="roster-photo-hint">
+              Preencha o elenco acima e suba as fotos com um clique. O OVR muda a cada temporada — a foto fica no nome limpo (ex: <em>lebron james</em>).
+            </p>
+          </div>
+          <div class="input-group roster-photo-modo">
+            <label>Modo de armazenamento</label>
+            <select [(ngModel)]="uploadFotoModo">
+              <option value="base64">Base64 (rápido)</option>
+              <option value="supabase">Supabase Storage</option>
+            </select>
+          </div>
+        </div>
+
+        <input
+          #fotoElencoInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="processarUploadFotoElenco($event)"
+        >
+
+        <ng-container *ngIf="getJogadoresElencoCampanhaAtual() as jogadoresElenco">
+        <div class="roster-photo-empty" *ngIf="jogadoresElenco.length === 0">
+          <span>📋</span>
+          <p>Adicione jogadores no quinteto, 6º homem ou draft para liberar o upload visual.</p>
+        </div>
+
+        <div class="roster-photo-grid" *ngIf="jogadoresElenco.length > 0">
+          <article
+            class="roster-photo-card"
+            *ngFor="let jogador of jogadoresElenco; trackBy: trackByJogadorFoto"
+            [class.has-custom]="possuiFotoCustom(jogador.nomeExibicao)"
+            [class.is-uploading]="salvandoFotoJogadorChave === jogador.nomeChave"
+          >
+            <div class="roster-photo-avatar-wrap">
+              <img
+                [src]="getFotoJogador(jogador.nomeExibicao)"
+                class="roster-photo-avatar"
+                [alt]="'Foto de ' + jogador.nomeExibicao"
+                loading="lazy"
+              >
+              <span class="roster-pos-badge">{{ jogador.posicao }}</span>
+              <span class="roster-custom-dot" *ngIf="possuiFotoCustom(jogador.nomeExibicao)" title="Foto personalizada ativa"></span>
+            </div>
+
+            <div class="roster-photo-body">
+              <strong class="roster-nome-ovr">{{ jogador.nomeExibicao }}</strong>
+              <small class="roster-nome-limpo">{{ limparNomeJogador(jogador.nomeExibicao) }}</small>
+              <span class="roster-origem-tag" *ngIf="getFotoCustomByNome(jogador.nomeExibicao) as foto">
+                {{ foto.origem === 'supabase' ? '☁️ Storage' : '💾 Base64' }}
+              </span>
+            </div>
+
+            <div class="roster-photo-actions">
+              <button
+                type="button"
+                class="btn-roster-upload"
+                (click)="dispararUploadFotoJogador(jogador)"
+                [disabled]="salvandoFotoJogadorChave !== null"
+              >
+                {{ salvandoFotoJogadorChave === jogador.nomeChave ? 'Enviando…' : (possuiFotoCustom(jogador.nomeExibicao) ? '📷 Trocar' : '📷 Subir Foto') }}
+              </button>
+              <button
+                type="button"
+                class="btn-roster-remove"
+                *ngIf="possuiFotoCustom(jogador.nomeExibicao)"
+                (click)="removerFotoJogadorCustom(jogador.nomeExibicao)"
+                [disabled]="salvandoFotoJogadorChave !== null"
+                aria-label="Remover foto personalizada"
+              >
+                🗑️
+              </button>
+            </div>
+          </article>
+        </div>
+        </ng-container>
       </div>
 
       <div class="header-actions">
@@ -387,48 +521,61 @@
             <!-- Player cells — explicit per-position for strict ICampanhaTime typing -->
             <td>
               <div class="player-cell" *ngIf="camp.pg; else pgEmpty">
-                <img [src]="getFotoJogador(camp.pg)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.pg">
+                <img [src]="getFotoJogador(camp.pg)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.pg_status)]" loading="lazy" [alt]="'Foto de ' + camp.pg">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.pg)">{{ camp.pg }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.pg_status)]">{{ getStatusShort(camp.pg_status) }}</span>
               </div>
               <ng-template #pgEmpty><span>—</span></ng-template>
             </td>
             <td>
               <div class="player-cell" *ngIf="camp.sg; else sgEmpty">
-                <img [src]="getFotoJogador(camp.sg)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.sg">
+                <img [src]="getFotoJogador(camp.sg)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.sg_status)]" loading="lazy" [alt]="'Foto de ' + camp.sg">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.sg)">{{ camp.sg }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.sg_status)]">{{ getStatusShort(camp.sg_status) }}</span>
               </div>
               <ng-template #sgEmpty><span>—</span></ng-template>
             </td>
             <td>
               <div class="player-cell" *ngIf="camp.sf; else sfEmpty">
-                <img [src]="getFotoJogador(camp.sf)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.sf">
+                <img [src]="getFotoJogador(camp.sf)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.sf_status)]" loading="lazy" [alt]="'Foto de ' + camp.sf">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.sf)">{{ camp.sf }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.sf_status)]">{{ getStatusShort(camp.sf_status) }}</span>
               </div>
               <ng-template #sfEmpty><span>—</span></ng-template>
             </td>
             <td>
               <div class="player-cell" *ngIf="camp.pf; else pfEmpty">
-                <img [src]="getFotoJogador(camp.pf)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.pf">
+                <img [src]="getFotoJogador(camp.pf)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.pf_status)]" loading="lazy" [alt]="'Foto de ' + camp.pf">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.pf)">{{ camp.pf }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.pf_status)]">{{ getStatusShort(camp.pf_status) }}</span>
               </div>
               <ng-template #pfEmpty><span>—</span></ng-template>
             </td>
             <td>
               <div class="player-cell" *ngIf="camp.c; else cEmpty">
-                <img [src]="getFotoJogador(camp.c)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.c">
+                <img [src]="getFotoJogador(camp.c)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.c_status)]" loading="lazy" [alt]="'Foto de ' + camp.c">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.c)">{{ camp.c }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.c_status)]">{{ getStatusShort(camp.c_status) }}</span>
               </div>
               <ng-template #cEmpty><span>—</span></ng-template>
             </td>
             <td>
               <div class="player-cell" *ngIf="camp.sexto_homem; else sixthEmpty">
-                <img [src]="getFotoJogador(camp.sexto_homem)" class="micro-foto" loading="lazy" [alt]="'Foto de ' + camp.sexto_homem">
+                <img [src]="getFotoJogador(camp.sexto_homem)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.sexto_homem_status)]" loading="lazy" [alt]="'Foto de ' + camp.sexto_homem">
                 <span class="player-badge" [ngStyle]="getEstiloJogador(camp.sexto_homem)">{{ camp.sexto_homem }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.sexto_homem_status)]">{{ getStatusShort(camp.sexto_homem_status) }}</span>
               </div>
               <ng-template #sixthEmpty><span>—</span></ng-template>
             </td>
 
-            <td>{{ camp.draftado    || '—' }}</td>
+            <td>
+              <div class="player-cell" *ngIf="camp.draftado; else draftadoEmpty">
+                <img [src]="getFotoJogador(camp.draftado)" [ngClass]="['micro-foto', getStatusBadgeClass(camp.draftado_status)]" loading="lazy" [alt]="'Foto de ' + camp.draftado">
+                <span class="player-badge">{{ camp.draftado }}</span>
+                <span [ngClass]="['status-chip', getStatusBadgeClass(camp.draftado_status)]">{{ getStatusShort(camp.draftado_status) }}</span>
+              </div>
+              <ng-template #draftadoEmpty><span>—</span></ng-template>
+            </td>
             <td>{{ camp.observacoes || '—' }}</td>
             <td>
               <button
