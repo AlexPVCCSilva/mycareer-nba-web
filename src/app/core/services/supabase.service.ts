@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
-export type StatusElenco = 'principal' | 'secundario' | 'terciario';
+export type StatusElenco = 'principal' | 'secundario' | 'terciario' | 'nenhum';
 
 export interface ITemporadaGeral {
   id?: string;
@@ -40,6 +40,13 @@ export interface ICampanhaFranquia {
   sexto_homem: string | null;
   draftado: string | null;
   observacoes: string | null;
+  pg_ovr: number | null;
+  sg_ovr: number | null;
+  sf_ovr: number | null;
+  pf_ovr: number | null;
+  c_ovr: number | null;
+  sexto_homem_ovr: number | null;
+  draftado_ovr: number | null;
   pg_status: StatusElenco;
   sg_status: StatusElenco;
   sf_status: StatusElenco;

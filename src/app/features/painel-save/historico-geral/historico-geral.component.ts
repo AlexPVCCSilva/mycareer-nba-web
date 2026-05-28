@@ -12,8 +12,10 @@ import {
 
 interface IJogadorElencoFotoItem {
   posicao: string;
+  nomeBruto: string;
   nomeExibicao: string;
   nomeChave: string;
+  ovr: number | null;
 }
 
 interface ICampanhaForm {
@@ -30,6 +32,13 @@ interface ICampanhaForm {
   sexto_homem: string;
   draftado: string;
   observacoes: string;
+  pg_ovr: number | null;
+  sg_ovr: number | null;
+  sf_ovr: number | null;
+  pf_ovr: number | null;
+  c_ovr: number | null;
+  sexto_homem_ovr: number | null;
+  draftado_ovr: number | null;
   pg_status: StatusElenco;
   sg_status: StatusElenco;
   sf_status: StatusElenco;
@@ -169,22 +178,61 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "jamaal wilkes": "78523", "bill walton": "78450", "maurice cheeks": "76383"
 };
 
-const NBA_TEAMS_INFO: { [key: string]: { abrev: string, sec: string } } = {
-  "hawks": { abrev: "atl", sec: "#C1D32F" }, "boston celtics": { abrev: "bos", sec: "#BA9653" },
-  "nets": { abrev: "bkn", sec: "#777777" }, "hornets": { abrev: "cha", sec: "#00788C" },
-  "bulls": { abrev: "chi", sec: "#000000" }, "cavaliers": { abrev: "cle", sec: "#FDBB30" },
-  "mavericks": { abrev: "dal", sec: "#B8C4CA" }, "nuggets": { abrev: "den", sec: "#FEC524" },
-  "pistons": { abrev: "det", sec: "#1D42BA" }, "warriors": { abrev: "gs", sec: "#FFC72C" },
-  "rockets": { abrev: "hou", sec: "#000000" }, "pacers": { abrev: "ind", sec: "#FDBB30" },
-  "clippers": { abrev: "lac", sec: "#1D428A" }, "lakers": { abrev: "lal", sec: "#FDB927" },
-  "grizzlies": { abrev: "mem", sec: "#12173F" }, "heat": { abrev: "mia", sec: "#F9A01B" },
-  "bucks": { abrev: "mil", sec: "#EEE1C6" }, "timberwolves": { abrev: "min", sec: "#236192" },
-  "pelicans": { abrev: "nop", sec: "#C8102E" }, "knicks": { abrev: "ny", sec: "#F58426" },
-  "thunder": { abrev: "okc", sec: "#EF3B24" }, "magic": { abrev: "orl", sec: "#C4CED4" },
-  "76ers": { abrev: "phi", sec: "#ED174C" }, "suns": { abrev: "phx", sec: "#E56020" },
-  "blazers": { abrev: "por", sec: "#000000" }, "kings": { abrev: "sac", sec: "#63727A" },
-  "spurs": { abrev: "sa", sec: "#000000" }, "raptors": { abrev: "tor", sec: "#000000" },
-  "jazz": { abrev: "utah", sec: "#F9A01B" }, "wizards": { abrev: "was", sec: "#E31837" }
+const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: string } } = {
+  // --- Times clássicos / retro (prioridade no match por chaves longas) ---
+  "seattle supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
+  "supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
+  "sonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
+  "new jersey nets": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
+  "new jersey": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
+  "charlotte bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C" },
+  "bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C" },
+  "vancouver grizzlies": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
+  "vancouver": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
+  "washington bullets": { abrev: "wsh", sec: "#E31837", prim: "#002B5C" },
+  // --- Franquias atuais ---
+  "hawks": { abrev: "atl", sec: "#C1D32F", prim: "#E03A3E" },
+  "boston celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
+  "celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
+  "brooklyn nets": { abrev: "bkn", sec: "#777777", prim: "#000000" },
+  "nets": { abrev: "bkn", sec: "#777777", prim: "#000000" },
+  "charlotte hornets": { abrev: "cha", sec: "#00788C", prim: "#1D1160" },
+  "hornets": { abrev: "cha", sec: "#00788C", prim: "#1D1160" },
+  "bulls": { abrev: "chi", sec: "#000000", prim: "#CE1141" },
+  "cavaliers": { abrev: "cle", sec: "#FDBB30", prim: "#860038" },
+  "cavs": { abrev: "cle", sec: "#FDBB30", prim: "#860038" },
+  "mavericks": { abrev: "dal", sec: "#B8C4CA", prim: "#00538C" },
+  "mavs": { abrev: "dal", sec: "#B8C4CA", prim: "#00538C" },
+  "nuggets": { abrev: "den", sec: "#FEC524", prim: "#0E2240" },
+  "pistons": { abrev: "det", sec: "#1D42BA", prim: "#C8102E" },
+  "warriors": { abrev: "gs", sec: "#FFC72C", prim: "#1D428A" },
+  "golden state": { abrev: "gs", sec: "#FFC72C", prim: "#1D428A" },
+  "rockets": { abrev: "hou", sec: "#000000", prim: "#CE1141" },
+  "pacers": { abrev: "ind", sec: "#FDBB30", prim: "#002D62" },
+  "clippers": { abrev: "lac", sec: "#1D428A", prim: "#C8102E" },
+  "lakers": { abrev: "lal", sec: "#FDB927", prim: "#552583" },
+  "memphis grizzlies": { abrev: "mem", sec: "#12173F", prim: "#5D76A9" },
+  "grizzlies": { abrev: "mem", sec: "#12173F", prim: "#5D76A9" },
+  "heat": { abrev: "mia", sec: "#F9A01B", prim: "#98002E" },
+  "bucks": { abrev: "mil", sec: "#EEE1C6", prim: "#00471B" },
+  "timberwolves": { abrev: "min", sec: "#236192", prim: "#0C2340" },
+  "wolves": { abrev: "min", sec: "#236192", prim: "#0C2340" },
+  "pelicans": { abrev: "nop", sec: "#C8102E", prim: "#0C2340" },
+  "knicks": { abrev: "ny", sec: "#F58426", prim: "#006BB6" },
+  "oklahoma city thunder": { abrev: "okc", sec: "#EF3B24", prim: "#007AC1" },
+  "thunder": { abrev: "okc", sec: "#EF3B24", prim: "#007AC1" },
+  "magic": { abrev: "orl", sec: "#C4CED4", prim: "#0077C0" },
+  "76ers": { abrev: "phi", sec: "#ED174C", prim: "#006BB6" },
+  "sixers": { abrev: "phi", sec: "#ED174C", prim: "#006BB6" },
+  "suns": { abrev: "phx", sec: "#E56020", prim: "#1D1160" },
+  "blazers": { abrev: "por", sec: "#000000", prim: "#E03A3E" },
+  "trail blazers": { abrev: "por", sec: "#000000", prim: "#E03A3E" },
+  "kings": { abrev: "sac", sec: "#63727A", prim: "#5A2D81" },
+  "spurs": { abrev: "sa", sec: "#000000", prim: "#C4CED4" },
+  "raptors": { abrev: "tor", sec: "#000000", prim: "#CE1141" },
+  "jazz": { abrev: "utah", sec: "#F9A01B", prim: "#002B5C" },
+  "wizards": { abrev: "was", sec: "#E31837", prim: "#002B5C" },
+  "washington": { abrev: "was", sec: "#E31837", prim: "#002B5C" }
 };
 
 @Component({
@@ -222,7 +270,8 @@ export class HistoricoGeralComponent implements OnInit {
   readonly statusElencoOptions: { value: StatusElenco; label: string; short: string }[] = [
     { value: 'principal', label: 'Principal', short: 'P' },
     { value: 'secundario', label: 'Secundário', short: 'S' },
-    { value: 'terciario', label: 'Terciário', short: 'T' }
+    { value: 'terciario', label: 'Terciário', short: 'T' },
+    { value: 'nenhum', label: 'Nenhum / Sem Status', short: '—' }
   ];
   readonly camposPremiacao = [
     { key: 'mvp', label: 'MVP' },
@@ -233,14 +282,14 @@ export class HistoricoGeralComponent implements OnInit {
   ];
   
   // MÁGICA 2: Tipagem aberta para ngModel não brigar com o HTML
-  readonly camposHierarquiaElenco: { key: string; label: string; statusKey: string }[] = [
-    { key: 'pg', label: 'PG', statusKey: 'pg_status' },
-    { key: 'sg', label: 'SG', statusKey: 'sg_status' },
-    { key: 'sf', label: 'SF', statusKey: 'sf_status' },
-    { key: 'pf', label: 'PF', statusKey: 'pf_status' },
-    { key: 'c', label: 'C', statusKey: 'c_status' },
-    { key: 'sexto_homem', label: '6º Homem', statusKey: 'sexto_homem_status' },
-    { key: 'draftado', label: 'Draftado', statusKey: 'draftado_status' }
+  readonly camposHierarquiaElenco: { key: string; label: string; statusKey: string; ovrKey: string }[] = [
+    { key: 'pg', label: 'PG', statusKey: 'pg_status', ovrKey: 'pg_ovr' },
+    { key: 'sg', label: 'SG', statusKey: 'sg_status', ovrKey: 'sg_ovr' },
+    { key: 'sf', label: 'SF', statusKey: 'sf_status', ovrKey: 'sf_ovr' },
+    { key: 'pf', label: 'PF', statusKey: 'pf_status', ovrKey: 'pf_ovr' },
+    { key: 'c', label: 'C', statusKey: 'c_status', ovrKey: 'c_ovr' },
+    { key: 'sexto_homem', label: '6º Homem', statusKey: 'sexto_homem_status', ovrKey: 'sexto_homem_ovr' },
+    { key: 'draftado', label: 'Draftado', statusKey: 'draftado_status', ovrKey: 'draftado_ovr' }
   ];
   
   // --- Hall da Fama ---
@@ -307,6 +356,8 @@ export class HistoricoGeralComponent implements OnInit {
     return {
       temporada: '', recorde_wl: '', rank_conferencia: null, resultado_playoffs: '',
       pg: '', sg: '', sf: '', pf: '', c: '', sexto_homem: '', draftado: '', observacoes: '',
+      pg_ovr: null, sg_ovr: null, sf_ovr: null, pf_ovr: null, c_ovr: null,
+      sexto_homem_ovr: null, draftado_ovr: null,
       pg_status: 'principal',
       sg_status: 'principal',
       sf_status: 'principal',
@@ -314,6 +365,108 @@ export class HistoricoGeralComponent implements OnInit {
       c_status: 'principal',
       sexto_homem_status: 'secundario',
       draftado_status: 'terciario'
+    };
+  }
+
+  private normalizarStatusElenco(status?: string | null): StatusElenco {
+    if (status === 'principal' || status === 'secundario' || status === 'terciario' || status === 'nenhum') {
+      return status;
+    }
+    return 'terciario';
+  }
+
+  private normalizarCampanhaCarregada(camp: ICampanhaFranquia): ICampanhaFranquia {
+    const migrado = this.migrarOvrLegadoDoNome(camp);
+    return {
+      ...camp,
+      ...migrado,
+      pg: migrado.pg ?? (camp.pg ? SupabaseService.limparNomeJogador(camp.pg) : camp.pg),
+      sg: migrado.sg ?? (camp.sg ? SupabaseService.limparNomeJogador(camp.sg) : camp.sg),
+      sf: migrado.sf ?? (camp.sf ? SupabaseService.limparNomeJogador(camp.sf) : camp.sf),
+      pf: migrado.pf ?? (camp.pf ? SupabaseService.limparNomeJogador(camp.pf) : camp.pf),
+      c: migrado.c ?? (camp.c ? SupabaseService.limparNomeJogador(camp.c) : camp.c),
+      sexto_homem: migrado.sexto_homem ?? (camp.sexto_homem ? SupabaseService.limparNomeJogador(camp.sexto_homem) : camp.sexto_homem),
+      draftado: migrado.draftado ?? (camp.draftado ? SupabaseService.limparNomeJogador(camp.draftado) : camp.draftado),
+      pg_ovr: camp.pg_ovr ?? migrado.pg_ovr ?? null,
+      sg_ovr: camp.sg_ovr ?? migrado.sg_ovr ?? null,
+      sf_ovr: camp.sf_ovr ?? migrado.sf_ovr ?? null,
+      pf_ovr: camp.pf_ovr ?? migrado.pf_ovr ?? null,
+      c_ovr: camp.c_ovr ?? migrado.c_ovr ?? null,
+      sexto_homem_ovr: camp.sexto_homem_ovr ?? migrado.sexto_homem_ovr ?? null,
+      draftado_ovr: camp.draftado_ovr ?? migrado.draftado_ovr ?? null,
+      pg_status: this.normalizarStatusElenco(camp.pg_status),
+      sg_status: this.normalizarStatusElenco(camp.sg_status),
+      sf_status: this.normalizarStatusElenco(camp.sf_status),
+      pf_status: this.normalizarStatusElenco(camp.pf_status),
+      c_status: this.normalizarStatusElenco(camp.c_status),
+      sexto_homem_status: this.normalizarStatusElenco(camp.sexto_homem_status || 'secundario'),
+      draftado_status: this.normalizarStatusElenco(camp.draftado_status || 'terciario')
+    };
+  }
+
+  private migrarOvrLegadoDoNome(camp: ICampanhaFranquia): Partial<ICampanhaForm> {
+    const patch: Partial<ICampanhaForm> = {};
+    const slots = ['pg', 'sg', 'sf', 'pf', 'c', 'sexto_homem', 'draftado'] as const;
+
+    for (const slot of slots) {
+      const nomeBruto = camp[slot];
+      if (!nomeBruto) continue;
+      const ovrKey = `${slot}_ovr` as keyof ICampanhaForm;
+      if (camp[ovrKey as keyof ICampanhaFranquia] != null) continue;
+
+      const match = nomeBruto.match(/^\s*(?:ovr\s*)?(\d{1,2})\s*[-–—:/]+\s*/i);
+      if (match) {
+        (patch as Record<string, unknown>)[ovrKey] = parseInt(match[1], 10);
+        (patch as Record<string, unknown>)[slot] = SupabaseService.limparNomeJogador(nomeBruto);
+      }
+    }
+    return patch;
+  }
+
+  private sanitizarOvr(ovr: number | null | undefined): number | null {
+    if (ovr == null || ovr === undefined || Number.isNaN(ovr)) return null;
+    const valor = Math.round(ovr);
+    if (valor < 40 || valor > 99) return null;
+    return valor;
+  }
+
+  getNomeJogadorExibicao(nome: string | null | undefined, ovr: number | null | undefined): string {
+    const nomeLimpo = SupabaseService.limparNomeJogador(nome);
+    if (!nomeLimpo) return '';
+    const ovrValido = this.sanitizarOvr(ovr);
+    return ovrValido ? `${ovrValido} · ${nomeLimpo}` : nomeLimpo;
+  }
+
+  private montarDadosCampanhaParaSalvar(franquia: string): ICampanhaFranquia {
+    return {
+      liga_id: this.ligaId!,
+      franquia,
+      temporada: this.novaCampanha.temporada,
+      recorde_wl: this.novaCampanha.recorde_wl || null,
+      rank_conferencia: this.novaCampanha.rank_conferencia,
+      resultado_playoffs: this.novaCampanha.resultado_playoffs || null,
+      pg: SupabaseService.limparNomeJogador(this.novaCampanha.pg) || null,
+      sg: SupabaseService.limparNomeJogador(this.novaCampanha.sg) || null,
+      sf: SupabaseService.limparNomeJogador(this.novaCampanha.sf) || null,
+      pf: SupabaseService.limparNomeJogador(this.novaCampanha.pf) || null,
+      c: SupabaseService.limparNomeJogador(this.novaCampanha.c) || null,
+      sexto_homem: SupabaseService.limparNomeJogador(this.novaCampanha.sexto_homem) || null,
+      draftado: SupabaseService.limparNomeJogador(this.novaCampanha.draftado) || null,
+      observacoes: this.novaCampanha.observacoes || null,
+      pg_ovr: this.sanitizarOvr(this.novaCampanha.pg_ovr),
+      sg_ovr: this.sanitizarOvr(this.novaCampanha.sg_ovr),
+      sf_ovr: this.sanitizarOvr(this.novaCampanha.sf_ovr),
+      pf_ovr: this.sanitizarOvr(this.novaCampanha.pf_ovr),
+      c_ovr: this.sanitizarOvr(this.novaCampanha.c_ovr),
+      sexto_homem_ovr: this.sanitizarOvr(this.novaCampanha.sexto_homem_ovr),
+      draftado_ovr: this.sanitizarOvr(this.novaCampanha.draftado_ovr),
+      pg_status: this.novaCampanha.pg_status,
+      sg_status: this.novaCampanha.sg_status,
+      sf_status: this.novaCampanha.sf_status,
+      pf_status: this.novaCampanha.pf_status,
+      c_status: this.novaCampanha.c_status,
+      sexto_homem_status: this.novaCampanha.sexto_homem_status,
+      draftado_status: this.novaCampanha.draftado_status
     };
   }
 
@@ -428,16 +581,7 @@ export class HistoricoGeralComponent implements OnInit {
       if (timeAtivo) {
         try {
           const campanhasBrutas = await this.supabaseService.getCampanhasDaFranquia(this.ligaId!, timeAtivo.nome);
-          this.campanhasTime = campanhasBrutas.map(camp => ({
-            ...camp,
-            pg_status: camp.pg_status || 'principal',
-            sg_status: camp.sg_status || 'principal',
-            sf_status: camp.sf_status || 'principal',
-            pf_status: camp.pf_status || 'principal',
-            c_status: camp.c_status || 'principal',
-            sexto_homem_status: camp.sexto_homem_status || 'secundario',
-            draftado_status: camp.draftado_status || 'terciario'
-          }));
+          this.campanhasTime = campanhasBrutas.map(camp => this.normalizarCampanhaCarregada(camp));
           this.lendasTime = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
         } catch (error) {
           console.error('Erro ao carregar dados da franquia:', error);
@@ -459,29 +603,7 @@ export class HistoricoGeralComponent implements OnInit {
       const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
       if (!timeAtivo) throw new Error('Nenhuma franquia ativa selecionada.');
       
-      const dadosParaSalvar: ICampanhaFranquia = {
-        liga_id: this.ligaId,
-        franquia: timeAtivo.nome,
-        temporada: this.novaCampanha.temporada,
-        recorde_wl: this.novaCampanha.recorde_wl || null,
-        rank_conferencia: this.novaCampanha.rank_conferencia,
-        resultado_playoffs: this.novaCampanha.resultado_playoffs || null,
-        pg: this.novaCampanha.pg || null,
-        sg: this.novaCampanha.sg || null,
-        sf: this.novaCampanha.sf || null,
-        pf: this.novaCampanha.pf || null,
-        c: this.novaCampanha.c || null,
-        sexto_homem: this.novaCampanha.sexto_homem || null,
-        draftado: this.novaCampanha.draftado || null,
-        observacoes: this.novaCampanha.observacoes || null,
-        pg_status: this.novaCampanha.pg_status,
-        sg_status: this.novaCampanha.sg_status,
-        sf_status: this.novaCampanha.sf_status,
-        pf_status: this.novaCampanha.pf_status,
-        c_status: this.novaCampanha.c_status,
-        sexto_homem_status: this.novaCampanha.sexto_homem_status,
-        draftado_status: this.novaCampanha.draftado_status
-      };
+      const dadosParaSalvar = this.montarDadosCampanhaParaSalvar(timeAtivo.nome);
 
       if (this.editandoIdTime) {
         await this.supabaseService.atualizarCampanhaFranquia(this.editandoIdTime, dadosParaSalvar);
@@ -490,16 +612,7 @@ export class HistoricoGeralComponent implements OnInit {
       }
       this.cancelarEdicaoTime();
       const campanhasBrutas = await this.supabaseService.getCampanhasDaFranquia(this.ligaId, timeAtivo.nome);
-      this.campanhasTime = campanhasBrutas.map(camp => ({
-        ...camp,
-        pg_status: camp.pg_status || 'principal',
-        sg_status: camp.sg_status || 'principal',
-        sf_status: camp.sf_status || 'principal',
-        pf_status: camp.pf_status || 'principal',
-        c_status: camp.c_status || 'principal',
-        sexto_homem_status: camp.sexto_homem_status || 'secundario',
-        draftado_status: camp.draftado_status || 'terciario'
-      }));
+      this.campanhasTime = campanhasBrutas.map(camp => this.normalizarCampanhaCarregada(camp));
     } catch (error) {
       console.error('Erro ao salvar elenco:', error);
       alert('Erro ao salvar no banco.');
@@ -674,11 +787,22 @@ export class HistoricoGeralComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  editarCampanhaTime(camp: any) {
-    this.editandoIdTime = camp.id;
+  editarCampanhaTime(camp: ICampanhaFranquia) {
+    this.editandoIdTime = camp.id ?? null;
+    const c = this.normalizarCampanhaCarregada(camp);
     this.novaCampanha = {
       ...this.getCampanhaInicial(),
-      ...camp
+      temporada: c.temporada,
+      recorde_wl: c.recorde_wl ?? '',
+      rank_conferencia: c.rank_conferencia,
+      resultado_playoffs: c.resultado_playoffs ?? '',
+      pg: c.pg ?? '', sg: c.sg ?? '', sf: c.sf ?? '', pf: c.pf ?? '', c: c.c ?? '',
+      sexto_homem: c.sexto_homem ?? '', draftado: c.draftado ?? '', observacoes: c.observacoes ?? '',
+      pg_ovr: c.pg_ovr, sg_ovr: c.sg_ovr, sf_ovr: c.sf_ovr, pf_ovr: c.pf_ovr, c_ovr: c.c_ovr,
+      sexto_homem_ovr: c.sexto_homem_ovr, draftado_ovr: c.draftado_ovr,
+      pg_status: c.pg_status, sg_status: c.sg_status, sf_status: c.sf_status,
+      pf_status: c.pf_status, c_status: c.c_status,
+      sexto_homem_status: c.sexto_homem_status, draftado_status: c.draftado_status
     };
     this.mostrarFormularioTime = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -762,11 +886,19 @@ export class HistoricoGeralComponent implements OnInit {
         ? this.extrairNomesDoCampoDraft(valorBruto)
         : [valorBruto];
 
-      for (const nomeExibicao of nomes) {
-        const nomeChave = SupabaseService.normalizarNomeJogador(nomeExibicao);
+      const ovrCampo = this.sanitizarOvr(this.novaCampanha[campo.ovrKey] as number | null);
+
+      for (const nomeBruto of nomes) {
+        const nomeChave = SupabaseService.normalizarNomeJogador(nomeBruto);
         if (!nomeChave || vistos.has(nomeChave)) continue;
         vistos.add(nomeChave);
-        lista.push({ posicao: campo.label, nomeExibicao, nomeChave });
+        lista.push({
+          posicao: campo.label,
+          nomeBruto: SupabaseService.limparNomeJogador(nomeBruto),
+          nomeExibicao: this.getNomeJogadorExibicao(nomeBruto, ovrCampo),
+          nomeChave,
+          ovr: ovrCampo
+        });
       }
     }
 
@@ -781,7 +913,7 @@ export class HistoricoGeralComponent implements OnInit {
   }
 
   dispararUploadFotoJogador(jogador: IJogadorElencoFotoItem) {
-    this.uploadFotoJogadorAlvo = jogador.nomeExibicao;
+    this.uploadFotoJogadorAlvo = jogador.nomeBruto;
     this.fotoElencoInput?.nativeElement.click();
   }
 
@@ -963,7 +1095,8 @@ export class HistoricoGeralComponent implements OnInit {
   getLogoTime(nomeTime: string | null | undefined): string | null {
     if (!nomeTime || nomeTime === '—' || nomeTime === '-') return null;
     const busca = nomeTime.toLowerCase().trim();
-    const chave = Object.keys(NBA_TEAMS_INFO).find(k => busca.includes(k) || k.includes(busca));
+    const chaves = Object.keys(NBA_TEAMS_INFO).sort((a, b) => b.length - a.length);
+    const chave = chaves.find(k => busca.includes(k) || k.includes(busca));
     return chave ? `https://a.espncdn.com/i/teamlogos/nba/500/${NBA_TEAMS_INFO[chave].abrev}.png` : null;
   }
 
@@ -980,12 +1113,9 @@ export class HistoricoGeralComponent implements OnInit {
     return brilho > 150 ? '#000000' : '#ffffff';
   }
 
-  getEstiloJogador(jogadorString: string): any {
-    if (!jogadorString) return {};
-    const match = jogadorString.match(/\b(\d{2})\b/);
-    const ovr = match ? parseInt(match[0], 10) : 0;
-    
-    if (ovr < 90) return {};
+  getEstiloJogador(ovr: number | null | undefined): Record<string, string> {
+    const ovrValido = this.sanitizarOvr(ovr);
+    if (!ovrValido || ovrValido < 90) return {};
     const franquiaAtual = this.franquias.find(f => f.id === this.abaAtiva);
     if (!franquiaAtual) return {};
 
@@ -994,9 +1124,9 @@ export class HistoricoGeralComponent implements OnInit {
     const chaveInfo = Object.keys(NBA_TEAMS_INFO).find(k => buscaNome.includes(k) || k.includes(buscaNome));
     const corSecundaria = chaveInfo ? NBA_TEAMS_INFO[chaveInfo].sec : '#888888'; 
 
-    if (ovr >= 95) { 
+    if (ovrValido >= 95) { 
       return { 'background-color': corPrimaria, 'color': this.getTextColorForBackground(corPrimaria), 'padding': '3px 10px', 'border-radius': '15px', 'box-shadow': `0 2px 4px ${corPrimaria}80` };
-    } else if (ovr >= 90) {
+    } else if (ovrValido >= 90) {
       return { 'background-color': corSecundaria, 'color': this.getTextColorForBackground(corSecundaria), 'padding': '3px 10px', 'border-radius': '15px', 'box-shadow': `0 2px 4px ${corSecundaria}80` };
     }
     return {};
@@ -1096,18 +1226,21 @@ export class HistoricoGeralComponent implements OnInit {
   getStatusElencoLabel(status?: string): string {
     if (status === 'principal') return 'Principal';
     if (status === 'secundario') return 'Secundário';
+    if (status === 'nenhum') return 'Nenhum / Sem Status';
     return 'Terciário';
   }
 
   getStatusBadgeClass(status?: string): string {
     if (status === 'principal') return 'status-principal';
     if (status === 'secundario') return 'status-secundario';
+    if (status === 'nenhum') return 'status-nenhum';
     return 'status-terciario';
   }
 
   getStatusShort(status?: string): string {
     if (status === 'principal') return 'P';
     if (status === 'secundario') return 'S';
+    if (status === 'nenhum') return '—';
     return 'T';
   }
 
@@ -1130,7 +1263,18 @@ export class HistoricoGeralComponent implements OnInit {
     const franquia = this.getCorFranquia(nomeTime);
     if (franquia) return franquia;
     const busca = nomeTime.toLowerCase().trim();
+    const chavesInfo = Object.keys(NBA_TEAMS_INFO).sort((a, b) => b.length - a.length);
+    const chaveInfo = chavesInfo.find(k => busca.includes(k) || k.includes(busca));
+    if (chaveInfo && NBA_TEAMS_INFO[chaveInfo].prim) {
+      return NBA_TEAMS_INFO[chaveInfo].prim!;
+    }
+
     const mapaCoresprimarias: { [key: string]: string } = {
+      'seattle supersonics': '#00653A', 'supersonics': '#00653A', 'sonics': '#00653A',
+      'new jersey nets': '#002B5C', 'new jersey': '#002B5C',
+      'charlotte bobcats': '#002B5C', 'bobcats': '#002B5C',
+      'vancouver grizzlies': '#00B2A9', 'vancouver': '#00B2A9',
+      'washington bullets': '#002B5C', 'bullets': '#002B5C',
       'lakers': '#552583', 'los angeles lakers': '#552583',
       'celtics': '#007A33', 'boston celtics': '#007A33',
       'warriors': '#1D428A', 'golden state warriors': '#1D428A',
@@ -1161,10 +1305,9 @@ export class HistoricoGeralComponent implements OnInit {
       'kings': '#5A2D81', 'sacramento kings': '#5A2D81',
       'pacers': '#002D62', 'indiana pacers': '#002D62',
       'wizards': '#002B5C', 'washington wizards': '#002B5C',
-      'sonics': '#00653A', 'seattle supersonics': '#00653A',
-      'bullets': '#002B5C', 'washington bullets': '#002B5C',
     };
-    const chave = Object.keys(mapaCoresprimarias).find(k => busca.includes(k) || k.includes(busca));
+    const chavesMapa = Object.keys(mapaCoresprimarias).sort((a, b) => b.length - a.length);
+    const chave = chavesMapa.find(k => busca.includes(k) || k.includes(busca));
     return chave ? mapaCoresprimarias[chave] : null;
   }
 }

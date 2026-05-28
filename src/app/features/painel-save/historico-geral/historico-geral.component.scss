@@ -592,6 +592,58 @@ body {
   color: #cbd5e1 !important;
 }
 
+.status-nenhum {
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.micro-foto.status-nenhum {
+  opacity: 0.85;
+  filter: grayscale(0.15);
+}
+
+.jogador-ovr-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+
+  .jogador-nome-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .jogador-ovr-input {
+    width: 72px;
+    flex-shrink: 0;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      opacity: 1;
+    }
+  }
+}
+
+.ovr-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  margin-right: 4px;
+  padding: 0 5px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--gold);
+  letter-spacing: 0.3px;
+}
+
 .award-cell {
   display: inline-flex;
   align-items: center;
