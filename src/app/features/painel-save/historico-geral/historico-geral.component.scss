@@ -1581,3 +1581,249 @@ body {
 
   .modal-content { padding: 1.25rem; }
 }
+
+/* ─── MODAL CONFIGURAÇÕES ─────────────────────────────────── */
+.modal-content.modal-config {
+  max-width: 860px;
+  width: 95%;
+  max-height: 80vh;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+.config-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+  padding: 0 1.25rem;
+}
+
+/* ── Lista lateral ── */
+.config-franquias-lista {
+  border-right: 1px solid var(--court-border);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  background: var(--court-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--court-border2) transparent;
+}
+
+.config-franquia-vazia {
+  text-align: center;
+  padding: 2rem 1.25rem;
+  color: var(--text-muted);
+
+  span { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+  p    { margin: 0; font-size: 0.85rem; }
+}
+
+.config-franquia-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  position: relative;
+
+  &:hover { background: var(--court-surface); }
+
+  &.ativo {
+    background: var(--court-card);
+
+    // Barra colorida lateral usando a variável CSS do time
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--team-color, var(--gold));
+      border-radius: 0 2px 2px 0;
+    }
+  }
+}
+
+.config-franquia-cor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.config-franquia-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.config-franquia-nome {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .config-franquia-item.ativo & { color: var(--text-primary); font-weight: 700; }
+}
+
+.config-franquia-chevron {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Formulário de edição ── */
+.config-edicao-form {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 0.73rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="color"] {
+      padding: 0.65rem 0.85rem;
+      background: var(--court-surface);
+      border: 1px solid var(--court-border2);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--gold-dim);
+        box-shadow: 0 0 0 3px var(--gold-soft);
+      }
+    }
+  }
+}
+
+.color-preview-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--court-border2);
+  flex-shrink: 0;
+}
+
+.config-logo-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.config-logo-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border: 1px solid var(--court-border2);
+  border-radius: var(--radius-md);
+  background: var(--court-surface);
+  padding: 6px;
+}
+
+.btn-upload-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.55rem 1.1rem;
+  border: 1px dashed var(--court-border2);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--court-surface);
+
+  &:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+    background: var(--gold-soft);
+  }
+}
+
+.config-edicao-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--court-border);
+}
+
+.config-edicao-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  color: var(--text-muted);
+  padding: 2rem;
+  text-align: center;
+
+  span {
+    font-size: 2.5rem;
+    opacity: 0.3;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    max-width: 28ch;
+    line-height: 1.5;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+  .config-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .config-franquias-lista {
+    border-right: none;
+    border-bottom: 1px solid var(--court-border);
+    max-height: 180px;
+  }
+}

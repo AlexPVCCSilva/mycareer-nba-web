@@ -19,7 +19,7 @@ interface IJogadorElencoFotoItem {
 }
 
 interface ICampanhaForm {
-  [key: string]: any; // <-- MÁGICA: Permite o uso dinâmico no [(ngModel)] do HTML
+  [key: string]: any; 
   temporada: string;
   recorde_wl: string;
   rank_conferencia: number | null;
@@ -66,9 +66,7 @@ interface ITemporadaGeralForm {
   mip_time: string;
 }
 
-// Dicionário Oficial de IDs da NBA (Jogadores 88+ OVR desde 1984)
 const NBA_PLAYERS: { [key: string]: string } = {
-  // --- DRAFT 2024 ---
   "zaccharie risacher": "1642277", "alex sarr": "1642278", "reed sheppard": "1642279",
   "stephon castle": "1642280", "ron holland": "1642281", "matas buzelis": "1642282",
   "donovan clingan": "1642283", "rob dillingham": "1642284", "zach edey": "1642285",
@@ -77,13 +75,9 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "jared mccain": "1642292", "kyshawn george": "1642293", "tristan da silva": "1642294",
   "ja'kobe walter": "1642295", "tyler smith": "1642296", "daron holmes ii": "1642297",
   "rj davis": "1642500", "cooper flagg": "1642843",
-
-  // --- BRASILEIROS NA NBA ---
   "gui santos": "1630611", "leandro barbosa": "2571", "nene": "2403", "anderson varejao": "2760",
   "tiago splitter": "201168", "raul neto": "203526", "cristiano felicio": "1626245",
   "bruno caboclo": "203998", "didi louzada": "1629683", "marcelinho huertas": "1626273",
-
-  // --- ERA ATUAL E ESTRELAS ---
   "lebron james": "2544", "stephen curry": "201939", "kevin durant": "201142",
   "nikola jokic": "203999", "giannis antetokounmpo": "203507", "luka doncic": "1629029",
   "jayson tatum": "1628369", "anthony davis": "203076", "kyrie irving": "202681",
@@ -118,8 +112,6 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "gabe vincent": "1629216", "caleb martin": "1628997", "duncan robinson": "1629130",
   "grant williams": "1629684", "pj washington": "1629020", "brook lopez": "201572",
   "tobias harris": "202699", "nikola vucevic": "202696", "buddy hield": "1627741",
-
-  // --- ANOS 2010s, 2000s, 90s, 80s ---
   "russell westbrook": "201566", "carmelo anthony": "2546", "chris paul": "101108",
   "derrick rose": "201565", "blake griffin": "201933", "john wall": "202322",
   "lamarcus aldridge": "200746", "marc gasol": "201188", "dwyane wade": "2548",
@@ -179,7 +171,6 @@ const NBA_PLAYERS: { [key: string]: string } = {
 };
 
 const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: string } } = {
-  // --- Times clássicos / retro (prioridade no match por chaves longas) ---
   "seattle supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
   "supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
   "sonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
@@ -190,7 +181,6 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: stri
   "vancouver grizzlies": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
   "vancouver": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
   "washington bullets": { abrev: "wsh", sec: "#E31837", prim: "#002B5C" },
-  // --- Franquias atuais ---
   "hawks": { abrev: "atl", sec: "#C1D32F", prim: "#E03A3E" },
   "boston celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
   "celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
@@ -267,12 +257,14 @@ export class HistoricoGeralComponent implements OnInit {
   salvandoFotoJogadorChave: string | null = null;
 
   @ViewChild('fotoElencoInput') fotoElencoInput?: ElementRef<HTMLInputElement>;
+  
   readonly statusElencoOptions: { value: StatusElenco; label: string; short: string }[] = [
     { value: 'principal', label: 'Principal', short: 'P' },
     { value: 'secundario', label: 'Secundário', short: 'S' },
     { value: 'terciario', label: 'Terciário', short: 'T' },
     { value: 'nenhum', label: 'Nenhum / Sem Status', short: '—' }
   ];
+  
   readonly camposPremiacao = [
     { key: 'mvp', label: 'MVP' },
     { key: 'rookie_of_the_year', label: 'ROY (Rookie)' },
@@ -281,7 +273,6 @@ export class HistoricoGeralComponent implements OnInit {
     { key: 'mip', label: 'MIP' }
   ];
   
-  // MÁGICA 2: Tipagem aberta para ngModel não brigar com o HTML
   readonly camposHierarquiaElenco: { key: string; label: string; statusKey: string; ovrKey: string }[] = [
     { key: 'pg', label: 'PG', statusKey: 'pg_status', ovrKey: 'pg_ovr' },
     { key: 'sg', label: 'SG', statusKey: 'sg_status', ovrKey: 'sg_ovr' },
@@ -325,8 +316,19 @@ export class HistoricoGeralComponent implements OnInit {
   abaAtiva = 'geral';
   franquias: any[] = [];
   
+// ── Configurações da Liga ──────────────────────────────────
+mostrarModalConfiguracoes = false;
+franquiaEditandoId: string | null = null;
+franquiaEditandoForm: {
+  nome: string;
+  corHex: string;
+  logo_url: string | null;
+} = { nome: '', corHex: '#552583', logo_url: null };
+salvandoEdicaoFranquia = false;
+
+  // AQUI FICAVAM AS VARIÁVEIS DUPLICADAS, AGORA ESTÃO LIMPAS:
   mostrarModalFranquia = false;
-  novaFranquia = { nome: '', corHex: '#552583' };
+  novaFranquia = { nome: '', corHex: '#552583', logo_url: null as string | null };
   salvandoFranquia = false;
 
   mostrarFormulario = false;
@@ -629,12 +631,12 @@ export class HistoricoGeralComponent implements OnInit {
 
   fecharModalFranquia() {
     this.mostrarModalFranquia = false;
-    this.novaFranquia = { nome: '', corHex: '#552583' };
+    this.novaFranquia = { nome: '', corHex: '#552583', logo_url: null };
     this.modoPersonalizado = false;
   }
 
   async salvarTimePadrao(time: any) {
-    this.novaFranquia = { nome: time.nome, corHex: time.corHex };
+    this.novaFranquia = { nome: time.nome, corHex: time.corHex, logo_url: null };
     await this.salvarNovaFranquia(); 
   }
 
@@ -649,7 +651,8 @@ export class HistoricoGeralComponent implements OnInit {
       const timeCriado = await this.supabaseService.criarFranquia(
         this.ligaId!,
         this.novaFranquia.nome,
-        this.novaFranquia.corHex
+        this.novaFranquia.corHex,
+        this.novaFranquia.logo_url
       );
       
       this.franquias.push(timeCriado);
@@ -820,7 +823,6 @@ export class HistoricoGeralComponent implements OnInit {
     this.mostrarFormularioTime = false;
   }
   
-  // MÁGICA 1: Funções de cores e logotipos aguentam o nulo de boa agora!
   getCorFranquia(nomeTime: string | null | undefined): string | null {
     if (!nomeTime) return null;
     const busca = nomeTime.toLowerCase().trim();
@@ -1095,6 +1097,14 @@ export class HistoricoGeralComponent implements OnInit {
   getLogoTime(nomeTime: string | null | undefined): string | null {
     if (!nomeTime || nomeTime === '—' || nomeTime === '-') return null;
     const busca = nomeTime.toLowerCase().trim();
+    
+    // 1. Tenta achar a logo customizada salva no banco
+    const franquiaBanco = this.franquias.find(f => f.nome.toLowerCase().includes(busca) || busca.includes(f.nome.toLowerCase()));
+    if (franquiaBanco && franquiaBanco.logo_url) {
+      return franquiaBanco.logo_url;
+    }
+
+    // 2. Se não achar, usa as oficiais da ESPN
     const chaves = Object.keys(NBA_TEAMS_INFO).sort((a, b) => b.length - a.length);
     const chave = chaves.find(k => busca.includes(k) || k.includes(busca));
     return chave ? `https://a.espncdn.com/i/teamlogos/nba/500/${NBA_TEAMS_INFO[chave].abrev}.png` : null;
@@ -1310,4 +1320,153 @@ export class HistoricoGeralComponent implements OnInit {
     const chave = chavesMapa.find(k => busca.includes(k) || k.includes(busca));
     return chave ? mapaCoresprimarias[chave] : null;
   }
+
+  processarLogoTime(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.novaFranquia.logo_url = e.target.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removerLogoTime() {
+    this.novaFranquia.logo_url = null;
+  }
+
+  abrirFormularioNovaCampanhaTime(): void {
+  // Toggle: se já está aberto em modo "novo", fecha
+  if (this.mostrarFormularioTime && !this.editandoIdTime) {
+    this.mostrarFormularioTime = false;
+    return;
+  }
+
+  // Herda o elenco da campanha mais recente (índice 0 = mais recente por ORDER DESC)
+  if (this.campanhasTime && this.campanhasTime.length > 0) {
+    const ultima = this.normalizarCampanhaCarregada(this.campanhasTime[0]);
+
+    this.novaCampanha = {
+      // ── Resultados zerados (o usuário vai preencher) ──
+      temporada:          '',
+      recorde_wl:         '',
+      rank_conferencia:   null,
+      resultado_playoffs: '',
+      observacoes:        '',
+      draftado:           '',
+      draftado_ovr:       null,
+      draftado_status:    'terciario',
+
+      // ── Elenco herdado da última temporada ──
+      pg:              ultima.pg           ?? '',
+      pg_ovr:          ultima.pg_ovr,
+      pg_status:       ultima.pg_status,
+
+      sg:              ultima.sg           ?? '',
+      sg_ovr:          ultima.sg_ovr,
+      sg_status:       ultima.sg_status,
+
+      sf:              ultima.sf           ?? '',
+      sf_ovr:          ultima.sf_ovr,
+      sf_status:       ultima.sf_status,
+
+      pf:              ultima.pf           ?? '',
+      pf_ovr:          ultima.pf_ovr,
+      pf_status:       ultima.pf_status,
+
+      c:               ultima.c            ?? '',
+      c_ovr:           ultima.c_ovr,
+      c_status:        ultima.c_status,
+
+      sexto_homem:     ultima.sexto_homem  ?? '',
+      sexto_homem_ovr: ultima.sexto_homem_ovr,
+      sexto_homem_status: ultima.sexto_homem_status,
+    };
+  } else {
+    // Sem histórico: abre em branco
+    this.novaCampanha = this.getCampanhaInicial();
+  }
+
+  this.editandoIdTime = null;
+  this.mostrarFormularioTime = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+// ── Configurações da Liga ──────────────────────────────────
+
+abrirModalConfiguracoes(): void {
+  this.franquiaEditandoId = null;
+  this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+  this.mostrarModalConfiguracoes = true;
+}
+
+fecharModalConfiguracoes(): void {
+  this.mostrarModalConfiguracoes = false;
+  this.franquiaEditandoId = null;
+  this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+}
+
+selecionarFranquiaParaEditar(franquia: any): void {
+  this.franquiaEditandoId = franquia.id;
+  this.franquiaEditandoForm = {
+    nome:     franquia.nome,
+    corHex:   franquia.cor_hex,
+    logo_url: franquia.logo_url ?? null,
+  };
+}
+
+processarLogoEdicaoFranquia(event: any): void {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.franquiaEditandoForm.logo_url = e.target.result;
+    this.cdr.detectChanges();
+  };
+  reader.readAsDataURL(file);
+}
+
+removerLogoEdicaoFranquia(): void {
+  this.franquiaEditandoForm.logo_url = null;
+}
+
+async salvarEdicaoFranquia(): Promise<void> {
+  if (!this.franquiaEditandoId) return;
+  if (!this.franquiaEditandoForm.nome?.trim()) {
+    alert('O nome do time é obrigatório.');
+    return;
+  }
+
+  this.salvandoEdicaoFranquia = true;
+  try {
+    const payload = {
+      nome:     this.franquiaEditandoForm.nome.trim(),
+      cor_hex:  this.franquiaEditandoForm.corHex,
+      logo_url: this.franquiaEditandoForm.logo_url,
+    };
+
+    await this.supabaseService.atualizarFranquia(this.franquiaEditandoId, payload);
+
+    // Atualiza localmente para refletir na UI instantaneamente
+    const idx = this.franquias.findIndex(f => f.id === this.franquiaEditandoId);
+    if (idx !== -1) {
+      this.franquias[idx] = { ...this.franquias[idx], ...payload };
+      this.franquias = [...this.franquias]; // força detecção de mudança
+    }
+
+    this.franquiaEditandoId = null;
+    this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+    this.cdr.detectChanges();
+  } catch (error) {
+    console.error('Erro ao atualizar franquia:', error);
+    alert('Não foi possível salvar as alterações. Tente novamente.');
+  } finally {
+    this.salvandoEdicaoFranquia = false;
+    this.cdr.detectChanges();
+  }
+}
+
 }

@@ -210,10 +210,10 @@ export class SupabaseService {
     return data;
   }
 
-  async criarFranquia(ligaId: string, nome: string, corHex: string) {
+  async criarFranquia(ligaId: string, nome: string, corHex: string, logoUrl: string | null = null) {
     const { data, error } = await this.supabase
       .from('franquias_liga')
-      .insert([{ liga_id: ligaId, nome, cor_hex: corHex }])
+      .insert([{ liga_id: ligaId, nome, cor_hex: corHex,logo_url: logoUrl }])
       .select();
 
     if (error) throw error;
@@ -280,6 +280,21 @@ export class SupabaseService {
     return data[0] as ITemporadaGeral;
   }
 
+
+  async atualizarFranquia(
+  id: string,
+  dados: Partial<{ nome: string; cor_hex: string; logo_url: string | null }>
+) {
+  const { data, error } = await this.supabase
+    .from('franquias_liga')
+    .update(dados)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
   // Atualiza uma campanha do Elenco/Time
   async atualizarCampanhaFranquia(id: string, dados: Partial<ICampanhaFranquia>) {
     const { data, error } = await this.supabase
