@@ -1,41 +1,123 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>{{ isLoginMode ? 'Entrar no Sistema' : 'Criar Nova Conta' }}</h2>
+<div class="login-container">
+  <div class="login-card glassmorphic">
 
-    <form (ngSubmit)="onSubmit()">
-      
+    <!-- Logo / Brand -->
+    <div class="login-logo">
+      <div class="login-logo-icon" aria-hidden="true">🏀</div>
+      <h2>{{ isLoginMode ? 'Bem-vindo de volta' : 'Criar Conta' }}</h2>
+      <p class="login-subtitle">
+        {{ isLoginMode ? 'Acesse o seu tracker de liga' : 'Junte-se ao simulador' }}
+      </p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- Nickname (apenas no cadastro) -->
       <div class="form-group" *ngIf="!isLoginMode">
-        <label>Nickname</label>
-        <input type="text" name="nickname" [(ngModel)]="nickname" placeholder="Como quer ser chamado?">
+        <label for="nickname">Nickname</label>
+        <div class="input-wrapper">
+          <span class="input-icon material-icons" aria-hidden="true"></span>
+          <input
+            id="nickname"
+            type="text"
+            name="nickname"
+            [(ngModel)]="nickname"
+            placeholder="Como quer ser chamado?"
+            class="input-glassmorphic"
+            autocomplete="username"
+          >
+        </div>
       </div>
 
+      <!-- Email -->
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" [(ngModel)]="email" required placeholder="seu@email.com">
+        <label for="email">E-mail</label>
+        <div class="input-wrapper">
+          <span class="input-icon material-icons" aria-hidden="true"></span>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            placeholder="seu@email.com"
+            class="input-glassmorphic"
+            autocomplete="email"
+          >
+        </div>
       </div>
 
+      <!-- Senha -->
       <div class="form-group">
-        <label>Senha</label>
-        <input type="password" name="password" [(ngModel)]="password" required placeholder="Mínimo de 6 caracteres">
+        <label for="password">Senha</label>
+        <div class="input-wrapper">
+          <span class="input-icon material-icons" aria-hidden="true"></span>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            placeholder="Mínimo de 6 caracteres"
+            class="input-glassmorphic"
+            autocomplete="current-password"
+          >
+        </div>
       </div>
 
+      <!-- Confirmar Senha (apenas no cadastro) -->
       <div class="form-group" *ngIf="!isLoginMode">
-        <label>Confirmar Senha</label>
-        <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" placeholder="Digite a senha novamente">
+        <label for="confirmPassword">Confirmar Senha</label>
+        <div class="input-wrapper">
+          <span class="input-icon material-icons" aria-hidden="true"></span>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            placeholder="Digite a senha novamente"
+            class="input-glassmorphic"
+            autocomplete="new-password"
+          >
+        </div>
       </div>
 
-      <div *ngIf="errorMessage" class="error-msg">
+      <!-- Mensagem de erro -->
+      <div
+        class="error-msg"
+        *ngIf="errorMessage"
+        role="alert"
+        aria-live="assertive"
+      >
         {{ errorMessage }}
       </div>
 
-      <button type="submit" [disabled]="isLoading">
-        {{ isLoading ? 'Carregando...' : (isLoginMode ? 'Entrar' : 'Cadastrar') }}
+      <!-- Botão de submit -->
+      <button
+        type="submit"
+        class="btn-gold"
+        [disabled]="isLoading"
+        [attr.aria-busy]="isLoading"
+      >
+        {{ isLoading ? 'Carregando...' : (isLoginMode ? 'Entrar na Liga' : 'Criar Conta') }}
       </button>
+
     </form>
 
+    <!-- Toggle login / cadastro -->
     <p class="toggle-text">
       {{ isLoginMode ? 'Ainda não tem conta?' : 'Já tem uma conta?' }}
-      <a (click)="toggleMode()">{{ isLoginMode ? 'Cadastre-se aqui' : 'Faça Login' }}</a>
+      <a
+        (click)="toggleMode()"
+        class="text-gold"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="toggleMode()"
+        [attr.aria-label]="isLoginMode ? 'Ir para cadastro' : 'Ir para login'"
+      >
+        {{ isLoginMode ? 'Cadastre-se aqui' : 'Faça login' }}
+      </a>
     </p>
+
   </div>
 </div>

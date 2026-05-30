@@ -1,56 +1,160 @@
 <div class="dashboard-container">
-  
-  <header class="topbar">
-    <h1>🏀 MyCareer NBA Simulator</h1>
+
+  <!-- ── Top Bar ──────────────────────────────────────────── -->
+  <header class="topbar" role="banner">
+    <div class="topbar-brand">
+      <div class="topbar-icon" aria-hidden="true">🏀</div>
+      <h1>MyCareer NBA Simulator</h1>
+    </div>
+
     <div class="user-menu">
-      <span>Bem-vindo, <strong>{{ nickname }}</strong>!</span>
-      <button class="btn-sair" (click)="sair()">Sair</button>
+      <span>
+        Bem-vindo, <strong>{{ nickname }}</strong>
+      </span>
+      <button
+        class="btn-sair"
+        (click)="sair()"
+        aria-label="Sair da conta"
+      >
+        Sair
+      </button>
     </div>
   </header>
 
-  <main class="content">
-    
+  <!-- ── Main Content ─────────────────────────────────────── -->
+  <main class="content" role="main">
+
+    <!-- Actions Header -->
     <div class="actions-header">
-      <h2>Minhas Ligas</h2>
+      <h2>
+        <span>Seus Saves</span>
+        Minhas Ligas
+      </h2>
+
       <div class="buttons">
-        <button class="btn-create" (click)="abrirModal()">➕ Criar Nova Liga</button>
-        <button class="btn-join" (click)="abrirModalEntrar()">🤝 Entrar com Código</button>
+        <button
+          class="btn-create"
+          (click)="abrirModal()"
+          aria-label="Criar nova liga"
+        >
+          ＋ Criar Nova Liga
+        </button>
+        <button
+          class="btn-join"
+          (click)="abrirModalEntrar()"
+          aria-label="Entrar em liga com código"
+        >
+          🤝 Entrar com Código
+        </button>
       </div>
     </div>
 
-    <div class="ligas-grid" *ngIf="!carregando && ligas.length > 0">
-      <div class="liga-card" *ngFor="let liga of ligas">
-        
-        <div class="card-header">
-          <h3>{{ liga.nome }}</h3>
-          <span class="badge">{{ liga.era_2k }}</span>
-        </div>
-        
-        <div class="card-body">
-          <p><strong>Início:</strong> {{ liga.ano_inicio }}</p>
-          <p><strong>Código:</strong> <span class="codigo">{{ liga.codigo_convite }}</span></p>
-        </div>
-        
-        <div class="card-footer">
-          <button class="btn-entrar-save" (click)="acessarLiga(liga.id)">Acessar Tracker ➔</button>        
-        </div>
+    <!-- Ligas Grid -->
+    <ng-container *ngIf="!carregando && ligas.length > 0">
+      <div class="ligas-grid" role="list" aria-label="Lista de ligas">
+
+        <article
+          class="liga-card"
+          role="listitem"
+          *ngFor="let liga of ligas"
+          (click)="acessarLiga(liga.id)"
+          (keydown.enter)="acessarLiga(liga.id)"
+          tabindex="0"
+          [attr.aria-label]="'Acessar liga ' + liga.nome"
+        >
+          <!-- Card Header -->
+          <div class="card-header">
+            <h3>{{ liga.nome }}</h3>
+            <span class="badge" [attr.aria-label]="'Era: ' + liga.era_2k">
+              {{ liga.era_2k }}
+            </span>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body">
+            <div class="card-stat">
+              <span class="stat-label">Início</span>
+              <span class="stat-value">{{ liga.ano_inicio }}</span>
+            </div>
+            <div class="card-stat">
+              <span class="stat-label">Código</span>
+              <span
+                class="codigo-badge"
+                [attr.aria-label]="'Código de convite: ' + liga.codigo_convite"
+              >
+                {{ liga.codigo_convite }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="card-footer">
+            <button
+              class="btn-entrar-save"
+              (click)="acessarLiga(liga.id); $event.stopPropagation()"
+              [attr.aria-label]="'Abrir tracker da liga ' + liga.nome"
+            >
+              Acessar Tracker ➔
+            </button>
+          </div>
+        </article>
+
       </div>
-    </div>
+    </ng-container>
+
+    <!-- Empty / Loading State -->
+    <ng-container *ngIf="carregando || ligas.length === 0">
+      <div class="empty-state" role="status" aria-live="polite">
+        <img
+          src="https://i.imgur.com/7ZrKkRQ.jpg"
+          alt="Logo de basquete"
+          loading="lazy"
+        >
+        <h2>
+          {{ carregando ? 'Carregando…' : 'Nenhuma Liga Encontrada' }}
+        </h2>
+        <p>
+          {{ carregando ? 'Buscando seus saves…' : 'Crie a sua primeira liga agora!' }}
+        </p>
+        <button
+          *ngIf="!carregando"
+          class="btn-create"
+          (click)="abrirModal()"
+        >
+          ＋ Criar Minha Primeira Liga
+        </button>
+      </div>
+    </ng-container>
 
   </main>
 
-  <div class="modal-overlay" *ngIf="mostrarModalCriar">
+
+  <!-- ── Modal: Criar Nova Liga ────────────────────────────── -->
+  <div
+    class="modal-overlay"
+    *ngIf="mostrarModalCriar"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-criar-titulo"
+    (click.self)="fecharModal()"
+  >
     <div class="modal-content">
-      <h2>Criar Nova Liga</h2>
-      
+      <h2 id="modal-criar-titulo">Criar Nova Liga</h2>
+
       <div class="form-group">
-        <label>Nome do Save</label>
-        <input type="text" [(ngModel)]="novaLiga.nome" placeholder="Ex: A Grande Rivalidade">
+        <label for="liga-nome">Nome do Save</label>
+        <input
+          id="liga-nome"
+          type="text"
+          [(ngModel)]="novaLiga.nome"
+          placeholder="Ex: A Grande Rivalidade"
+          autocomplete="off"
+        >
       </div>
 
       <div class="form-group">
-        <label>Era do NBA 2K</label>
-        <select [(ngModel)]="novaLiga.era">
+        <label for="liga-era">Era do NBA 2K</label>
+        <select id="liga-era" [(ngModel)]="novaLiga.era">
           <option value="" disabled selected>Selecione a Era</option>
           <option value="Magic vs Bird">Magic vs Bird Era</option>
           <option value="Jordan">Jordan Era</option>
@@ -61,35 +165,82 @@
       </div>
 
       <div class="form-group">
-        <label>Ano de Início</label>
-        <input type="text" [(ngModel)]="novaLiga.ano" placeholder="Ex: 1983-84 ou 2002-03">
+        <label for="liga-ano">Ano de Início</label>
+        <input
+          id="liga-ano"
+          type="text"
+          [(ngModel)]="novaLiga.ano"
+          placeholder="Ex: 1983-84 ou 2002-03"
+          autocomplete="off"
+        >
       </div>
 
       <div class="modal-actions">
-        <button class="btn-cancel" (click)="fecharModal()" [disabled]="salvandoLiga">Cancelar</button>
-        <button class="btn-confirm" (click)="criarNovaLiga()" [disabled]="salvandoLiga">
-          {{ salvandoLiga ? 'Salvando...' : 'Criar Liga' }}
+        <button
+          class="btn-cancel"
+          (click)="fecharModal()"
+          [disabled]="salvandoLiga"
+          aria-label="Cancelar criação de liga"
+        >
+          Cancelar
+        </button>
+        <button
+          class="btn-confirm"
+          (click)="criarNovaLiga()"
+          [disabled]="salvandoLiga"
+          [attr.aria-busy]="salvandoLiga"
+        >
+          {{ salvandoLiga ? 'Salvando…' : 'Criar Liga' }}
         </button>
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay" *ngIf="mostrarModalEntrar">
+
+  <!-- ── Modal: Entrar na Liga ─────────────────────────────── -->
+  <div
+    class="modal-overlay"
+    *ngIf="mostrarModalEntrar"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-entrar-titulo"
+    (click.self)="fecharModalEntrar()"
+  >
     <div class="modal-content">
-      <h2>Entrar em um Save</h2>
+      <h2 id="modal-entrar-titulo">Entrar em um Save</h2>
+
       <p class="modal-desc">
-        Peça o código para o administrador da liga (ex: LIGA-X7B9K) e digite abaixo para acessar o Tracker.
+        Peça o código para o administrador da liga (ex: <strong>LIGA-X7B9K</strong>) e cole abaixo para acessar o Tracker.
       </p>
-      
+
       <div class="form-group">
-        <label>Código de Convite</label>
-        <input type="text" [(ngModel)]="codigoConvite" placeholder="LIGA-XXXXXX">
+        <label for="codigo-convite">Código de Convite</label>
+        <input
+          id="codigo-convite"
+          type="text"
+          [(ngModel)]="codigoConvite"
+          placeholder="LIGA-XXXXXX"
+          autocomplete="off"
+          style="text-transform: uppercase; letter-spacing: 2px; font-family: monospace; font-size: 1rem;"
+        >
       </div>
 
       <div class="modal-actions">
-        <button class="btn-cancel" (click)="fecharModalEntrar()" [disabled]="entrandoLiga">Cancelar</button>
-        <button class="btn-confirm" (click)="entrarLiga()" [disabled]="entrandoLiga">
-          {{ entrandoLiga ? 'Verificando...' : 'Entrar na Liga' }}
+        <button
+          class="btn-cancel"
+          (click)="fecharModalEntrar()"
+          [disabled]="entrandoLiga"
+          aria-label="Cancelar entrada na liga"
+        >
+          Cancelar
+        </button>
+        <button
+          class="btn-confirm"
+          (click)="entrarLiga()"
+          [disabled]="entrandoLiga"
+          [attr.aria-busy]="entrandoLiga"
+        >
+          {{ entrandoLiga ? 'Verificando…' : 'Entrar na Liga' }}
         </button>
       </div>
     </div>
