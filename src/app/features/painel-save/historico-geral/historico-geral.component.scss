@@ -7,7 +7,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
 
-
 body {
   background-color: #0A0A0B;
   margin: 0;
@@ -15,23 +14,27 @@ body {
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 :host {
-
   font-family: 'DM Sans', sans-serif;
   color: var(--text-primary);
   display: block;
+  width: 100%;
   min-height: 100vh;
   background: var(--court-black);
 }
-
 /* ─── LAYOUT BASE ─────────────────────────────────────────── */
 .tracker-container {
   padding: 2rem 2.5rem;
-  max-width: 1600px;
-  width: 100%;
+  
+  /* 🪄 MÁGICA: Quebra a restrição de qualquer componente pai e força 100% do monitor */
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(-50vw + 50%) !important;
+  margin-right: calc(-50vw + 50%) !important;
+  
   box-sizing: border-box;
-  margin: 0 auto;
   background: var(--court-black);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ─── HEADER ──────────────────────────────────────────────── */
@@ -438,107 +441,128 @@ body {
 }
 .direita { display: flex; gap: 8px; }
 
-/* ─── TABLES ──────────────────────────────────────────────── */
+/* ─── TABLES & ANIMATIONS (100% WIDTH + JUMP EFFECTS) ─────── */
 .tabela-wrapper {
   background: var(--court-card);
   border-radius: var(--radius-lg);
   border: 1px solid var(--court-border);
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 560px;
+  max-height: 70vh; /* Um pouco mais alto para aproveitar a tela */
+  
+  /* Força a tabela a preencher o ecrã inteiro */
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block;
+  padding: 8px;
 
-  /* Custom scrollbar */
-  &::-webkit-scrollbar       { width: 6px; height: 6px; }
+  &::-webkit-scrollbar       { width: 8px; height: 8px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb { background: var(--court-surface); border-radius: 6px; }
   &::-webkit-scrollbar-thumb:hover { background: var(--court-border2); }
 }
 
 .tabela-tracker {
-  width: 100%;
+  /* Garante que as colunas se estiquem proporcionalmente */
+  width: 100% !important;
+  table-layout: auto; 
   border-collapse: separate;
-  border-spacing: 0;
+  border-spacing: 0 8px; /* O espaço para a animação flutuante */
   text-align: left;
+  min-width: 1400px; /* Garante que não esmaga no telemóvel */
 
   th {
-    padding: 0.9rem 1rem;
-    font-size: 0.72rem;
+    padding: 1rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.2px;
     color: var(--text-muted);
     background: var(--court-dark);
-    border-bottom: 1px solid var(--court-border2);
+    border-bottom: 2px solid var(--court-border2);
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 20;
     white-space: nowrap;
   }
 
   td {
     padding: 0.85rem 1rem;
-    border-bottom: 1px solid var(--court-border);
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     vertical-align: middle;
-    transition: background 0.15s;
+    background: rgba(255, 255, 255, 0.02); /* Fundo padrão da linha separada */
+    border-top: 1px solid var(--court-border);
+    border-bottom: 1px solid var(--court-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  tr:last-child td { border-bottom: none; }
+  /* Arredonda os cantos extremos de cada linha */
+  td:first-child { border-left: 1px solid var(--court-border); border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); }
+  td:last-child { border-right: 1px solid var(--court-border); border-top-right-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); }
 
-  tbody tr:hover td {
-    background: var(--court-surface);
-    color: var(--text-primary);
+  /* ANIMAÇÃO 3D NAS LINHAS */
+  tbody tr {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-4px) scale(1.01); /* Salto para cima e escala */
+      box-shadow: 0 15px 30px -10px var(--gold-glow-strong); /* Sombra dourada projetada */
+      z-index: 10; /* Traz a linha pra frente */
+      position: relative;
+      
+      td {
+        background: rgba(30, 41, 59, 0.95); /* Deixa o vidro mais escuro no hover */
+        color: var(--text-primary);
+        border-color: var(--gold-dim); /* Borda inteira fica dourada */
+      }
+    }
   }
 
-  /* Edit button in cell */
   .btn-base {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    transition: background 0.15s;
-    &:hover { background: var(--court-surface); }
+    background: transparent; border: none; cursor: pointer;
+    font-size: 1rem; padding: 4px 8px; border-radius: var(--radius-sm);
+    transition: all 0.2s;
+    &:hover { background: rgba(255,255,255,0.1); transform: scale(1.15); }
   }
 
-  .sem-dados {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-  }
+  .sem-dados { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.9rem; border: none; }
 }
 
 /* ─── GOLDEN ROW (CHAMPION) ───────────────────────────────── */
 .linha-dourada {
   td {
     background: rgba(245, 200, 66, 0.04) !important;
-    border-bottom-color: rgba(245, 200, 66, 0.15) !important;
+    border-color: rgba(245, 200, 66, 0.15) !important;
   }
   td strong {
     color: var(--gold);
     text-shadow: 0 0 10px var(--gold-glow);
   }
-  &:hover td { background: rgba(245, 200, 66, 0.08) !important; }
+  &:hover td { background: rgba(245, 200, 66, 0.08) !important; border-color: var(--gold) !important; }
 }
 
 /* ─── SILVER ROW (RUNNER-UP) ──────────────────────────────── */
 .linha-cinza {
   td {
     background: rgba(148,163,184,0.04) !important;
-    border-bottom-color: rgba(148,163,184,0.15) !important;
+    border-color: rgba(148,163,184,0.15) !important;
   }
   td strong { color: #94a3b8; }
+  &:hover td { background: rgba(148, 163, 184, 0.08) !important; border-color: #94a3b8 !important; }
 }
 
-/* ─── PLAYER CELL ─────────────────────────────────────────── */
+/* ─── PLAYER CELL (MINI CARTÃO DE JOGADOR) ────────────────── */
 .player-cell {
   display: flex;
   align-items: center;
   gap: 8px;
   white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   .micro-foto {
     width: 28px; height: 28px;
@@ -547,19 +571,30 @@ body {
     background: var(--court-surface);
     border: 1px solid var(--court-border2);
     flex-shrink: 0;
-    transition: transform 0.2s var(--ease-spring);
-
-    &:hover { transform: scale(1.3); z-index: 5; }
+    transition: all 0.2s var(--ease-spring);
   }
 
-  span { font-weight: 500; color: var(--text-primary); font-size: 0.875rem; }
+  span { font-weight: 500; color: var(--text-primary); font-size: 0.875rem; transition: transform 0.2s; }
+
+  /* HOVER NO CARTÃO DO JOGADOR */
+  &:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--gold-dim);
+    box-shadow: 0 5px 15px -5px var(--gold-glow);
+
+    .micro-foto {
+      transform: scale(1.15);
+      border-color: var(--gold);
+      box-shadow: 0 0 12px var(--gold-glow-strong);
+    }
+  }
 }
 
 .player-badge {
   display: inline-block;
   font-weight: 600;
   transition: transform 0.15s;
-  &:hover { transform: scale(1.04); }
 }
 
 .status-chip {
@@ -1515,13 +1550,6 @@ body {
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 1; }
-}
-
-.sem-dados {
-  text-align: center;
-  padding: 3rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
 }
 
 /* ─── RESPONSIVE ──────────────────────────────────────────── */
