@@ -1,8 +1,6 @@
 Markdown
 # 🏀 NBA League Tracker & History Dashboard
 
-![Apresentação do Projeto](https://via.placeholder.com/1200x400/070B14/FDB927?text=NBA+League+Tracker+-+Next-Gen+UI)
-
 Um painel de gerenciamento e histórico de ligas esportivas com um design premium inspirado na interface Next-Gen do NBA 2K. Construído com foco extremo em usabilidade (UX) e uma estética moderna combinando *Dark Mode OLED*, *Bento Grid* e *Glassmorphism*.
 
 ## 🚀 Visualização Rápida (Live Demo)
