@@ -60,4 +60,4 @@ Contribuições, problemas e pedidos de funcionalidades são bem-vindos! Sinta-s
 Este projeto está sob a licença MIT. Feito com dedicação para a comunidade apaixonada por basquete e desenvolvimento.
 
 
-**Dica:** Substitua os links `SEU-USUARIO/nome-do-repositorio` pela sua URL real do GitHub e, se possível, troque a imagem do `plac
+**Dica:** Substitua os links `SEU-USUARIO/nome-do-repositorio` pela sua URL real do GitHub e, se possível, troque a imagem do `placeholder` no topo por um *print* real da sua tela maravilhosa!
