@@ -1,100 +1,87 @@
 <div class="dashboard-container">
 
   <!-- ── Top Bar ──────────────────────────────────────────── -->
-  <header class="topbar" role="banner">
+  <header class="topbar-glass" role="banner">
     <div class="topbar-brand">
-      <div class="topbar-icon" aria-hidden="true">🏀</div>
-      <h1>MyCareer NBA Simulator</h1>
+      <div class="brand-logo-neon">2K</div>
+      <h1>MYCAREER <span>SIMULATOR</span></h1>
     </div>
 
-    <div class="user-menu">
-      <span>
-        Bem-vindo, <strong>{{ nickname }}</strong>
-      </span>
-      <button
-        class="btn-sair"
-        (click)="sair()"
-        aria-label="Sair da conta"
-      >
-        Sair
+    <div class="user-menu-bento">
+      <div class="user-info">
+        <span class="user-avatar">👤</span>
+        <span class="user-name">{{ nickname }}</span>
+      </div>
+      <button class="btn-logout" (click)="sair()" aria-label="Sair da conta">
+        <span class="material-icons">Sair</span>
       </button>
     </div>
   </header>
 
   <!-- ── Main Content ─────────────────────────────────────── -->
-  <main class="content" role="main">
+  <main class="content-bento" role="main">
 
-    <!-- Actions Header -->
-    <div class="actions-header">
-      <h2>
-        <span>Seus Saves</span>
-        Minhas Ligas
-      </h2>
+    <!-- Actions Header Bento -->
+    <div class="bento-header">
+      <div class="bento-title-card">
+        <h2>Seus Saves</h2>
+        <p>Selecione a sua era e continue o seu legado.</p>
+      </div>
 
-      <div class="buttons">
-        <button
-          class="btn-create"
-          (click)="abrirModal()"
-          aria-label="Criar nova liga"
-        >
-          ＋ Criar Nova Liga
+      <div class="bento-actions">
+        <button class="bento-btn-primary" (click)="abrirModal()" aria-label="Criar nova liga">
+          <div class="bento-icon">➕</div>
+          <div class="bento-text">
+            <strong>Criar Nova Liga</strong>
+            <span>Iniciar nova jornada</span>
+          </div>
         </button>
-        <button
-          class="btn-join"
-          (click)="abrirModalEntrar()"
-          aria-label="Entrar em liga com código"
-        >
-          🤝 Entrar com Código
+        <button class="bento-btn-secondary" (click)="abrirModalEntrar()" aria-label="Entrar em liga com código">
+          <div class="bento-icon">🤝</div>
+          <div class="bento-text">
+            <strong>Usar Código</strong>
+            <span>Juntar a um amigo</span>
+          </div>
         </button>
       </div>
     </div>
 
-    <!-- Ligas Grid -->
+    <!-- Ligas Grid (Cover Flow) -->
     <ng-container *ngIf="!carregando && ligas.length > 0">
-      <div class="ligas-grid" role="list" aria-label="Lista de ligas">
+      <div class="ligas-cover-grid" role="list" aria-label="Lista de ligas">
 
         <article
-          class="liga-card"
+          class="liga-cover-card"
           role="listitem"
           *ngFor="let liga of ligas"
           (click)="acessarLiga(liga.id)"
           (keydown.enter)="acessarLiga(liga.id)"
           tabindex="0"
+          [attr.data-era]="liga.era_2k"
           [attr.aria-label]="'Acessar liga ' + liga.nome"
         >
-          <!-- Card Header -->
-          <div class="card-header">
-            <h3>{{ liga.nome }}</h3>
-            <span class="badge" [attr.aria-label]="'Era: ' + liga.era_2k">
-              {{ liga.era_2k }}
-            </span>
-          </div>
+          <!-- Dynamic Cover Background -->
+          <div class="cover-bg"></div>
+          <div class="cover-gradient"></div>
 
-          <!-- Card Body -->
-          <div class="card-body">
-            <div class="card-stat">
-              <span class="stat-label">Início</span>
-              <span class="stat-value">{{ liga.ano_inicio }}</span>
+          <!-- Card Content -->
+          <div class="cover-content">
+            <span class="era-badge">{{ liga.era_2k }}</span>
+            <h3 class="liga-title">{{ liga.nome }}</h3>
+            
+            <div class="liga-details">
+              <div class="detail-item">
+                <span class="detail-label">INÍCIO</span>
+                <span class="detail-value">{{ liga.ano_inicio }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">CÓDIGO</span>
+                <span class="detail-value highlight">{{ liga.codigo_convite }}</span>
+              </div>
             </div>
-            <div class="card-stat">
-              <span class="stat-label">Código</span>
-              <span
-                class="codigo-badge"
-                [attr.aria-label]="'Código de convite: ' + liga.codigo_convite"
-              >
-                {{ liga.codigo_convite }}
-              </span>
-            </div>
-          </div>
 
-          <!-- Card Footer -->
-          <div class="card-footer">
-            <button
-              class="btn-entrar-save"
-              (click)="acessarLiga(liga.id); $event.stopPropagation()"
-              [attr.aria-label]="'Abrir tracker da liga ' + liga.nome"
-            >
-              Acessar Tracker ➔
+            <button class="btn-load-save" (click)="acessarLiga(liga.id); $event.stopPropagation()">
+              CARREGAR SAVE
             </button>
           </div>
         </article>
@@ -104,24 +91,13 @@
 
     <!-- Empty / Loading State -->
     <ng-container *ngIf="carregando || ligas.length === 0">
-      <div class="empty-state" role="status" aria-live="polite">
-        <img
-          src="https://i.imgur.com/7ZrKkRQ.jpg"
-          alt="Logo de basquete"
-          loading="lazy"
-        >
-        <h2>
-          {{ carregando ? 'Carregando…' : 'Nenhuma Liga Encontrada' }}
-        </h2>
-        <p>
-          {{ carregando ? 'Buscando seus saves…' : 'Crie a sua primeira liga agora!' }}
-        </p>
-        <button
-          *ngIf="!carregando"
-          class="btn-create"
-          (click)="abrirModal()"
-        >
-          ＋ Criar Minha Primeira Liga
+      <div class="empty-state-cinematic" role="status" aria-live="polite">
+        <div class="empty-icon">{{ carregando ? '⏳' : '🏀' }}</div>
+        <h2>{{ carregando ? 'A Sincronizar Saves...' : 'Nenhum Save Encontrado' }}</h2>
+        <p>{{ carregando ? 'A ligar aos servidores da 2K...' : 'A tua jornada começa com o primeiro passo. Cria a tua primeira liga!' }}</p>
+        <button *ngIf="!carregando" class="btn-gold-epic" (click)="abrirModal()">
+          <span class="btn-text">CRIAR MINHA PRIMEIRA LIGA</span>
+          <span class="btn-glow"></span>
         </button>
       </div>
     </ng-container>
@@ -138,60 +114,64 @@
     aria-labelledby="modal-criar-titulo"
     (click.self)="fecharModal()"
   >
-    <div class="modal-content">
-      <h2 id="modal-criar-titulo">Criar Nova Liga</h2>
-
-      <div class="form-group">
-        <label for="liga-nome">Nome do Save</label>
-        <input
-          id="liga-nome"
-          type="text"
-          [(ngModel)]="novaLiga.nome"
-          placeholder="Ex: A Grande Rivalidade"
-          autocomplete="off"
-        >
+    <div class="modal-content-glass modal-epic">
+      <div class="modal-banner" [attr.data-era]="novaLiga.era">
+        <div class="banner-overlay"></div>
+        <h2 id="modal-criar-titulo">NOVO LEGADO</h2>
       </div>
 
-      <div class="form-group">
-        <label for="liga-era">Era do NBA 2K</label>
-        <select id="liga-era" [(ngModel)]="novaLiga.era">
-          <option value="" disabled selected>Selecione a Era</option>
-          <option value="Magic vs Bird">Magic vs Bird Era</option>
-          <option value="Jordan">Jordan Era</option>
-          <option value="Kobe">Kobe Era</option>
-          <option value="LeBron">LeBron Era</option>
-          <option value="Modern">Modern Era</option>
-        </select>
-      </div>
+      <div class="modal-body">
+        <div class="form-group-premium">
+          <label for="liga-nome">Nome do Save</label>
+          <div class="input-glass-wrapper">
+            <span class="icon">🏆</span>
+            <input
+              id="liga-nome"
+              type="text"
+              [(ngModel)]="novaLiga.nome"
+              placeholder="Ex: A Grande Rivalidade"
+              autocomplete="off"
+            >
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="liga-ano">Ano de Início</label>
-        <input
-          id="liga-ano"
-          type="text"
-          [(ngModel)]="novaLiga.ano"
-          placeholder="Ex: 1983-84 ou 2002-03"
-          autocomplete="off"
-        >
-      </div>
+        <div class="form-group-premium">
+          <label for="liga-era">Era do NBA 2K</label>
+          <div class="input-glass-wrapper">
+            <span class="icon">⏳</span>
+            <select id="liga-era" [ngModel]="novaLiga.era" (ngModelChange)="onEraChange($event)">
+              <option value="" disabled selected>Selecione a Era</option>
+              <option value="Magic vs Bird">Era Magic vs. Bird</option>
+              <option value="Jordan">Era Jordan</option>
+              <option value="Kobe">Era Kobe</option>
+              <option value="LeBron">Era LeBron</option>
+              <option value="Curry">Era Curry</option>
+              <option value="Modern">Era Moderna</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="modal-actions">
-        <button
-          class="btn-cancel"
-          (click)="fecharModal()"
-          [disabled]="salvandoLiga"
-          aria-label="Cancelar criação de liga"
-        >
-          Cancelar
-        </button>
-        <button
-          class="btn-confirm"
-          (click)="criarNovaLiga()"
-          [disabled]="salvandoLiga"
-          [attr.aria-busy]="salvandoLiga"
-        >
-          {{ salvandoLiga ? 'Salvando…' : 'Criar Liga' }}
-        </button>
+        <div class="form-group-premium">
+          <label for="liga-ano">Ano de Início</label>
+          <div class="input-glass-wrapper">
+            <span class="icon">📅</span>
+            <input
+              id="liga-ano"
+              type="text"
+              [(ngModel)]="novaLiga.ano"
+              placeholder="Ex: 1983-84"
+              autocomplete="off"
+            >
+          </div>
+        </div>
+
+        <div class="modal-actions-bento">
+          <button class="btn-cancel-glass" (click)="fecharModal()" [disabled]="salvandoLiga">CANCELAR</button>
+          <button class="btn-confirm-epic" (click)="criarNovaLiga()" [disabled]="salvandoLiga">
+            <span class="btn-text">{{ salvandoLiga ? 'A CRIAR SAVE...' : 'INICIAR JORNADA' }}</span>
+            <span class="btn-glow"></span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -206,42 +186,37 @@
     aria-labelledby="modal-entrar-titulo"
     (click.self)="fecharModalEntrar()"
   >
-    <div class="modal-content">
-      <h2 id="modal-entrar-titulo">Entrar em um Save</h2>
-
-      <p class="modal-desc">
-        Peça o código para o administrador da liga (ex: <strong>LIGA-X7B9K</strong>) e cole abaixo para acessar o Tracker.
-      </p>
-
-      <div class="form-group">
-        <label for="codigo-convite">Código de Convite</label>
-        <input
-          id="codigo-convite"
-          type="text"
-          [(ngModel)]="codigoConvite"
-          placeholder="LIGA-XXXXXX"
-          autocomplete="off"
-          style="text-transform: uppercase; letter-spacing: 2px; font-family: monospace; font-size: 1rem;"
-        >
+    <div class="modal-content-glass modal-epic">
+      <div class="modal-banner" data-era="invite">
+        <div class="banner-overlay"></div>
+        <h2 id="modal-entrar-titulo">ENTRAR NUM SAVE</h2>
       </div>
 
-      <div class="modal-actions">
-        <button
-          class="btn-cancel"
-          (click)="fecharModalEntrar()"
-          [disabled]="entrandoLiga"
-          aria-label="Cancelar entrada na liga"
-        >
-          Cancelar
-        </button>
-        <button
-          class="btn-confirm"
-          (click)="entrarLiga()"
-          [disabled]="entrandoLiga"
-          [attr.aria-busy]="entrandoLiga"
-        >
-          {{ entrandoLiga ? 'Verificando…' : 'Entrar na Liga' }}
-        </button>
+      <div class="modal-body">
+        <p class="modal-desc">Insere o código secreto do comissário da liga para te juntares ao save.</p>
+
+        <div class="form-group-premium">
+          <label for="codigo-convite">Código de Convite</label>
+          <div class="input-glass-wrapper">
+            <span class="icon">🔑</span>
+            <input
+              id="codigo-convite"
+              type="text"
+              [(ngModel)]="codigoConvite"
+              placeholder="LIGA-XXXXXX"
+              autocomplete="off"
+              style="text-transform: uppercase; font-family: monospace; letter-spacing: 3px;"
+            >
+          </div>
+        </div>
+
+        <div class="modal-actions-bento">
+          <button class="btn-cancel-glass" (click)="fecharModalEntrar()" [disabled]="entrandoLiga">CANCELAR</button>
+          <button class="btn-confirm-epic" (click)="entrarLiga()" [disabled]="entrandoLiga">
+            <span class="btn-text">{{ entrandoLiga ? 'A VERIFICAR...' : 'ACESSAR SAVE' }}</span>
+            <span class="btn-glow"></span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

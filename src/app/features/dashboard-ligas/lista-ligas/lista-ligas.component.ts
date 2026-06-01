@@ -49,6 +49,21 @@ export class ListaLigasComponent implements OnInit {
     }
   }
 
+  onEraChange(era: string) {
+    this.novaLiga.era = era;
+    switch (era) {
+      case 'Magic vs Bird': this.novaLiga.ano = '1983-84'; break;
+      case 'Jordan': this.novaLiga.ano = '1991-92'; break;
+      case 'Kobe': this.novaLiga.ano = '2002-03'; break;
+      case 'LeBron': this.novaLiga.ano = '2010-11'; break;
+      case 'Curry': this.novaLiga.ano = '2016-17'; break;
+      case 'Modern': 
+        const anoAtual = new Date().getFullYear();
+        this.novaLiga.ano = `${anoAtual}-${(anoAtual + 1).toString().slice(2)}`;
+        break;
+    }
+  }
+
   abrirModal() {
     this.mostrarModalCriar = true;
   }
