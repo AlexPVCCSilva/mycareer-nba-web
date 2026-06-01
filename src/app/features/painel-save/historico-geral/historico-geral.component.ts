@@ -498,6 +498,18 @@ salvandoEdicaoFranquia = false;
     await this.carregarFotosJogadoresCustom();
   }
 
+
+  isMinhaFranquiaCampeao(campeaoNba: string | null): boolean {
+    if (!campeaoNba || !this.franquias) return false;
+    const nomeLimpo = campeaoNba.trim().toLowerCase();
+    return this.franquias.some(f => f.nome.toLowerCase().includes(nomeLimpo) || nomeLimpo.includes(f.nome.toLowerCase()));
+  }
+
+  getCorAtualFranquia(): string {
+    const franquia = this.franquias.find(f => f.id === this.abaAtiva);
+    return franquia?.cor_hex || '#FDB927';
+  }
+
   async carregarHistorico() {
     this.carregando = true;
     try {
@@ -1123,6 +1135,45 @@ salvandoEdicaoFranquia = false;
     return brilho > 150 ? '#000000' : '#ffffff';
   }
 
+  getOvrClass(ovr: number | null | undefined): string {
+    const ovrValido = this.sanitizarOvr(ovr);
+    if (!ovrValido) return '';
+    if (ovrValido >= 90) return 'tier-legend';
+    if (ovrValido >= 85) return 'tier-emerald';
+    if (ovrValido >= 80) return 'tier-gold';
+    if (ovrValido >= 70) return 'tier-silver';
+    return 'tier-bronze';
+  }
+
+  getEstiloCardLegendario(ovr: number | null | undefined): Record<string, string> {
+    const ovrValido = this.sanitizarOvr(ovr);
+    if (!ovrValido || ovrValido < 90) return {};
+    const franquiaAtual = this.franquias.find(f => f.id === this.abaAtiva);
+    if (!franquiaAtual) return {};
+
+    return {
+      '--glow-color': franquiaAtual.cor_hex
+    };
+  }
+
+  getEstiloOvrBadge(ovr: number | null | undefined): Record<string, string> {
+    const ovrValido = this.sanitizarOvr(ovr);
+    if (!ovrValido || ovrValido < 90) return {};
+    const franquiaAtual = this.franquias.find(f => f.id === this.abaAtiva);
+    if (!franquiaAtual) return {};
+
+    const cor = franquiaAtual.cor_hex;
+    const corContraste = this.getTextColorForBackground(cor);
+    
+    return {
+      'background': `linear-gradient(135deg, ${cor}, rgba(0,0,0,0.6))`,
+      'color': corContraste,
+      'border': `1px solid ${cor}`,
+      'box-shadow': `0 0 12px ${cor}80`,
+      'text-shadow': `0 0 8px ${corContraste}80`
+    };
+  }
+
   getEstiloJogador(ovr: number | null | undefined): Record<string, string> {
     const ovrValido = this.sanitizarOvr(ovr);
     if (!ovrValido || ovrValido < 90) return {};
@@ -1155,12 +1206,12 @@ salvandoEdicaoFranquia = false;
   
   getArrayTitulos(): any[] {
     if (!this.campanhasTime) return [];
-    return new Array(this.campanhasTime.filter(camp => this.isCampanhaCampeao(camp.resultado_playoffs)).length);
+    return this.campanhasTime.filter(camp => this.isCampanhaCampeao(camp.resultado_playoffs));
   }
 
   getArrayVices(): any[] {
     if (!this.campanhasTime) return [];
-    return new Array(this.campanhasTime.filter(camp => this.isCampanhaVice(camp.resultado_playoffs)).length);
+    return this.campanhasTime.filter(camp => this.isCampanhaVice(camp.resultado_playoffs));
   }
 
   async carregarLembrancas() {
@@ -1190,6 +1241,110 @@ salvandoEdicaoFranquia = false;
 
   removerImagemSelecionada() {
     this.novaLembranca.imagem_url = '';
+  }
+
+  montarDadosIA(temp: any, index: number) {
+    const campeao = temp.campeao_nba || 'Time Desconhecido';
+    const mvp = temp.mvp || 'Jogador Desconhecido';
+    
+    // Check for dynasty (won previous year too)
+    const prevTemp = this.temporadas[index + 1]; // because ordered DESC
+    const isDinastia = prevTemp && prevTemp.campeao_nba === campeao;
+    const isThreePeat = isDinastia && this.temporadas[index + 2] && this.temporadas[index + 2].campeao_nba === campeao;
+    
+    let titulo = '';
+    let descricao = '';
+    let prompt = `Award-winning sports photography, NBA finals celebration, basketball player from ${campeao} lifting trophy, highly detailed faces, photorealistic, 8k resolution, shot on 85mm lens, dramatic lighting, masterpiece`;
+
+    if (isThreePeat) {
+      titulo = `🏆 THREE-PEAT! A DINASTIA DO ${campeao.toUpperCase()}!`;
+      descricao = `Histórico! O ${campeao} vence o terceiro título consecutivo na temporada ${temp.temporada}. ${mvp} cimenta o seu legado como MVP das finais numa corrida implacável ao Olimpo do basquetebol!`;
+      prompt += `, three-peat dynasty, holding 3 trophies, highly detailed, dramatic stadium lighting, hyperrealistic`;
+    } else if (isDinastia) {
+      titulo = `BACK-TO-BACK! O ${campeao.toUpperCase()} REPETE O FEITO!`;
+      descricao = `Não foi sorte! O ${campeao} conquista o bicampeonato em ${temp.temporada}. Comandados por ${mvp}, a equipa mostrou que é a força dominante na liga nesta era.`;
+      prompt += `, back to back champions, holding 2 trophies, highly detailed, dramatic stadium lighting, hyperrealistic`;
+    } else {
+      // Look for rivalry
+      const prevPrevTemp = this.temporadas[index + 2];
+      const isRevenge = prevTemp && prevTemp.campeao_nba !== campeao && prevPrevTemp && prevPrevTemp.campeao_nba === campeao;
+      
+      if (isRevenge) {
+        titulo = `A VINGANÇA! ${campeao.toUpperCase()} RECUPERA O TRONO!`;
+        descricao = `O título volta para casa! Após tropeçar no ano passado, o ${campeao} vence em ${temp.temporada} e prova que a sua janela de título ainda está aberta. ${mvp} foi o MVP indiscutível.`;
+        prompt += `, intense emotional celebration, redemption, highly detailed, dramatic stadium lighting, photorealistic`;
+      } else {
+        titulo = `${campeao.toUpperCase()} É O GRANDE CAMPEÃO DE ${temp.temporada}!`;
+        descricao = `Uma campanha mágica culminou no troféu Larry O'Brien para o ${campeao}. A estrela ${mvp} brilhou nos momentos decisivos e levou o prémio de MVP para casa, marcando esta geração.`;
+        prompt += `, highly detailed, dramatic stadium lighting, photorealistic, confetti falling`;
+      }
+    }
+    
+    return { titulo, descricao, prompt };
+  }
+
+  sugerirNoticiaIA(temporadaId: string) {
+    if (!temporadaId) {
+      alert('Selecione uma temporada para gerar a notícia.');
+      return;
+    }
+    const tempIndex = this.temporadas.findIndex(t => t.id === temporadaId);
+    if (tempIndex === -1) return;
+    
+    const temp = this.temporadas[tempIndex];
+    const { titulo, descricao, prompt } = this.montarDadosIA(temp, tempIndex);
+    
+    this.novaLembranca.data_evento = `Finais de ${temp.temporada}`;
+    this.novaLembranca.titulo = titulo;
+    this.novaLembranca.descricao = descricao;
+    this.novaLembranca.imagem_url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=400&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000)}`;
+  }
+
+  async gerarLinhaDoTempoGlobal() {
+    if (!this.temporadas || this.temporadas.length === 0) {
+      alert('Não há temporadas cadastradas na História Geral.');
+      return;
+    }
+    const confirmacao = confirm('Deseja auto-gerar memórias para TODOS os anos sem registro? (Imagens e notícias feitas por IA). Isto pode levar alguns segundos.');
+    if (!confirmacao) return;
+
+    this.salvandoLembranca = true;
+
+    try {
+      // Find seasons that don't have a matching memory
+      const temporadasSemLembranca = this.temporadas.filter(t => 
+        !this.lembrancas.some(l => l.data_evento?.includes(t.temporada))
+      );
+
+      if (temporadasSemLembranca.length === 0) {
+        alert('Todas as temporadas já possuem uma memória gerada na Linha do Tempo!');
+        this.salvandoLembranca = false;
+        return;
+      }
+
+      for (let i = 0; i < temporadasSemLembranca.length; i++) {
+        const temp = temporadasSemLembranca[i];
+        // Encontrar o index real na lista principal
+        const realIndex = this.temporadas.findIndex(t => t.id === temp.id);
+        const { titulo, descricao, prompt } = this.montarDadosIA(temp, realIndex);
+        
+        await this.supabaseService.salvarLembranca({
+          liga_id: this.ligaId,
+          data_evento: `Finais de ${temp.temporada}`,
+          titulo,
+          descricao,
+          imagem_url: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=400&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000)}`
+        });
+      }
+      
+      await this.carregarLembrancas();
+      alert(`Foram geradas ${temporadasSemLembranca.length} novas memórias de forma automática!`);
+    } catch (err) {
+      console.error(err);
+      alert('Ocorreu um erro ao gerar a linha do tempo.');
+    } finally {
+      this.salvandoLembranca = false;
+    }
   }
 
   async adicionarLembranca() {
@@ -1337,6 +1492,45 @@ salvandoEdicaoFranquia = false;
     this.novaFranquia.logo_url = null;
   }
 
+  
+  calcularProximoAnoTemporada(ultimaTemporada: string | undefined): string {
+    if (!ultimaTemporada) return '';
+    const matchIfen = ultimaTemporada.match(/^(\d{4})-(\d{2})$/);
+    if (matchIfen) {
+      const anoInicio = parseInt(matchIfen[1], 10);
+      const anoFim = parseInt(matchIfen[2], 10);
+      return `${anoInicio + 1}-${String(anoFim + 1).padStart(2, '0')}`;
+    }
+    const matchSimples = ultimaTemporada.match(/^(\d{4})$/);
+    if (matchSimples) {
+      const ano = parseInt(matchSimples[1], 10);
+      return `${ano + 1}`;
+    }
+    const matchBarra = ultimaTemporada.match(/^(\d{2})\/(\d{2})$/);
+    if (matchBarra) {
+      const anoInicio = parseInt(matchBarra[1], 10);
+      const anoFim = parseInt(matchBarra[2], 10);
+      return `${String(anoInicio + 1).padStart(2, '0')}/${String(anoFim + 1).padStart(2, '0')}`;
+    }
+    return '';
+  }
+
+  abrirFormularioTemporadaGeral(): void {
+    if (this.mostrarFormulario && !this.editandoIdGeral) {
+      this.mostrarFormulario = false;
+      return;
+    }
+    this.editandoIdGeral = null;
+    this.novaTemporada = this.getTemporadaInicial();
+    
+    if (this.temporadas && this.temporadas.length > 0) {
+      const ultima = this.temporadas[0];
+      this.novaTemporada.temporada = this.calcularProximoAnoTemporada(ultima.temporada);
+    }
+    
+    this.mostrarFormulario = true;
+  }
+
   abrirFormularioNovaCampanhaTime(): void {
   // Toggle: se já está aberto em modo "novo", fecha
   if (this.mostrarFormularioTime && !this.editandoIdTime) {
@@ -1350,7 +1544,7 @@ salvandoEdicaoFranquia = false;
 
     this.novaCampanha = {
       // ── Resultados zerados (o usuário vai preencher) ──
-      temporada:          '',
+      temporada:          this.calcularProximoAnoTemporada(ultima.temporada),
       recorde_wl:         '',
       rank_conferencia:   null,
       resultado_playoffs: '',

@@ -22,8 +22,8 @@
         📥 Importar .csv
       </button>
 
-      <button class="btn-add-temp" (click)="mostrarFormulario = !mostrarFormulario">
-        {{ mostrarFormulario ? '✕ Fechar' : '＋ Nova Temporada' }}
+      <button class="btn-add-temp" (click)="abrirFormularioTemporadaGeral()">
+        {{ mostrarFormulario && !editandoIdGeral ? '✕ Fechar' : '＋ Nova Temporada' }}
       </button>
       <button class="btn-voltar" (click)="toggleTema()" [attr.aria-label]="temaEscuro ? 'Ativar modo claro' : 'Ativar modo escuro'">
         {{ temaEscuro ? '☀️' : '🌙' }}
@@ -202,11 +202,13 @@
           <tr
             *ngFor="let temp of temporadas; trackBy: trackById"
             [class.linha-dourada]="isMeuTimeCampeao(temp.campeao_nba)"
+            [ngStyle]="isMeuTimeCampeao(temp.campeao_nba) ? {'--glow-color': getCorTimaNBA(temp.campeao_nba) || '#FDB927'} : {}"
           >
             <td><strong>{{ temp.temporada }}</strong></td>
             <td>{{ temp.campeao_oeste    || '—' }}</td>
             <td>{{ temp.campeao_leste    || '—' }}</td>
             <td
+                [ngClass]="{'campeao-jogador-cell': isMeuTimeCampeao(temp.campeao_nba)}"
                 [ngStyle]="{
                   'background-color': getCorTimaNBA(temp.campeao_nba) || 'transparent',
                   'color': getCorTimaNBA(temp.campeao_nba) ? '#ffffff' : 'var(--text-secondary)',
@@ -216,7 +218,9 @@
                   'padding': getCorTimaNBA(temp.campeao_nba) ? '6px 10px' : '0.85rem 1rem'
                 }"
               >
-                {{ temp.campeao_nba || '—' }}
+                <div [ngClass]="{'champion-content': isMeuTimeCampeao(temp.campeao_nba)}">
+                  👑 {{ temp.campeao_nba || '—' }}
+                </div>
               </td>
             <td>{{ temp.resultado_finais     || '—' }}</td>
             <td>
@@ -307,20 +311,22 @@
             role="list"
             aria-label="Conquistas"
           >
-            <img
-              *ngFor="let t of getArrayTitulos()"
-              role="listitem"
-              src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f3c6.png"
-              class="trophy-png"
-              alt="Título de campeão"
-            >
-            <img
-              *ngFor="let v of getArrayVices()"
-              role="listitem"
-              src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f948.png"
-              class="medal-png"
-              alt="Vice-campeonato"
-            >
+            <span class="premium-tooltip-wrapper" *ngFor="let t of getArrayTitulos()" [attr.data-year]="t.temporada" [title]="'Campeão em: ' + t.temporada">
+              <img
+                role="listitem"
+                src="assets/trofeu.png"
+                class="nba-trophy-logo"
+                alt="Larry O'Brien Trophy"
+              >
+            </span>
+            <span class="premium-tooltip-wrapper" *ngFor="let v of getArrayVices()" [attr.data-year]="v.temporada" [title]="'Vice-campeão em: ' + v.temporada">
+              <img
+                role="listitem"
+                src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f948.png"
+                class="nba-trophy-logo medal-silver"
+                alt="Vice-campeonato"
+              >
+            </span>
           </div>
         </div>
         <p>Controle de Rotação · Campanhas · Lendas</p>
@@ -525,16 +531,16 @@
           </tr>
         </thead>
         <ng-template #celulaJogador let-nome="nome" let-ovr="ovr" let-status="status">
-          <div class="player-cell" *ngIf="nome; else celulaJogadorVazia">
+          <div class="player-cell" *ngIf="nome; else celulaJogadorVazia" [ngClass]="getOvrClass(ovr)" [ngStyle]="getEstiloCardLegendario(ovr)">
             <img
               [src]="getFotoJogador(nome)"
               [ngClass]="['micro-foto', getStatusBadgeClass(status)]"
               loading="lazy"
               [alt]="'Foto de ' + nome"
             >
-            <span class="player-badge" [ngStyle]="getEstiloJogador(ovr)">
-              <span class="ovr-inline" *ngIf="ovr">{{ ovr }}</span>
-              {{ limparNomeJogador(nome) }}
+            <span class="player-badge">
+              <span class="ovr-inline" *ngIf="ovr" [ngClass]="getOvrClass(ovr)" [ngStyle]="getEstiloOvrBadge(ovr)">{{ ovr }}</span>
+              <span class="name-text">{{ limparNomeJogador(nome) }}</span>
             </span>
             <span
               *ngIf="status !== 'nenhum'"
@@ -551,10 +557,15 @@
               'linha-dourada': isCampanhaCampeao(camp.resultado_playoffs),
               'linha-cinza':   isCampanhaVice(camp.resultado_playoffs)
             }"
+            [ngStyle]="isCampanhaCampeao(camp.resultado_playoffs) ? {'--glow-color': getCorAtualFranquia()} : {}"
           >
             <td><strong>{{ camp.temporada }}</strong></td>
             <td>{{ camp.recorde_wl || '—' }} ({{ camp.rank_conferencia ? camp.rank_conferencia + 'º' : '—' }})</td>
-            <td>{{ camp.resultado_playoffs || '—' }}</td>
+            <td [ngClass]="{'campeao-jogador-cell': isCampanhaCampeao(camp.resultado_playoffs)}">
+              <div [ngClass]="{'champion-content': isCampanhaCampeao(camp.resultado_playoffs)}">
+                 {{ camp.resultado_playoffs || '—' }}
+              </div>
+            </td>
 
             <td><ng-container *ngTemplateOutlet="celulaJogador; context: { nome: camp.pg, ovr: camp.pg_ovr, status: camp.pg_status }"></ng-container></td>
             <td><ng-container *ngTemplateOutlet="celulaJogador; context: { nome: camp.sg, ovr: camp.sg_ovr, status: camp.sg_status }"></ng-container></td>
@@ -670,14 +681,30 @@
       <h3 style="margin:0; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--text-primary);">
         📸 Momentos Históricos
       </h3>
-      <button class="btn-add-temp" (click)="mostrarFormularioLembranca = !mostrarFormularioLembranca">
-        {{ mostrarFormularioLembranca ? '✕ Fechar' : '🗞️ Publicar Manchete' }}
-      </button>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-global-ai" (click)="gerarLinhaDoTempoGlobal()" [disabled]="salvandoLembranca">
+          {{ salvandoLembranca ? 'Gerando Tudo...' : '⚡ Auto-Gerar Tudo (IA)' }}
+        </button>
+        <button class="btn-add-temp" (click)="mostrarFormularioLembranca = !mostrarFormularioLembranca">
+          {{ mostrarFormularioLembranca ? '✕ Fechar' : '🗞️ Publicar Manchete' }}
+        </button>
+      </div>
     </header>
 
     <!-- Form: memory -->
     <article class="form-temporada" *ngIf="mostrarFormularioLembranca" aria-label="Formulário de Memória">
-      <h3>Novo Momento Histórico</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
+        <h3 style="margin:0;">Novo Momento Histórico</h3>
+        <div class="ai-assistant">
+          <select #selectIA class="ai-select">
+            <option value="">-- Escolha um Ano --</option>
+            <option *ngFor="let t of temporadas" [value]="t.id">{{ t.temporada }} ({{ t.campeao_nba }})</option>
+          </select>
+          <button class="btn-magic-ai" (click)="sugerirNoticiaIA(selectIA.value)">
+            ✨ Auto-Preencher IA
+          </button>
+        </div>
+      </div>
 
       <div class="form-grid">
         <div class="input-group">

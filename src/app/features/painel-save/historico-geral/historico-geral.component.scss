@@ -449,10 +449,7 @@ body {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 70vh; /* Um pouco mais alto para aproveitar a tela */
-  
-  /* Força a tabela a preencher o ecrã inteiro */
-  width: 100% !important;
-  max-width: 100% !important;
+
   display: block;
   padding: 8px;
 
@@ -531,15 +528,22 @@ body {
 
 /* ─── GOLDEN ROW (CHAMPION) ───────────────────────────────── */
 .linha-dourada {
+  background: rgba(255,255,255,0.02) !important;
+  border-left: 3px solid var(--glow-color, #FDB927);
+  box-shadow: inset 0 0 15px rgba(255,255,255,0.03);
+
   td {
-    background: rgba(245, 200, 66, 0.04) !important;
-    border-color: rgba(245, 200, 66, 0.15) !important;
+    border-color: rgba(255,255,255,0.05) !important;
   }
   td strong {
-    color: var(--gold);
-    text-shadow: 0 0 10px var(--gold-glow);
+    color: var(--glow-color, #FDB927);
+    text-shadow: 0 0 10px var(--glow-color, #FDB927);
   }
-  &:hover td { background: rgba(245, 200, 66, 0.08) !important; border-color: var(--gold) !important; }
+  
+  &:hover {
+    background: rgba(255,255,255,0.05) !important;
+    box-shadow: 0 0 15px var(--glow-color, #FDB927) !important;
+  }
 }
 
 /* ─── SILVER ROW (RUNNER-UP) ──────────────────────────────── */
@@ -548,8 +552,17 @@ body {
     background: rgba(148,163,184,0.04) !important;
     border-color: rgba(148,163,184,0.15) !important;
   }
-  td strong { color: #94a3b8; }
-  &:hover td { background: rgba(148, 163, 184, 0.08) !important; border-color: #94a3b8 !important; }
+  td strong { 
+    color: inherit; /* Volta à cor normal para destacar no hover */
+    transition: color 0.3s ease; 
+  }
+  &:hover td { 
+    background: rgba(148, 163, 184, 0.08) !important; 
+    border-color: #94a3b8 !important; 
+  }
+  &:hover td strong { 
+    color: #94a3b8; /* Fica cinza brilhante só quando passas o rato */
+  }
 }
 
 /* ─── PLAYER CELL (MINI CARTÃO DE JOGADOR) ────────────────── */
@@ -574,7 +587,6 @@ body {
     transition: all 0.2s var(--ease-spring);
   }
 
-  span { font-weight: 500; color: var(--text-primary); font-size: 0.875rem; transition: transform 0.2s; }
 
   /* HOVER NO CARTÃO DO JOGADOR */
   &:hover {
@@ -686,8 +698,8 @@ body {
 }
 
 .award-logo {
-  width: 18px;
-  height: 18px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
 }
@@ -1853,5 +1865,295 @@ body {
     border-right: none;
     border-bottom: 1px solid var(--court-border);
     max-height: 180px;
+  }
+}
+/* Tiers OVR (FUT / NBA 2K Style) */
+.tier-bronze {
+  background: linear-gradient(135deg, #cd7f32 0%, #8b5a2b 100%) !important;
+  border: 1px solid #5c3a21 !important;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.5), 0 0 8px rgba(205, 127, 50, 0.4) !important;
+  
+  &, .player-badge, .ovr-inline {
+    color: #f8fafc !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.9) !important;
+  }
+}
+
+.tier-silver {
+  background: linear-gradient(135deg, #e0e0e0 0%, #9e9e9e 100%) !important;
+  border: 1px solid #757575 !important;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.6), 0 0 8px rgba(224, 224, 224, 0.4) !important;
+  
+  &, .player-badge, .ovr-inline {
+    color: #0f172a !important; /* Cinza super escuro para alto contraste */
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8) !important;
+  }
+}
+
+.tier-gold {
+  background: linear-gradient(135deg, #FFD700 0%, #DAA520 100%) !important;
+  border: 1px solid #B8860B !important;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.4), 0 0 10px rgba(255, 215, 0, 0.5) !important;
+  color: black !important;
+  
+  &, .player-badge, .ovr-inline {
+    color: #381c00 !important; /* Marrom escuro quase preto */
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.6) !important;
+  }
+}
+
+.tier-emerald {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border: 1px solid #065f46 !important;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 12px rgba(16, 185, 129, 0.6) !important;
+  
+  &, .player-badge, .ovr-inline {
+    color: #f8fafc !important;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8) !important;
+  }
+}
+
+/* TIER LEGENDARY (90+) - Efeito Carta Giratória */
+.tier-legend {
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 20px var(--glow-color, #FDB927) !important;
+  border-color: transparent !important; 
+  
+  &, .player-badge, .name-text{
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9) !important;
+  }
+
+  .ovr-inline {
+    background: transparent !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--glow-color, #FDB927) !important;
+    box-shadow: 0 0 10px var(--glow-color, #FDB927) !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9) !important;
+  }
+}
+
+/* O Gradiente Giratório (fundo) */
+.tier-legend {
+  z-index: 1; /* Establishes a local stacking context */
+}
+.tier-legend::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 250%;
+  background: conic-gradient(transparent, var(--glow-color, #FDB927), transparent 30%);
+  transform: translate(-50%, -50%);
+  animation: spinGlow 3s linear infinite;
+  z-index: -2; /* Pushed behind the inner card */
+}
+
+/* O Miolo Escuro da Carta */
+.tier-legend::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: inherit;
+  z-index: -1; /* Pushed behind the text, but above the glow */
+}
+
+/* Todo conteúdo interno deve ficar acima do miolo */
+.tier-legend > * {
+  position: relative;
+  z-index: 2; /* Ensures text and photo are on top */
+}
+
+@keyframes spinGlow {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Larry O'Brien NBA Trophy (and medals) styling */
+.nba-trophy-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  cursor: help;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  margin: 0 4px;
+  
+  &:hover {
+    transform: scale(1.15) translateY(-2px);
+    filter: drop-shadow(0 0 10px var(--gold));
+  }
+}
+
+.medal-silver {
+  &:hover {
+    filter: drop-shadow(0 0 10px #94a3b8);
+  }
+}
+
+/* Premium Tooltip Hover */
+.premium-tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+  cursor: help;
+  pointer-events: auto; /* Ensures the wrapper can receive hover events */
+  
+  &::after {
+    content: attr(data-year);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(15, 23, 42, 0.95);
+    color: #FDB927;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border: 1px solid rgba(253, 185, 39, 0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 9999; /* Ensure it stays above everything */
+    pointer-events: none; /* Tooltip box itself shouldn't block mouse */
+  }
+
+  /* Triangle pointer */
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  &:hover::after, &:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ─── AI ASSISTANT BUTTONS ────────────────────────────────── */
+.btn-global-ai {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.8));
+    border-color: rgba(255,255,255,0.5);
+  }
+  &:disabled { opacity: 0.5; pointer-events: none; }
+}
+
+.ai-assistant {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .ai-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(15,23,42,0.6);
+    color: white;
+    border: 1px solid var(--court-border);
+    outline: none;
+    font-size: 0.9rem;
+    &:focus { border-color: #7c3aed; }
+  }
+
+  .btn-magic-ai {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+    
+    &:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8));
+    }
+  }
+}
+
+/* ─── HISTÓRIA GERAL: DESTAQUE DO CAMPEÃO (USER TEAM) ─────── */
+.linha-historia-destaque {
+  background: rgba(255,255,255,0.02) !important;
+  border-left: 3px solid var(--glow-color, #FDB927);
+  box-shadow: inset 0 0 15px rgba(255,255,255,0.03);
+  
+  &:hover {
+    background: rgba(255,255,255,0.05) !important;
+    box-shadow: 0 0 15px var(--glow-color, #FDB927) !important;
+  }
+  
+  td { border-color: rgba(255,255,255,0.05) !important; }
+}
+
+.campeao-jogador-cell {
+  position: relative;
+  z-index: 1;
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250%;
+    height: 250%;
+    background: conic-gradient(transparent, var(--glow-color, #FDB927), transparent 30%);
+    transform: translate(-50%, -50%);
+    animation: spinGlow 3s linear infinite;
+    z-index: -2;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .champion-content {
+    position: relative;
+    z-index: 2;
+    padding: 8px;
+    color: #FFF !important;
+    font-weight: 800;
+    text-shadow: 0 0 10px var(--glow-color, #FDB927);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
 }

@@ -64,3 +64,8 @@ app-historico-geral {
   min-height: 100vh;
   background: var(--court-black);
 }
+
+/* Fix global horizontal scrollbar from 100vw */
+body {
+  overflow-x: hidden;
+}
