@@ -1,12 +1,18 @@
 Markdown
 # 🏀 NBA League Tracker & History Dashboard
 
+[![Acesso ao Site](https://img.shields.io/badge/Acessar_Site-my--nba--career.vercel.app-FDB927?style=for-the-badge&logo=vercel&logoColor=black)](https://my-nba-career.vercel.app)
+
 Um painel de gerenciamento e histórico de ligas esportivas com um design premium inspirado na interface Next-Gen do NBA 2K. Construído com foco extremo em usabilidade (UX) e uma estética moderna combinando *Dark Mode OLED*, *Bento Grid* e *Glassmorphism*.
+
+---
 
 ## 🚀 Visualização Rápida (Live Demo)
 
 Deseja ver o projeto em ação sem precisar popular o banco de dados do zero? 
-Você pode visualizar uma liga completa, já preenchida com o histórico de temporadas, jogadores, overalls e troféus. 
+Você pode visualizar uma liga completa, já preenchida com o histórico de temporadas, jogadores, overalls e troféus diretamente no site.
+
+🌐 **Acesse agora:** [https://my-nba-career.vercel.app](https://my-nba-career.vercel.app)
 
 Na tela de acesso/busca do sistema, utilize o seguinte código de convite:
 
@@ -18,18 +24,20 @@ Na tela de acesso/busca do sistema, utilize o seguinte código de convite:
 
 ## ✨ Principais Funcionalidades
 
-*   **🏆 Hall da Fama e Histórico:** Linha do tempo completa com os campeões, vice-campeões e MVPs de cada temporada.
-*   **🎴 Sistema de Tiers Dinâmico:** Cartões de jogadores com design de videogame. A interface adapta as cores e os gradientes automaticamente com base no Overall (OVR) do jogador (ex: Bronze, Prata, Ouro, Esmeralda e animações brilhantes para Lendas 90+).
-*   **📊 Bento Grid Layout:** Tabelas construídas com CSS Grid avançado, garantindo 100% de fluidez no monitor sem barras de rolagem horizontais indesejadas.
-*   **🎨 Premium UI/UX:** Animações suaves de elevação no hover (`z-index` flutuante), texturas metálicas e painéis de vidro translúcido.
+* **🏆 Hall da Fama e Histórico:** Linha do tempo completa com os campeões, vice-campeões e MVPs de cada temporada.
+* **🎴 Sistema de Tiers Dinâmico:** Cartões de jogadores com design de videogame. A interface adapta as cores e os gradientes automaticamente com base no Overall (OVR) do jogador (ex: Bronze, Prata, Ouro, Esmeralda e animações brilhantes para Lendas 90+).
+* **📊 Bento Grid Layout:** Tabelas construídas com CSS Grid avançado, garantindo 100% de fluidez no monitor sem barras de rolagem horizontais indesejadas.
+* **🎨 Premium UI/UX:** Animações suaves de elevação no hover (`z-index` flutuante), texturas metálicas e painéis de vidro translúcido.
 
 ---
 
 ## 💻 Tecnologias Utilizadas
 
-*   **Frontend:** Angular 17+, TypeScript, HTML5
-*   **Estilização:** SCSS, CSS Grid, Flexbox, Animações CSS avançadas (Keyframes & Conic Gradients)
-*   **Design System:** UI UX Pro Max Guidelines (Dark Mode & Glassmorphism)
+* **Frontend:** Angular 17+, TypeScript, HTML5
+* **Estilização:** SCSS, CSS Grid, Flexbox, Animações CSS avançadas (Keyframes & Conic Gradients)
+* **Backend/Database:** Supabase
+* **Design System:** UI UX Pro Max Guidelines (Dark Mode & Glassmorphism)
+* **Deploy:** Vercel
 
 ---
 
@@ -37,12 +45,11 @@ Na tela de acesso/busca do sistema, utilize o seguinte código de convite:
 
 1. Clone o repositório:
 ```bash
-
-git clone [https://github.com/SEU-USUARIO/nome-do-repositorio.git](https://github.com/SEU-USUARIO/nome-do-repositorio.git)
+git clone [https://github.com/AlexPVCCSilva/mycareer-nba-web.git](https://github.com/AlexPVCCSilva/mycareer-nba-web.git)
 Acesse o diretório do projeto:
 
 Bash
-cd nome-do-repositorio
+cd mycareer-nba-web
 Instale as dependências:
 
 Bash
@@ -58,6 +65,3 @@ Contribuições, problemas e pedidos de funcionalidades são bem-vindos! Sinta-s
 
 📝 Licença
 Este projeto está sob a licença MIT. Feito com dedicação para a comunidade apaixonada por basquete e desenvolvimento.
-
-
-**Dica:** Substitua os links `SEU-USUARIO/nome-do-repositorio` pela sua URL real do GitHub e, se possível, troque a imagem do `placeholder` no topo por um *print* real da sua tela maravilhosa!
