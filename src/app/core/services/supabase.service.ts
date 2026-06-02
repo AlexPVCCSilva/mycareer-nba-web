@@ -22,6 +22,8 @@ export interface ITemporadaGeral {
   sixth_man_time: string | null;
   dpoy_time: string | null;
   mip_time: string | null;
+  executivo_do_ano?: string | null;
+  executivo_do_ano_time?: string | null;
 }
 
 export interface ICampanhaFranquia {

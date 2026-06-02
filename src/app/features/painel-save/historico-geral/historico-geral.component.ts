@@ -64,6 +64,8 @@ interface ITemporadaGeralForm {
   sixth_man_time: string;
   dpoy_time: string;
   mip_time: string;
+  executivo_do_ano?: string;
+  executivo_do_ano_time?: string;
 }
 
 const NBA_PLAYERS: { [key: string]: string } = {
@@ -476,7 +478,8 @@ salvandoEdicaoFranquia = false;
     return {
       temporada: '', campeao_oeste: '', campeao_leste: '', campeao_nba: '', resultado_finais: '',
       mvp: '', rookie_of_the_year: '', sixth_man: '', dpoy: '', mip: '',
-      mvp_time: '', rookie_of_the_year_time: '', sixth_man_time: '', dpoy_time: '', mip_time: ''
+      mvp_time: '', rookie_of_the_year_time: '', sixth_man_time: '', dpoy_time: '', mip_time: '',
+      executivo_do_ano: '', executivo_do_ano_time: ''
     };
   }
 
@@ -503,6 +506,19 @@ salvandoEdicaoFranquia = false;
     if (!campeaoNba || !this.franquias) return false;
     const nomeLimpo = campeaoNba.trim().toLowerCase();
     return this.franquias.some(f => f.nome.toLowerCase().includes(nomeLimpo) || nomeLimpo.includes(f.nome.toLowerCase()));
+  }
+
+  isMeuTime(nomeTime: string | null | undefined): boolean {
+    if (!nomeTime || !this.franquias) return false;
+    const nomeLimpo = nomeTime.trim().toLowerCase();
+    return this.franquias.some(f => f.nome.toLowerCase().includes(nomeLimpo) || nomeLimpo.includes(f.nome.toLowerCase()));
+  }
+
+  getCorMeuTime(nomeTime: string | null | undefined): string | null {
+    if (!nomeTime || !this.franquias) return null;
+    const nomeLimpo = nomeTime.trim().toLowerCase();
+    const franquia = this.franquias.find(f => f.nome.toLowerCase().includes(nomeLimpo) || nomeLimpo.includes(f.nome.toLowerCase()));
+    return franquia ? franquia.cor_hex : null;
   }
 
   getCorAtualFranquia(): string {
@@ -547,7 +563,9 @@ salvandoEdicaoFranquia = false;
         rookie_of_the_year_time: this.novaTemporada.rookie_of_the_year_time || null,
         sixth_man_time: this.novaTemporada.sixth_man_time || null,
         dpoy_time: this.novaTemporada.dpoy_time || null,
-        mip_time: this.novaTemporada.mip_time || null
+        mip_time: this.novaTemporada.mip_time || null,
+        executivo_do_ano: this.novaTemporada.executivo_do_ano || null,
+        executivo_do_ano_time: this.novaTemporada.executivo_do_ano_time || null
       };
 
       if (this.editandoIdGeral) {
@@ -1212,6 +1230,15 @@ salvandoEdicaoFranquia = false;
   getArrayVices(): any[] {
     if (!this.campanhasTime) return [];
     return this.campanhasTime.filter(camp => this.isCampanhaVice(camp.resultado_playoffs));
+  }
+
+  getArrayExecutivos(): any[] {
+    const timeAtivo = this.getNomeAbaAtiva();
+    if (!this.temporadas || !timeAtivo) return [];
+    return this.temporadas.filter(temp => {
+      if (!temp.executivo_do_ano_time) return false;
+      return temp.executivo_do_ano_time.trim().toLowerCase() === timeAtivo.trim().toLowerCase();
+    });
   }
 
   async carregarLembrancas() {

@@ -163,6 +163,13 @@
             <input type="text" [(ngModel)]="novaTemporada.mip_time" placeholder="Time do prêmio">
           </div>
         </div>
+        <div class="input-group input-group-premiacao">
+          <label for="temp-exec">Executivo + Time</label>
+          <div class="award-field">
+            <input id="temp-exec" type="text" [(ngModel)]="novaTemporada.executivo_do_ano" placeholder="Executivo">
+            <input type="text" [(ngModel)]="novaTemporada.executivo_do_ano_time" placeholder="Time do prêmio">
+          </div>
+        </div>
       </div>
 
       <div class="header-actions">
@@ -195,6 +202,7 @@
             <th scope="col">6th Man</th>
             <th scope="col">DPOY</th>
             <th scope="col">MIP</th>
+            <th scope="col">Executivo</th>
             <th scope="col">Ações</th>
           </tr>
         </thead>
@@ -224,39 +232,47 @@
               </td>
             <td>{{ temp.resultado_finais     || '—' }}</td>
             <td>
-              <div class="award-cell" *ngIf="temp.mvp; else mvpEmpty">
+              <div class="award-cell" *ngIf="temp.mvp; else mvpEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.mvp_time)}" [ngStyle]="isMeuTime(temp.mvp_time) ? {'--team-color': getCorMeuTime(temp.mvp_time) || 'var(--gold)'} : {}">
                 <img *ngIf="getLogoTime(temp.mvp_time)" [src]="getLogoTime(temp.mvp_time)" class="award-logo" [alt]="'Logo ' + temp.mvp_time">
                 <span>{{ temp.mvp }}</span>
               </div>
               <ng-template #mvpEmpty><span>—</span></ng-template>
             </td>
             <td>
-              <div class="award-cell" *ngIf="temp.rookie_of_the_year; else royEmpty">
+              <div class="award-cell" *ngIf="temp.rookie_of_the_year; else royEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.rookie_of_the_year_time)}" [ngStyle]="isMeuTime(temp.rookie_of_the_year_time) ? {'--team-color': getCorMeuTime(temp.rookie_of_the_year_time) || 'var(--gold)'} : {}">
                 <img *ngIf="getLogoTime(temp.rookie_of_the_year_time)" [src]="getLogoTime(temp.rookie_of_the_year_time)" class="award-logo" [alt]="'Logo ' + temp.rookie_of_the_year_time">
                 <span>{{ temp.rookie_of_the_year }}</span>
               </div>
               <ng-template #royEmpty><span>—</span></ng-template>
             </td>
             <td>
-              <div class="award-cell" *ngIf="temp.sixth_man; else sixthManEmpty">
+              <div class="award-cell" *ngIf="temp.sixth_man; else sixthManEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.sixth_man_time)}" [ngStyle]="isMeuTime(temp.sixth_man_time) ? {'--team-color': getCorMeuTime(temp.sixth_man_time) || 'var(--gold)'} : {}">
                 <img *ngIf="getLogoTime(temp.sixth_man_time)" [src]="getLogoTime(temp.sixth_man_time)" class="award-logo" [alt]="'Logo ' + temp.sixth_man_time">
                 <span>{{ temp.sixth_man }}</span>
               </div>
               <ng-template #sixthManEmpty><span>—</span></ng-template>
             </td>
             <td>
-              <div class="award-cell" *ngIf="temp.dpoy; else dpoyEmpty">
+              <div class="award-cell" *ngIf="temp.dpoy; else dpoyEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.dpoy_time)}" [ngStyle]="isMeuTime(temp.dpoy_time) ? {'--team-color': getCorMeuTime(temp.dpoy_time) || 'var(--gold)'} : {}">
                 <img *ngIf="getLogoTime(temp.dpoy_time)" [src]="getLogoTime(temp.dpoy_time)" class="award-logo" [alt]="'Logo ' + temp.dpoy_time">
                 <span>{{ temp.dpoy }}</span>
               </div>
               <ng-template #dpoyEmpty><span>—</span></ng-template>
             </td>
             <td>
-              <div class="award-cell" *ngIf="temp.mip; else mipEmpty">
+              <div class="award-cell" *ngIf="temp.mip; else mipEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.mip_time)}" [ngStyle]="isMeuTime(temp.mip_time) ? {'--team-color': getCorMeuTime(temp.mip_time) || 'var(--gold)'} : {}">
                 <img *ngIf="getLogoTime(temp.mip_time)" [src]="getLogoTime(temp.mip_time)" class="award-logo" [alt]="'Logo ' + temp.mip_time">
                 <span>{{ temp.mip }}</span>
               </div>
               <ng-template #mipEmpty><span>—</span></ng-template>
+            </td>
+            <td>
+              <div class="award-cell" *ngIf="temp.executivo_do_ano; else execEmpty" [ngClass]="{'is-my-team': isMeuTime(temp.executivo_do_ano_time)}" [ngStyle]="isMeuTime(temp.executivo_do_ano_time) ? {'--team-color': getCorMeuTime(temp.executivo_do_ano_time) || 'var(--gold)'} : {}">
+                <img *ngIf="getLogoTime(temp.executivo_do_ano_time)" [src]="getLogoTime(temp.executivo_do_ano_time)" class="award-logo" [alt]="'Logo ' + temp.executivo_do_ano_time">
+                <img *ngIf="!getLogoTime(temp.executivo_do_ano_time)" src="assets/executivo.png" class="award-logo" alt="Executivo">
+                <span>{{ temp.executivo_do_ano }}</span>
+              </div>
+              <ng-template #execEmpty><span>—</span></ng-template>
             </td>
             <td>
               <button
@@ -268,7 +284,7 @@
             </td>
           </tr>
           <tr *ngIf="temporadas.length === 0">
-            <td colspan="11" class="sem-dados">Nenhuma temporada registrada para este save.</td>
+            <td colspan="12" class="sem-dados">Nenhuma temporada registrada para este save.</td>
           </tr>
         </tbody>
       </table>
@@ -307,7 +323,7 @@
   <h3>{{ getNomeAbaAtiva() }} - Titulos com sua Gestão:</h3>
           <div
             class="trophy-case"
-            *ngIf="getArrayTitulos().length > 0 || getArrayVices().length > 0"
+            *ngIf="getArrayTitulos().length > 0 || getArrayVices().length > 0 || getArrayExecutivos().length > 0"
             role="list"
             aria-label="Conquistas"
           >
@@ -325,6 +341,14 @@
                 src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f948.png"
                 class="nba-trophy-logo medal-silver"
                 alt="Vice-campeonato"
+              >
+            </span>
+            <span class="premium-tooltip-wrapper" *ngFor="let ex of getArrayExecutivos()" [attr.data-year]="ex.temporada" [title]="'Executivo do Ano em: ' + ex.temporada + ' (' + ex.executivo_do_ano + ')'">
+              <img
+                role="listitem"
+                src="assets/executivo.png"
+                class="nba-trophy-logo"
+                alt="Executivo do Ano"
               >
             </span>
           </div>

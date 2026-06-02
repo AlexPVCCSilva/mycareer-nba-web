@@ -2157,3 +2157,35 @@ body {
     height: 100%;
   }
 }
+
+/* ── Highlight: Players of My Team ────────────────────────── */
+@keyframes pulse-my-team {
+  0% {
+    box-shadow: 0 0 5px var(--team-color, #FDB927), inset 0 0 5px rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+  }
+  100% {
+    box-shadow: 0 0 20px var(--team-color, #FDB927), inset 0 0 15px rgba(255,255,255,0.15);
+    border-color: var(--team-color, #FDB927);
+  }
+}
+
+.award-cell.is-my-team {
+  position: relative;
+  border: 1px solid var(--team-color, #FDB927) !important;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  animation: pulse-my-team 2s infinite alternate;
+  padding: 4px 8px; /* Adicionando um leve padding se n existir para acomodar a borda */
+  z-index: 2; /* Manter acima do background da tabela, mas abaixo de tooltips (se houver) */
+
+  span {
+    font-weight: 800;
+    color: #FFF !important;
+    text-shadow: 0 0 8px var(--team-color, #FDB927);
+  }
+
+  .award-logo {
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+  }
+}
