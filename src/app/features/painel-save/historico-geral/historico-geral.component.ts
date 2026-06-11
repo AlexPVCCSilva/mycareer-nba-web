@@ -235,6 +235,19 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: stri
   styleUrls: ['./historico-geral.component.scss']
 })
 export class HistoricoGeralComponent implements OnInit {
+  // Mobile Menu State
+  menuAberto = window.innerWidth > 900;
+
+  toggleMenu() {
+    this.menuAberto = !this.menuAberto;
+  }
+
+  fecharMenuMobile() {
+    if (window.innerWidth <= 900) {
+      this.menuAberto = false;
+    }
+  }
+
   ligaId: string | null = null;
   temporadas: ITemporadaGeral[] = [];
   carregando = true;
