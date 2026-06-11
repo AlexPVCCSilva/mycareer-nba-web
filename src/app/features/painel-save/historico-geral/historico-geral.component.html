@@ -94,12 +94,21 @@
             style="margin:0; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--text-primary);">
             Linha do Tempo da NBA
           </h3>
-
+          <div class="header-actions-group">
+            <button class="btn-add-temp" (click)="abrirFormularioTemporadaGeral()">
+              {{ mostrarFormulario && !editandoIdGeral ? '✕ Fechar' : '📝 Registrar Ano' }}
+            </button>
+          </div>
         </header>
 
-        <!-- Form: add/edit season -->
-        <article class="form-temporada" *ngIf="mostrarFormulario" aria-label="Formulário de Temporada">
-          <h3>{{ editandoIdGeral ? 'Editar Temporada' : 'Registrar Nova Temporada' }}</h3>
+        <!-- Form: add/edit season MODAL -->
+        <div class="modal-overlay" *ngIf="mostrarFormulario" role="dialog" aria-modal="true" (click.self)="cancelarEdicaoGeral()">
+          <div class="modal-content" style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
+            <article class="form-temporada" style="margin: 0; box-shadow: none; border: none; border-radius: 0;" aria-label="Formulário de Temporada">
+              <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                <h3 style="margin:0;">{{ editandoIdGeral ? 'Editar Temporada' : 'Registrar Nova Temporada' }}</h3>
+                <button style="background:transparent; border:none; color:var(--text-secondary); font-size:1.5rem; cursor:pointer; transition: color 0.3s;" (click)="cancelarEdicaoGeral()" onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='var(--text-secondary)'">✕</button>
+              </header>
 
           <div class="form-grid">
             <div class="input-group">
@@ -170,11 +179,13 @@
             <button class="btn-salvar" (click)="adicionarTemporada()" [disabled]="salvando">
               {{ salvando ? 'Gravando…' : (editandoIdGeral ? 'Atualizar Temporada' : 'Salvar Temporada') }}
             </button>
-            <button class="btn-cancel" *ngIf="editandoIdGeral" (click)="cancelarEdicaoGeral()">
-              Cancelar Edição
+            <button class="btn-cancel" (click)="cancelarEdicaoGeral()">
+              Cancelar
             </button>
           </div>
         </article>
+      </div>
+    </div>
 
         <!-- Loading -->
         <div class="loading-state" *ngIf="carregando" role="status" aria-live="polite">
@@ -350,9 +361,14 @@
           </div>
         </div>
 
-        <!-- Form: campaign -->
-        <article class="form-temporada form-time" *ngIf="mostrarFormularioTime" aria-label="Formulário de Campanha">
-          <h3>{{ editandoIdTime ? 'Editar Registro' : 'Novo Registro de Temporada' }}</h3>
+        <!-- Form: campaign MODAL -->
+        <div class="modal-overlay" *ngIf="mostrarFormularioTime" role="dialog" aria-modal="true" (click.self)="cancelarEdicaoTime()">
+          <div class="modal-content" style="max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
+            <article class="form-temporada form-time" style="margin: 0; box-shadow: none; border: none; border-radius: 0;" aria-label="Formulário de Campanha">
+              <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                <h3 style="margin:0;">{{ editandoIdTime ? 'Editar Registro de Campanha' : 'Novo Registro de Campanha' }}</h3>
+                <button style="background:transparent; border:none; color:var(--text-secondary); font-size:1.5rem; cursor:pointer; transition: color 0.3s;" (click)="cancelarEdicaoTime()" onmouseover="this.style.color='#FFF'" onmouseout="this.style.color='var(--text-secondary)'">✕</button>
+              </header>
 
           <div class="form-section">
             <h4>Resultados da Equipe</h4>
@@ -472,11 +488,13 @@
             <button class="btn-salvar" (click)="adicionarCampanhaTime()" [disabled]="salvandoCampanha">
               {{ salvandoCampanha ? 'Gravando…' : (editandoIdTime ? 'Atualizar Elenco' : 'Salvar Registro') }}
             </button>
-            <button class="btn-cancel" *ngIf="editandoIdTime" (click)="cancelarEdicaoTime()">
-              Cancelar Edição
+            <button class="btn-cancel" (click)="cancelarEdicaoTime()">
+              Cancelar
             </button>
           </div>
         </article>
+      </div>
+    </div>
 
         <!-- Loading -->
         <div class="loading-state" *ngIf="carregandoTime" role="status" aria-live="polite">
@@ -646,8 +664,8 @@
             <button class="btn-global-ai" (click)="gerarLinhaDoTempoGlobal()" [disabled]="salvandoLembranca">
               {{ salvandoLembranca ? 'Gerando Tudo...' : '⚡ Auto-Gerar Tudo (IA)' }}
             </button>
-            <button class="btn-add-temp" (click)="mostrarFormularioLembranca = !mostrarFormularioLembranca">
-              {{ mostrarFormularioLembranca ? '✕ Fechar' : '🗞️ Publicar Manchete' }}
+            <button class="btn-add-temp" (click)="abrirFormularioNovaLembranca()">
+              {{ mostrarFormularioLembranca && !editandoIdLembranca ? '✕ Fechar' : '🗞️ Publicar Manchete' }}
             </button>
           </div>
         </header>
@@ -656,7 +674,7 @@
         <article class="form-temporada" *ngIf="mostrarFormularioLembranca" aria-label="Formulário de Memória">
           <div
             style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
-            <h3 style="margin:0;">Novo Momento Histórico</h3>
+            <h3 style="margin:0;">{{ editandoIdLembranca ? 'Editar Momento Histórico' : 'Novo Momento Histórico' }}</h3>
             <div class="ai-assistant">
               <select #selectIA class="ai-select">
                 <option value="">-- Escolha um Ano --</option>
@@ -681,9 +699,15 @@
           </div>
 
           <div class="input-group" style="margin-bottom:1.25rem;">
-            <label>Descrição do Momento</label>
-            <textarea [(ngModel)]="novaLembranca.descricao" rows="3"
-              placeholder="Conte como foi esse momento épico…"></textarea>
+            <label style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <span>Descrição do Momento</span>
+              <div class="format-toolbar" style="display:flex; gap: 8px; margin-bottom: 4px;">
+                <button type="button" class="btn-format" (click)="inserirMarkdown('bold')" title="Negrito"><b>B</b></button>
+                <button type="button" class="btn-format" (click)="inserirMarkdown('ul')" title="Lista (Marcadores)">• Lista</button>
+              </div>
+            </label>
+            <textarea id="descricaoLembranca" [(ngModel)]="novaLembranca.descricao" rows="5"
+              placeholder="Conte como foi esse momento épico… (Use a formatação acima para negrito e listas)"></textarea>
           </div>
 
           <div class="input-group" style="margin-bottom:1.25rem;">
@@ -698,9 +722,14 @@
             </div>
           </div>
 
-          <button class="btn-salvar" (click)="adicionarLembranca()" [disabled]="salvandoLembranca">
-            {{ salvandoLembranca ? 'Processando…' : 'Eternizar Momento' }}
-          </button>
+          <div class="header-actions">
+            <button class="btn-salvar" (click)="adicionarLembranca()" [disabled]="salvandoLembranca">
+              {{ salvandoLembranca ? 'Processando…' : (editandoIdLembranca ? 'Atualizar Momento' : 'Eternizar Momento') }}
+            </button>
+            <button class="btn-cancel" *ngIf="editandoIdLembranca" (click)="cancelarEdicaoLembranca()">
+              Cancelar Edição
+            </button>
+          </div>
         </article>
 
         <!-- Timeline -->
@@ -715,13 +744,17 @@
             <div class="timeline-card">
               <header class="memory-header">
                 <span class="memory-date">{{ memory.data_evento }}</span>
-                <button class="btn-deletar-memory" (click)="excluirLembranca(memory.id)"
-                  [attr.aria-label]="'Excluir memória: ' + memory.titulo">🗑️</button>
+                <div style="display:flex; gap: 5px;">
+                  <button class="btn-editar-memory" (click)="editarLembranca(memory)"
+                    [attr.aria-label]="'Editar memória: ' + memory.titulo">✏️</button>
+                  <button class="btn-deletar-memory" (click)="excluirLembranca(memory.id)"
+                    [attr.aria-label]="'Excluir memória: ' + memory.titulo">🗑️</button>
+                </div>
               </header>
               <h4 class="memory-title">{{ memory.titulo }}</h4>
               <img *ngIf="memory.imagem_url" [src]="memory.imagem_url" class="memory-image"
                 alt="Foto do Momento Histórico" loading="lazy">
-              <p class="memory-desc" *ngIf="memory.descricao">{{ memory.descricao }}</p>
+              <div class="memory-desc markdown-body" *ngIf="memory.descricao" [innerHTML]="getDescricaoHtml(memory.descricao)"></div>
             </div>
           </div>
         </div>

@@ -1305,7 +1305,7 @@ body {
   line-height: 1.65;
 }
 
-.btn-deletar-memory {
+.btn-deletar-memory, .btn-editar-memory {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1317,8 +1317,15 @@ body {
 
   &:hover {
     opacity: 1;
-    background: rgba(239, 68, 68, 0.1);
   }
+}
+
+.btn-deletar-memory:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-editar-memory:hover {
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .timeline-vazia {
@@ -1329,6 +1336,42 @@ body {
   border: 2px dashed var(--court-border2);
   color: var(--text-muted);
   font-weight: 500;
+}
+
+/* Format Toolbar */
+.format-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.btn-format {
+  background: var(--court-bg);
+  border: 1px solid var(--court-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--court-border2);
+    border-color: var(--gold);
+  }
+}
+
+.markdown-body {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.65;
+
+  p { margin: 0 0 0.5rem; }
+  p:last-child { margin-bottom: 0; }
+  ul { margin: 0 0 0.5rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.25rem; }
+  strong { color: #fff; }
 }
 
 @keyframes timelineFadeIn {

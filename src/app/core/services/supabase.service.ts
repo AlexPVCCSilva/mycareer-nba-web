@@ -443,6 +443,17 @@ export class SupabaseService {
     return data[0];
   }
 
+  async atualizarLembranca(id: string, dados: any) {
+    const { data, error } = await this.supabase
+      .from('lembrancas_liga')
+      .update(dados)
+      .eq('id', id)
+      .select();
+
+    if (error) throw error;
+    return data[0];
+  }
+
   async deletarLembranca(id: string) {
     const { error } = await this.supabase
       .from('lembrancas_liga')

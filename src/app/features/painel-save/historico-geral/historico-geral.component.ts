@@ -9,6 +9,7 @@ import {
   StatusElenco,
   SupabaseService
 } from '../../../core/services/supabase.service';
+import { marked } from 'marked';
 
 interface IJogadorElencoFotoItem {
   posicao: string;
@@ -360,7 +361,8 @@ salvandoEdicaoFranquia = false;
   lembrancas: any[] = [];
   mostrarFormularioLembranca = false;
   salvandoLembranca = false;
-  novaLembranca = { data_evento: '', titulo: '', descricao: '', imagem_url: '' };
+  editandoIdLembranca: string | null = null;
+  novaLembranca: any = { data_evento: '', titulo: '', descricao: '', imagem_url: '' };
 
   constructor(
     private route: ActivatedRoute,
@@ -1387,19 +1389,83 @@ salvandoEdicaoFranquia = false;
     }
   }
 
+  abrirFormularioNovaLembranca() {
+    this.editandoIdLembranca = null;
+    this.novaLembranca = { data_evento: '', titulo: '', descricao: '', imagem_url: '' };
+    this.mostrarFormularioLembranca = !this.mostrarFormularioLembranca;
+  }
+
+  editarLembranca(memory: any) {
+    this.editandoIdLembranca = memory.id;
+    this.novaLembranca = { ...memory };
+    this.mostrarFormularioLembranca = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelarEdicaoLembranca() {
+    this.editandoIdLembranca = null;
+    this.novaLembranca = { data_evento: '', titulo: '', descricao: '', imagem_url: '' };
+    this.mostrarFormularioLembranca = false;
+  }
+
+  inserirMarkdown(tipo: string) {
+    const textarea = document.getElementById('descricaoLembranca') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = this.novaLembranca.descricao || '';
+    let textBefore = text.substring(0, start);
+    let textSelected = text.substring(start, end);
+    let textAfter = text.substring(end, text.length);
+
+    let insercao = '';
+
+    if (tipo === 'bold') {
+      if (!textSelected) textSelected = 'Texto em negrito';
+      insercao = `**${textSelected}**`;
+    } else if (tipo === 'ul') {
+      if (!textSelected) textSelected = 'Item da lista';
+      // Adicionar nova linha se nao estiver no comeco da linha
+      const isNewLine = start === 0 || textBefore.endsWith('\n');
+      insercao = `${isNewLine ? '' : '\n'}- ${textSelected}\n`;
+    }
+
+    this.novaLembranca.descricao = textBefore + insercao + textAfter;
+
+    // Foca novamente e seleciona o texto inserido
+    setTimeout(() => {
+      textarea.focus();
+      const offset = tipo === 'ul' ? (start === 0 || textBefore.endsWith('\n') ? 2 : 3) : 2;
+      textarea.setSelectionRange(start + offset, start + offset + textSelected.length);
+    }, 0);
+  }
+
+  getDescricaoHtml(texto: string) {
+    if (!texto) return '';
+    return marked.parse(texto) as string;
+  }
+
   async adicionarLembranca() {
     if (!this.novaLembranca.titulo || !this.novaLembranca.data_evento) {
-      alert('A Data e o Título da manchete são obrigatórios!');
+      alert('Preencha os dados obrigatórios!');
       return;
     }
     this.salvandoLembranca = true;
     try {
       const dadosParaSalvar = { ...this.novaLembranca, liga_id: this.ligaId };
-      await this.supabaseService.salvarLembranca(dadosParaSalvar);
-      this.novaLembranca = { data_evento: '', titulo: '', descricao: '', imagem_url: '' };
-      this.mostrarFormularioLembranca = false;
+      delete dadosParaSalvar.id; // Remover ID caso exista, para evitar conflitos no insert/update
+
+      if (this.editandoIdLembranca) {
+        await this.supabaseService.atualizarLembranca(this.editandoIdLembranca, dadosParaSalvar);
+      } else {
+        await this.supabaseService.salvarLembranca(dadosParaSalvar);
+      }
+
+      this.cancelarEdicaoLembranca();
       await this.carregarLembrancas();
-    } catch (error) {
+    } catch (err) {
+      console.error('Erro ao salvar lembrança:', err);
       alert('Erro ao salvar. A imagem pode ser pesada demais, tente comprimir um pouco!');
     } finally {
       this.salvandoLembranca = false;
