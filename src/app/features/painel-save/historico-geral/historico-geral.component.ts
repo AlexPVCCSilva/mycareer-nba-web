@@ -780,6 +780,47 @@ salvandoEdicaoFranquia = false;
   // --- Funções do Modal do Ídolo ---
   abrirModalIdolo(idolo: any) {
     this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
+    
+    // Descobrir quais anos ele ganhou título por esse time para mostrar as tacinhas e prêmios
+    const anosTitulos: string[] = [];
+    const anosMvp: string[] = [];
+    const anosDpoy: string[] = [];
+    const anosRoy: string[] = [];
+    const anosSexto: string[] = [];
+    
+    const nomeLimpado = SupabaseService.normalizarNomeJogador(idolo.nome);
+    
+    if (nomeLimpado && this.campanhasTime) {
+      for (const campanha of this.campanhasTime) {
+        const temporadaGeral = this.temporadas.find(t => t.temporada === campanha.temporada);
+        
+        const jogouNoTime = [
+          campanha.pg, campanha.sg, campanha.sf, campanha.pf, campanha.c, campanha.sexto_homem, campanha.draftado
+        ].some(n => n && SupabaseService.normalizarNomeJogador(n) === nomeLimpado);
+
+        if (jogouNoTime) {
+          if (temporadaGeral?.campeao_nba === this.getNomeAbaAtiva()) {
+            anosTitulos.push(campanha.temporada);
+          }
+          
+          if (temporadaGeral) {
+            const verificarPremio = (campoPremio: string | null | undefined) => {
+               return SupabaseService.normalizarNomeJogador(campoPremio) === nomeLimpado;
+            };
+
+            if (verificarPremio(temporadaGeral.mvp)) anosMvp.push(campanha.temporada);
+            if (verificarPremio(temporadaGeral.dpoy)) anosDpoy.push(campanha.temporada);
+            if (verificarPremio(temporadaGeral.rookie_of_the_year)) anosRoy.push(campanha.temporada);
+            if (verificarPremio(temporadaGeral.sixth_man)) anosSexto.push(campanha.temporada);
+          }
+        }
+      }
+    }
+    this.idoloSelecionado.anosTitulos = anosTitulos;
+    this.idoloSelecionado.anosMvp = anosMvp;
+    this.idoloSelecionado.anosDpoy = anosDpoy;
+    this.idoloSelecionado.anosRoy = anosRoy;
+    this.idoloSelecionado.anosSexto = anosSexto;
   }
 
   fecharModalIdolo() {
