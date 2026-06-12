@@ -9,6 +9,7 @@ import {
   StatusElenco,
   SupabaseService
 } from '../../../core/services/supabase.service';
+import { IdolCalculatorService, JogadorStatsFranquia } from '../../../core/services/idol-calculator.service';
 import { marked } from 'marked';
 
 interface IJogadorElencoFotoItem {
@@ -303,9 +304,14 @@ export class HistoricoGeralComponent implements OnInit {
   lendasTime: any[] = [];
   mostrarFormularioLenda = false;
   salvandoLenda = false;
-  novaLenda = {
-    nome: '', numero_camisa: '', categoria: 'Jogador', motivo: ''
-  };
+  
+  // Controle do Modal de Edição de Ídolo
+  idoloSelecionado: any = null;
+  salvandoIdoloEditado = false;
+  
+  get camisasAposentadas() {
+    return this.lendasTime.filter(l => l.numero_camisa && l.numero_camisa.trim() !== '');
+  }
 
   // --- Controle da Campanha ---
   salvandoCampanha = false;
@@ -368,6 +374,7 @@ salvandoEdicaoFranquia = false;
     private route: ActivatedRoute,
     private router: Router,
     private supabaseService: SupabaseService,
+    private idolCalculator: IdolCalculatorService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -629,7 +636,12 @@ salvandoEdicaoFranquia = false;
         try {
           const campanhasBrutas = await this.supabaseService.getCampanhasDaFranquia(this.ligaId!, timeAtivo.nome);
           this.campanhasTime = campanhasBrutas.map(camp => this.normalizarCampanhaCarregada(camp));
-          this.lendasTime = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
+          
+          // Sincroniza e atualiza os ídolos de forma totalmente automática
+          await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
+          
+          const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
+          this.lendasTime = lendasBrutas.sort((a, b) => (b.score || 0) - (a.score || 0));
         } catch (error) {
           console.error('Erro ao carregar dados da franquia:', error);
           this.campanhasTime = [];
@@ -660,6 +672,11 @@ salvandoEdicaoFranquia = false;
       this.cancelarEdicaoTime();
       const campanhasBrutas = await this.supabaseService.getCampanhasDaFranquia(this.ligaId, timeAtivo.nome);
       this.campanhasTime = campanhasBrutas.map(camp => this.normalizarCampanhaCarregada(camp));
+      
+      // Sincroniza logo após salvar uma nova campanha
+      await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
+      const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId, timeAtivo.nome);
+      this.lendasTime = lendasBrutas.sort((a, b) => (b.score || 0) - (a.score || 0));
     } catch (error) {
       console.error('Erro ao salvar elenco:', error);
       alert('Erro ao salvar no banco.');
@@ -760,23 +777,162 @@ salvandoEdicaoFranquia = false;
     leitor.readAsText(arquivo);
   }
 
-  async eternizarLenda() {
-    if (!this.novaLenda.nome) return alert('O nome da lenda é obrigatório!');
-    this.salvandoLenda = true;
-    try {
-      const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
-      const dadosParaSalvar = { ...this.novaLenda, liga_id: this.ligaId, franquia: timeAtivo.nome };
+  // --- Funções do Modal do Ídolo ---
+  abrirModalIdolo(idolo: any) {
+    this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
+  }
 
-      await this.supabaseService.adicionarAoHallDaFama(dadosParaSalvar);
-      this.novaLenda = { nome: '', numero_camisa: '', categoria: 'Jogador', motivo: '' };
-      this.mostrarFormularioLenda = false;
-      this.lendasTime = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
+  fecharModalIdolo() {
+    this.idoloSelecionado = null;
+  }
+
+  async salvarEdicaoIdolo() {
+    if (!this.idoloSelecionado || !this.idoloSelecionado.id) return;
+    this.salvandoIdoloEditado = true;
+    try {
+      // Atualiza diretamente na tabela hall_da_fama
+      const { error } = await this.supabaseService.supabase
+        .from('hall_da_fama')
+        .update({
+          numero_camisa: this.idoloSelecionado.numero_camisa,
+          motivo: this.idoloSelecionado.motivo // Permite override manual, embora o sync possa sobrescrever futuramente
+        })
+        .eq('id', this.idoloSelecionado.id);
+        
+      if (error) throw error;
+      
+      // Atualiza o card local para refletir imediatamente
+      const idx = this.lendasTime.findIndex(l => l.id === this.idoloSelecionado.id);
+      if (idx !== -1) {
+        this.lendasTime[idx] = { ...this.idoloSelecionado };
+      }
+      this.fecharModalIdolo();
     } catch (error) {
-      console.error('Erro ao registrar a lenda:', error);
-      alert('Erro ao registrar a lenda.');
+      console.error('Erro ao editar ídolo:', error);
+      alert('Não foi possível salvar as alterações no ídolo.');
     } finally {
-      this.salvandoLenda = false;
+      this.salvandoIdoloEditado = false;
       this.cdr.detectChanges();
+    }
+  }
+
+  async sincronizarEAtualizarIdolos(nomeFranquia: string) {
+    if (!this.ligaId) return;
+    
+    // 1. Dicionário para agregar estatísticas
+    const statsJogadores: Record<string, JogadorStatsFranquia> = {};
+
+    // 2. Extrair os jogadores que jogaram no time
+    for (const campanha of this.campanhasTime) {
+      const temporadaGeral = this.temporadas.find(t => t.temporada === campanha.temporada);
+      const isCampeao = temporadaGeral?.campeao_nba === nomeFranquia;
+      
+      const jogadoresElenco = [
+        { nome: campanha.pg, ovr: campanha.pg_ovr },
+        { nome: campanha.sg, ovr: campanha.sg_ovr },
+        { nome: campanha.sf, ovr: campanha.sf_ovr },
+        { nome: campanha.pf, ovr: campanha.pf_ovr },
+        { nome: campanha.c, ovr: campanha.c_ovr },
+        { nome: campanha.sexto_homem, ovr: campanha.sexto_homem_ovr },
+        { nome: campanha.draftado, ovr: campanha.draftado_ovr }
+      ];
+
+      for (const jogador of jogadoresElenco) {
+        if (!jogador.nome || jogador.nome.trim() === '') continue;
+        const nomeLimpado = SupabaseService.normalizarNomeJogador(jogador.nome);
+        if (!nomeLimpado) continue;
+        
+        if (!statsJogadores[nomeLimpado]) {
+          statsJogadores[nomeLimpado] = {
+            temporadasJogadas: 0,
+            titulos: 0,
+            mvps: 0,
+            dpoyOuRoy: 0,
+            sextoHomem: 0,
+            peakOvr: 0
+          };
+        }
+
+        const st = statsJogadores[nomeLimpado];
+        st.temporadasJogadas += 1;
+        if (isCampeao) st.titulos += 1;
+        
+        const ovr = Number(jogador.ovr) || 0;
+        if (ovr > st.peakOvr) st.peakOvr = ovr;
+
+        if (temporadaGeral) {
+          const verificarPremio = (campoPremio: string | null | undefined) => {
+             return SupabaseService.normalizarNomeJogador(campoPremio) === nomeLimpado;
+          };
+
+          if (verificarPremio(temporadaGeral.mvp)) st.mvps += 1;
+          if (verificarPremio(temporadaGeral.dpoy) || verificarPremio(temporadaGeral.rookie_of_the_year)) st.dpoyOuRoy += 1;
+          if (verificarPremio(temporadaGeral.sixth_man)) st.sextoHomem += 1;
+        }
+      }
+    }
+
+    // 3. Processar Tiers e Preparar Array
+    const lendasParaSalvar: any[] = [];
+    const idsParaDeletar: string[] = [];
+    const lendasExistentes = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId, nomeFranquia);
+
+    // Iteramos pelo nome ORIGINAL que encontramos (para salvar bonitinho), então precisamos de um map reverso
+    // Vamos reconstruir para ter o nome formatado corretamente
+    const nomeFormatadoMap: Record<string, string> = {};
+    for (const campanha of this.campanhasTime) {
+      [campanha.pg, campanha.sg, campanha.sf, campanha.pf, campanha.c, campanha.sexto_homem, campanha.draftado].forEach(nomeBruto => {
+        if (nomeBruto) {
+           const limpado = SupabaseService.normalizarNomeJogador(nomeBruto);
+           if (!nomeFormatadoMap[limpado]) {
+             nomeFormatadoMap[limpado] = SupabaseService.limparNomeJogador(nomeBruto);
+           }
+        }
+      });
+    }
+
+    for (const [nomeLimpado, stats] of Object.entries(statsJogadores)) {
+      const resultado = this.idolCalculator.calcularStatusIdolo(stats);
+      const lendaExistente = lendasExistentes.find(l => SupabaseService.normalizarNomeJogador(l.nome) === nomeLimpado);
+
+      if (resultado.isIdolo) {
+        const nomeDisplay = nomeFormatadoMap[nomeLimpado] || nomeLimpado;
+        lendasParaSalvar.push({
+          ...(lendaExistente && lendaExistente.id ? { id: lendaExistente.id } : {}),
+          liga_id: this.ligaId,
+          franquia: nomeFranquia,
+          nome: nomeDisplay,
+          categoria: resultado.nivel,
+          motivo: resultado.badgeCompleto,
+          score: resultado.scoreTotal, // Adicionado score para ordenação
+          numero_camisa: lendaExistente ? lendaExistente.numero_camisa : ''
+        });
+      } else {
+        if (lendaExistente && lendaExistente.id) {
+          idsParaDeletar.push(lendaExistente.id);
+        }
+      }
+    }
+
+    // Identificar lendas no banco que não têm MAIS jogador nas campanhas (foram apagadas as campanhas)
+    for (const lenda of lendasExistentes) {
+      const nomeLimpado = SupabaseService.normalizarNomeJogador(lenda.nome);
+      if (!statsJogadores[nomeLimpado] && lenda.id && !idsParaDeletar.includes(lenda.id)) {
+        // Esta lenda foi adicionada, mas o jogador não existe mais nas campanhas do time (ou nunca existiu e foi manual)
+        // Como o usuário quer automação 100%, vamos limpar quem não joga mais
+        // a não ser que tenha sido Técnico ou Dono. Se for "Técnico" ou "Dono/Executivo", a gente mantém!
+        if (lenda.categoria === 'Técnico' || lenda.categoria === 'Dono/Executivo') {
+          continue; // Mantém equipe técnica salva
+        }
+        idsParaDeletar.push(lenda.id);
+      }
+    }
+
+    // 4. Salvar tudo
+    try {
+      await this.supabaseService.salvarOuAtualizarHallDaFama(lendasParaSalvar, idsParaDeletar);
+    } catch (error) {
+      console.error('Erro ao sincronizar Ídolos automaticamente:', error);
     }
   }
 

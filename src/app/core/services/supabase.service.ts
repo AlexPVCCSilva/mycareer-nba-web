@@ -270,6 +270,24 @@ export class SupabaseService {
     if (error) throw error;
     return data[0];
   }
+
+  async salvarOuAtualizarHallDaFama(lendas: any[], idsParaDeletar: string[]) {
+    if (idsParaDeletar.length > 0) {
+      const { error: erroDel } = await this.supabase
+        .from('hall_da_fama')
+        .delete()
+        .in('id', idsParaDeletar);
+      if (erroDel) throw erroDel;
+    }
+
+    if (lendas.length > 0) {
+      const { error: erroUpsert } = await this.supabase
+        .from('hall_da_fama')
+        .upsert(lendas); // Supabase atualiza se tiver 'id', senão insere
+      if (erroUpsert) throw erroUpsert;
+    }
+  }
+
   // Atualiza uma temporada da História Geral
   async atualizarTemporadaGeral(id: string, dados: Partial<ITemporadaGeral>) {
     const { data, error } = await this.supabase
