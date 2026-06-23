@@ -239,6 +239,9 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: stri
 export class HistoricoGeralComponent implements OnInit {
   // Mobile Menu State
   menuAberto = window.innerWidth > 900;
+  
+  // Wizard State (Modal Campanha)
+  wizardSegmentCampanha: 'resultados' | 'elenco' | 'fotos' = 'resultados';
 
   toggleMenu() {
     this.menuAberto = !this.menuAberto;
@@ -249,6 +252,8 @@ export class HistoricoGeralComponent implements OnInit {
       this.menuAberto = false;
     }
   }
+
+  private cacheCorSec: { [nome: string]: string } = {};
 
   ligaId: string | null = null;
   temporadas: ITemporadaGeral[] = [];
@@ -336,6 +341,7 @@ export class HistoricoGeralComponent implements OnInit {
   ];
 
   abaAtiva = 'geral';
+  abaFranquiaAtiva: 'temporadas' | 'idolos' = 'temporadas';
   franquias: any[] = [];
   
 // ── Configurações da Liga ──────────────────────────────────
@@ -362,6 +368,26 @@ salvandoEdicaoFranquia = false;
 
   topMVPs: any[] = [];
   topDPOYs: any[] = [];
+
+  get timesAutocomplete(): string[] {
+    const nomes = new Set<string>();
+    this.timesPreDefinidos.forEach(t => nomes.add(t.nome));
+    this.franquias.forEach(f => nomes.add(f.nome));
+    if (this.temporadas) {
+      this.temporadas.forEach(t => {
+        if (t.campeao_nba) nomes.add(t.campeao_nba);
+        if (t.campeao_oeste) nomes.add(t.campeao_oeste);
+        if (t.campeao_leste) nomes.add(t.campeao_leste);
+        if (t.mvp_time) nomes.add(t.mvp_time);
+        if (t.dpoy_time) nomes.add(t.dpoy_time);
+        // @ts-ignore - Some records might map fields differently, but sticking to what's defined in the interface
+        if ((t as any).rookie_of_the_year_time) nomes.add((t as any).rookie_of_the_year_time);
+        // @ts-ignore
+        if ((t as any).sixth_man_time) nomes.add((t as any).sixth_man_time);
+      });
+    }
+    return Array.from(nomes).filter(n => n && n !== '-' && n !== '—').sort();
+  }
   topCampeoes: any[] = [];
   
   lembrancas: any[] = [];
@@ -606,6 +632,14 @@ salvandoEdicaoFranquia = false;
     }
   }
 
+  sincronizarScroll(event: Event, elementoAlvo: HTMLElement | null | undefined) {
+    if (!elementoAlvo) return;
+    const origem = event.target as HTMLElement;
+    if (origem) {
+      elementoAlvo.scrollLeft = origem.scrollLeft;
+    }
+  }
+
   voltarParaOLobby() {
     this.router.navigate(['/']);
   }
@@ -626,6 +660,7 @@ salvandoEdicaoFranquia = false;
   async trocarAba(abaId: string | undefined) {
     if (!abaId) return;
     this.abaAtiva = abaId;
+    this.abaFranquiaAtiva = 'temporadas'; // Reseta aba interna
     if (abaId === 'lembrancas') {
       await this.carregarLembrancas();
     } else if (abaId !== 'geral') {
@@ -778,6 +813,19 @@ salvandoEdicaoFranquia = false;
   }
 
   // --- Funções do Modal do Ídolo ---
+  abrirModalNovoIdolo() {
+    this.idoloSelecionado = {
+      id: null,
+      franquia_id: this.getNomeAbaAtiva(),
+      nome: '',
+      numero_camisa: '',
+      categoria: 'Jogador',
+      motivo: '',
+      score: 0,
+      isNovo: true
+    };
+  }
+
   abrirModalIdolo(idolo: any) {
     this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
     
@@ -828,24 +876,51 @@ salvandoEdicaoFranquia = false;
   }
 
   async salvarEdicaoIdolo() {
-    if (!this.idoloSelecionado || !this.idoloSelecionado.id) return;
+    if (!this.idoloSelecionado) return;
+    if (!this.idoloSelecionado.isNovo && !this.idoloSelecionado.id) return;
+    if (this.idoloSelecionado.isNovo && !this.idoloSelecionado.nome) {
+      alert('Por favor, informe o nome do ídolo.');
+      return;
+    }
+
     this.salvandoIdoloEditado = true;
     try {
-      // Atualiza diretamente na tabela hall_da_fama
-      const { error } = await this.supabaseService.supabase
-        .from('hall_da_fama')
-        .update({
+      if (this.idoloSelecionado.isNovo) {
+        const payload = {
+          franquia_id: this.idoloSelecionado.franquia_id,
+          nome: this.idoloSelecionado.nome,
           numero_camisa: this.idoloSelecionado.numero_camisa,
-          motivo: this.idoloSelecionado.motivo // Permite override manual, embora o sync possa sobrescrever futuramente
-        })
-        .eq('id', this.idoloSelecionado.id);
+          categoria: this.idoloSelecionado.categoria,
+          motivo: this.idoloSelecionado.motivo,
+          score: 100 // Manual idols get a default score so they appear
+        };
+        const { data, error } = await this.supabaseService.supabase
+          .from('hall_da_fama')
+          .insert(payload)
+          .select()
+          .single();
+        if (error) throw error;
         
-      if (error) throw error;
-      
-      // Atualiza o card local para refletir imediatamente
-      const idx = this.lendasTime.findIndex(l => l.id === this.idoloSelecionado.id);
-      if (idx !== -1) {
-        this.lendasTime[idx] = { ...this.idoloSelecionado };
+        // Add to local list and resort
+        this.lendasTime.push(data);
+        this.lendasTime.sort((a, b) => (b.score || 0) - (a.score || 0));
+      } else {
+        // Atualiza diretamente na tabela hall_da_fama
+        const { error } = await this.supabaseService.supabase
+          .from('hall_da_fama')
+          .update({
+            numero_camisa: this.idoloSelecionado.numero_camisa,
+            motivo: this.idoloSelecionado.motivo
+          })
+          .eq('id', this.idoloSelecionado.id);
+          
+        if (error) throw error;
+        
+        // Atualiza o card local para refletir imediatamente
+        const idx = this.lendasTime.findIndex(l => l.id === this.idoloSelecionado.id);
+        if (idx !== -1) {
+          this.lendasTime[idx] = { ...this.idoloSelecionado };
+        }
       }
       this.fecharModalIdolo();
     } catch (error) {
@@ -1083,6 +1158,22 @@ salvandoEdicaoFranquia = false;
   getCorAbaAtiva(): string {
     const franquia = this.franquias.find(f => f.id === this.abaAtiva);
     return franquia ? franquia.cor_hex : '#222222';
+  }
+
+  getCorSecundariaAbaAtiva(): string {
+    const nomeTime = this.getNomeAbaAtiva().toLowerCase();
+    if (this.cacheCorSec[nomeTime]) {
+      return this.cacheCorSec[nomeTime];
+    }
+    
+    const busca = Object.keys(NBA_TEAMS_INFO).find(k => nomeTime.includes(k));
+    if (busca) {
+      this.cacheCorSec[nomeTime] = NBA_TEAMS_INFO[busca].sec;
+      return this.cacheCorSec[nomeTime];
+    }
+    
+    this.cacheCorSec[nomeTime] = 'rgba(255,255,255,0.1)';
+    return this.cacheCorSec[nomeTime];
   }
 
   getFotoJogador(nome: string | null | undefined): string {

@@ -5,20 +5,21 @@
 
   <aside class="sidebar-menu" [class.open]="menuAberto">
     <div class="sidebar-header">
-      <h2>🎛️ Centro de Comando</h2>
-      <button class="btn-fechar-menu" (click)="toggleMenu()" aria-label="Fechar menu">✕</button>
+      <h2><i class="fas fa-sliders-h"></i> Centro de Comando</h2>
+      <button class="btn-fechar-menu" (click)="toggleMenu()" aria-label="Fechar menu"><i
+          class="fas fa-times"></i></button>
     </div>
 
     <div class="sidebar-actions">
       <button class="btn-sidebar-action" (click)="voltarParaOLobby()" aria-label="Voltar para Ligas">
-        ← Voltar Ligas
+        <i class="fas fa-arrow-left"></i> Voltar Ligas
       </button>
       <button class="btn-sidebar-action" (click)="abrirModalConfiguracoes()" aria-label="Configurações da Liga">
-        ⚙️ Config.
+        <i class="fas fa-cog"></i> Config.
       </button>
       <button class="btn-sidebar-action" (click)="toggleTema()"
         [attr.aria-label]="temaEscuro ? 'Ativar modo claro' : 'Ativar modo escuro'">
-        {{ temaEscuro ? '☀️ Tema' : '🌙 Tema' }}
+        <i class="fas" [ngClass]="temaEscuro ? 'fa-sun' : 'fa-moon'"></i> Tema
       </button>
     </div>
 
@@ -27,14 +28,14 @@
 
       <button role="tab" class="sidebar-item" [class.active]="abaAtiva === 'geral'"
         [attr.aria-selected]="abaAtiva === 'geral'" (click)="trocarAba('geral'); fecharMenuMobile()">
-        <span class="icon">🏆</span>
+        <span class="icon"><i class="fas fa-trophy"></i></span>
         <span class="text">História Geral</span>
       </button>
 
 
       <button role="tab" class="sidebar-item" [class.active]="abaAtiva === 'rankings'"
         [attr.aria-selected]="abaAtiva === 'rankings'" (click)="trocarAba('rankings'); fecharMenuMobile()">
-        <span class="icon">🥇</span>
+        <span class="icon"><i class="fas fa-medal"></i></span>
         <span class="text">Rankings Históricos</span>
       </button>
 
@@ -55,13 +56,13 @@
 
       <button role="tab" class="sidebar-item" [class.active]="abaAtiva === 'lembrancas'"
         [attr.aria-selected]="abaAtiva === 'lembrancas'" (click)="trocarAba('lembrancas'); fecharMenuMobile()">
-        <span class="icon">📸</span>
+        <span class="icon"><i class="fas fa-camera"></i></span>
         <span class="text">Linha do Tempo</span>
       </button>
 
       <button class="sidebar-item add-tab-btn" (click)="abrirModalFranquia(); fecharMenuMobile()"
         aria-label="Adicionar nova franquia">
-        <span class="icon">＋</span>
+        <span class="icon"><i class="fas fa-plus"></i></span>
         <span class="text">Novo Time</span>
       </button>
     </nav>
@@ -77,7 +78,7 @@
         <input type="file" #fileInput accept=".csv" (change)="processarCSV($event)" style="display:none"
           aria-hidden="true">
         <button class="btn-add-temp success" (click)="fileInput.click()">
-          📥 Importar .csv
+          <i class="fas fa-file-import"></i> Importar .csv
         </button>
       </div>
     </header>
@@ -88,120 +89,153 @@
   ════════════════════════════════════════════════════════════ -->
       <section class="aba-conteudo" role="tabpanel" *ngIf="abaAtiva === 'geral'" aria-label="História Geral">
 
-        <!-- Sub-header -->
-        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-          <h3
-            style="margin:0; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--text-primary);">
-            Linha do Tempo da NBA
-          </h3>
+        <header class="section-header">
+          <h3 class="section-header-title">Linha do Tempo da NBA</h3>
           <div class="header-actions-group">
             <button class="btn-add-temp" (click)="abrirFormularioTemporadaGeral()">
-              {{ mostrarFormulario && !editandoIdGeral ? '✕ Fechar' : '📝 Registrar Ano' }}
+              <i class="fas" [ngClass]="mostrarFormulario && !editandoIdGeral ? 'fa-times' : 'fa-edit'"></i> {{
+              mostrarFormulario && !editandoIdGeral ? 'Fechar' : 'Registrar Ano' }}
             </button>
           </div>
         </header>
 
         <!-- Form: add/edit season MODAL -->
-        <div class="modal-overlay" *ngIf="mostrarFormulario" role="dialog" aria-modal="true"
+        <div class="modal-luxury-overlay" *ngIf="mostrarFormulario" role="dialog" aria-modal="true"
           (click.self)="cancelarEdicaoGeral()">
-          <div class="modal-content"
-            style="max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
-            <article class="form-temporada" style="margin: 0; box-shadow: none; border: none; border-radius: 0;"
-              aria-label="Formulário de Temporada">
-              <header
-                style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
-                <h3 style="margin:0;">{{ editandoIdGeral ? 'Editar Temporada' : 'Registrar Nova Temporada' }}</h3>
-                <button
-                  style="background:transparent; border:none; color:var(--text-secondary); font-size:1.5rem; cursor:pointer; transition: color 0.3s;"
-                  (click)="cancelarEdicaoGeral()" onmouseover="this.style.color='#FFF'"
-                  onmouseout="this.style.color='var(--text-secondary)'">✕</button>
-              </header>
+          <div class="modal-luxury-container">
+            <header class="modal-luxury-header">
+              <h2>{{ editandoIdGeral ? 'Editar Temporada' : 'Nova Temporada' }}</h2>
+              <button class="btn-close-luxury" (click)="cancelarEdicaoGeral()" aria-label="Fechar formulário"><i
+                  class="fas fa-times"></i></button>
+            </header>
 
+            <div class="modal-luxury-content">
+              <div class="section-header-blue">Resultados Principais</div>
               <div class="form-grid">
-                <div class="input-group">
-                  <label for="temp-temporada">Temporada</label>
-                  <input id="temp-temporada" type="text" [(ngModel)]="novaTemporada.temporada"
-                    placeholder="Ex: 2024-25">
+                <datalist id="times-list">
+                  <option *ngFor="let time of timesAutocomplete" [value]="time"></option>
+                </datalist>
+
+                <div class="modern-input-group">
+                  <input id="temp-temporada" type="text" [(ngModel)]="novaTemporada.temporada" placeholder=" ">
+                  <label for="temp-temporada">Temporada (Ex: 2024-25)</label>
                 </div>
-                <div class="input-group">
+                <div class="modern-input-group has-logo-right">
+                  <input id="temp-oeste" type="text" [(ngModel)]="novaTemporada.campeao_oeste" placeholder=" "
+                    list="times-list">
                   <label for="temp-oeste">Campeão Oeste</label>
-                  <input id="temp-oeste" type="text" [(ngModel)]="novaTemporada.campeao_oeste" placeholder="Ex: Lakers">
+                  <img *ngIf="getLogoTime(novaTemporada.campeao_oeste)" [src]="getLogoTime(novaTemporada.campeao_oeste)"
+                    class="input-logo" alt="">
                 </div>
-                <div class="input-group">
+                <div class="modern-input-group has-logo-right">
+                  <input id="temp-leste" type="text" [(ngModel)]="novaTemporada.campeao_leste" placeholder=" "
+                    list="times-list">
                   <label for="temp-leste">Campeão Leste</label>
-                  <input id="temp-leste" type="text" [(ngModel)]="novaTemporada.campeao_leste"
-                    placeholder="Ex: Celtics">
+                  <img *ngIf="getLogoTime(novaTemporada.campeao_leste)" [src]="getLogoTime(novaTemporada.campeao_leste)"
+                    class="input-logo" alt="">
                 </div>
-                <div class="input-group">
+                <div class="modern-input-group has-logo-right">
+                  <input id="temp-campeao" type="text" [(ngModel)]="novaTemporada.campeao_nba" placeholder=" "
+                    list="times-list">
                   <label for="temp-campeao">Campeão NBA</label>
-                  <input id="temp-campeao" type="text" [(ngModel)]="novaTemporada.campeao_nba" placeholder="Ex: Lakers">
+                  <img *ngIf="getLogoTime(novaTemporada.campeao_nba)" [src]="getLogoTime(novaTemporada.campeao_nba)"
+                    class="input-logo" alt="">
                 </div>
-                <div class="input-group">
-                  <label for="temp-resultado">Resultado Finais</label>
-                  <input id="temp-resultado" type="text" [(ngModel)]="novaTemporada.resultado_finais"
-                    placeholder="Ex: 4-2">
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-mvp">MVP + Time</label>
-                  <div class="award-field">
-                    <input id="temp-mvp" type="text" [(ngModel)]="novaTemporada.mvp" placeholder="Jogador">
-                    <input type="text" [(ngModel)]="novaTemporada.mvp_time" placeholder="Time do prêmio">
-                  </div>
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-roy">ROY + Time</label>
-                  <div class="award-field">
-                    <input id="temp-roy" type="text" [(ngModel)]="novaTemporada.rookie_of_the_year"
-                      placeholder="Jogador">
-                    <input type="text" [(ngModel)]="novaTemporada.rookie_of_the_year_time" placeholder="Time do prêmio">
-                  </div>
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-sixth">6th Man + Time</label>
-                  <div class="award-field">
-                    <input id="temp-sixth" type="text" [(ngModel)]="novaTemporada.sixth_man" placeholder="Jogador">
-                    <input type="text" [(ngModel)]="novaTemporada.sixth_man_time" placeholder="Time do prêmio">
-                  </div>
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-dpoy">DPOY + Time</label>
-                  <div class="award-field">
-                    <input id="temp-dpoy" type="text" [(ngModel)]="novaTemporada.dpoy" placeholder="Jogador">
-                    <input type="text" [(ngModel)]="novaTemporada.dpoy_time" placeholder="Time do prêmio">
-                  </div>
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-mip">MIP + Time</label>
-                  <div class="award-field">
-                    <input id="temp-mip" type="text" [(ngModel)]="novaTemporada.mip" placeholder="Jogador">
-                    <input type="text" [(ngModel)]="novaTemporada.mip_time" placeholder="Time do prêmio">
-                  </div>
-                </div>
-                <div class="input-group input-group-premiacao">
-                  <label for="temp-exec">Executivo + Time</label>
-                  <div class="award-field">
-                    <input id="temp-exec" type="text" [(ngModel)]="novaTemporada.executivo_do_ano"
-                      placeholder="Executivo">
-                    <input type="text" [(ngModel)]="novaTemporada.executivo_do_ano_time" placeholder="Time do prêmio">
-                  </div>
+                <div class="modern-input-group">
+                  <input id="temp-resultado" type="text" [(ngModel)]="novaTemporada.resultado_finais" placeholder=" ">
+                  <label for="temp-resultado">Resultado Finais (Ex: 4-2)</label>
                 </div>
               </div>
 
-              <div class="header-actions">
-                <button class="btn-salvar" (click)="adicionarTemporada()" [disabled]="salvando">
-                  {{ salvando ? 'Gravando…' : (editandoIdGeral ? 'Atualizar Temporada' : 'Salvar Temporada') }}
-                </button>
-                <button class="btn-cancel" (click)="cancelarEdicaoGeral()">
-                  Cancelar
-                </button>
+              <div class="section-header-blue">Premiações</div>
+              <div class="form-grid">
+                <div class="static-input-group">
+                  <label><img src="assets/mvptrofeu.png" class="label-award-icon" alt=""> MVP</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.mvp" placeholder="Jogador">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.mvp_time" placeholder="Time" list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.mvp_time)" [src]="getLogoTime(novaTemporada.mvp_time)"
+                        class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="static-input-group">
+                  <label><img src="assets/roy.png" class="label-award-icon" alt=""> Rookie of the Year</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.rookie_of_the_year" placeholder="Jogador">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.rookie_of_the_year_time" placeholder="Time"
+                        list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.rookie_of_the_year_time)"
+                        [src]="getLogoTime(novaTemporada.rookie_of_the_year_time)" class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="static-input-group">
+                  <label><img src="assets/6man.png" class="label-award-icon" alt=""> 6th Man of the Year</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.sixth_man" placeholder="Jogador">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.sixth_man_time" placeholder="Time"
+                        list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.sixth_man_time)"
+                        [src]="getLogoTime(novaTemporada.sixth_man_time)" class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="static-input-group">
+                  <label><img src="assets/dpoy.png" class="label-award-icon" alt=""> Defensive Player (DPOY)</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.dpoy" placeholder="Jogador">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.dpoy_time" placeholder="Time" list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.dpoy_time)" [src]="getLogoTime(novaTemporada.dpoy_time)"
+                        class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="static-input-group">
+                  <label><img src="assets/mip.png" class="label-award-icon" alt=""> Most Improved (MIP)</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.mip" placeholder="Jogador">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.mip_time" placeholder="Time" list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.mip_time)" [src]="getLogoTime(novaTemporada.mip_time)"
+                        class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="static-input-group">
+                  <label><img src="assets/executivo.png" class="label-award-icon" alt=""> Executivo do Ano</label>
+                  <div class="award-field">
+                    <input type="text" [(ngModel)]="novaTemporada.executivo_do_ano" placeholder="Executivo">
+                    <div class="input-with-logo">
+                      <input type="text" [(ngModel)]="novaTemporada.executivo_do_ano_time" placeholder="Time"
+                        list="times-list">
+                      <img *ngIf="getLogoTime(novaTemporada.executivo_do_ano_time)"
+                        [src]="getLogoTime(novaTemporada.executivo_do_ano_time)" class="input-logo" alt="">
+                    </div>
+                  </div>
+                </div>
               </div>
-            </article>
+            </div>
+
+            <footer class="modal-luxury-footer">
+              <button class="btn-luxury-cancel" (click)="cancelarEdicaoGeral()">
+                Cancelar
+              </button>
+              <button class="btn-luxury-save" (click)="adicionarTemporada()" [disabled]="salvando">
+                {{ salvando ? 'Gravando…' : (editandoIdGeral ? 'Atualizar Temporada' : 'Salvar Temporada') }}
+              </button>
+            </footer>
           </div>
         </div>
 
-        <!-- Loading -->
-        <div class="loading-state" *ngIf="carregando" role="status" aria-live="polite">
-          Buscando dados da NBA…
+        <!-- Loading Skeleton -->
+        <div class="skeleton-container" *ngIf="carregando" role="status" aria-live="polite">
+          <div class="skeleton-header"></div>
+          <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
         </div>
 
         <!-- Table -->
@@ -239,7 +273,8 @@
                   'padding': getCorTimaNBA(temp.campeao_nba) ? '6px 10px' : '0.85rem 1rem'
                 }">
                   <div [ngClass]="{'champion-content': isMeuTimeCampeao(temp.campeao_nba)}">
-                    👑 {{ temp.campeao_nba || '—' }}
+                    <i class="fas fa-crown" *ngIf="isMeuTimeCampeao(temp.campeao_nba)"></i> {{ temp.campeao_nba || '—'
+                    }}
                   </div>
                 </td>
                 <td>{{ temp.resultado_finais || '—' }}</td>
@@ -307,10 +342,8 @@
                   <ng-template #execEmpty><span>—</span></ng-template>
                 </td>
                 <td>
-                  <button class="btn-base"
-                    style="background:transparent; font-size:1rem; padding:4px 8px; border:none; cursor:pointer; border-radius:6px;"
-                    (click)="editarTemporadaGeral(temp)"
-                    [attr.aria-label]="'Editar temporada ' + temp.temporada">✏️</button>
+                  <button class="btn-icon-edit" (click)="editarTemporadaGeral(temp)"
+                    [attr.aria-label]="'Editar temporada ' + temp.temporada"><i class="fas fa-edit"></i></button>
                 </td>
               </tr>
               <tr *ngIf="temporadas.length === 0">
@@ -339,7 +372,8 @@
               <img *ngIf="getLogoTime(getNomeAbaAtiva())" [src]="getLogoTime(getNomeAbaAtiva())"
                 style="width:48px; height:48px; object-fit:contain; filter:drop-shadow(0 8px 8px rgba(0,0,0,0.4))"
                 [alt]="getNomeAbaAtiva()">
-              <span *ngIf="!getLogoTime(getNomeAbaAtiva())" style="font-size:2rem;">🏀</span>
+              <span *ngIf="!getLogoTime(getNomeAbaAtiva())" class="placeholder-icon"><i
+                  class="fas fa-basketball-ball"></i></span>
               <h3>{{ getNomeAbaAtiva() }} - Titulos com sua Gestão:</h3>
               <div class="trophy-case"
                 *ngIf="getArrayTitulos().length > 0 || getArrayVices().length > 0 || getArrayExecutivos().length > 0"
@@ -377,9 +411,11 @@
           <div class="banner-acoes">
             <input type="file" #fileInputTime style="display:none" accept=".csv" (change)="processarCSVTime($event)"
               aria-hidden="true">
-            <button class="btn-banner outline" (click)="fileInputTime.click()">📥 Importar</button>
+            <button class="btn-banner outline" (click)="fileInputTime.click()"><i class="fas fa-file-import"></i>
+              Importar</button>
             <button class="btn-banner solid" (click)="abrirFormularioNovaCampanhaTime()">
-              {{ mostrarFormularioTime && !editandoIdTime ? '✕ Fechar' : '📝 Registrar Ano' }}
+              <i class="fas" [ngClass]="mostrarFormularioTime && !editandoIdTime ? 'fa-times' : 'fa-edit'"></i> {{
+              mostrarFormularioTime && !editandoIdTime ? 'Fechar' : 'Registrar Ano' }}
             </button>
           </div>
         </div>
@@ -391,14 +427,12 @@
             style="max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
             <article class="form-temporada form-time"
               style="margin: 0; box-shadow: none; border: none; border-radius: 0;" aria-label="Formulário de Campanha">
-              <header
-                style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+              <header class="section-header"
+                style="border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
                 <h3 style="margin:0;">{{ editandoIdTime ? 'Editar Registro de Campanha' : 'Novo Registro de Campanha' }}
                 </h3>
-                <button
-                  style="background:transparent; border:none; color:var(--text-secondary); font-size:1.5rem; cursor:pointer; transition: color 0.3s;"
-                  (click)="cancelarEdicaoTime()" onmouseover="this.style.color='#FFF'"
-                  onmouseout="this.style.color='var(--text-secondary)'">✕</button>
+                <button class="modal-btn-fechar" (click)="cancelarEdicaoTime()" aria-label="Fechar formulário"><i
+                    class="fas fa-times"></i></button>
               </header>
 
               <div class="form-section">
@@ -475,7 +509,7 @@
 
                 <ng-container *ngIf="getJogadoresElencoCampanhaAtual() as jogadoresElenco">
                   <div class="roster-photo-empty" *ngIf="jogadoresElenco.length === 0">
-                    <span>📋</span>
+                    <span class="placeholder-icon"><i class="fas fa-clipboard-list"></i></span>
                     <p>Adicione jogadores no quinteto, 6º homem ou draft para liberar o upload visual.</p>
                   </div>
 
@@ -496,20 +530,21 @@
                         <strong class="roster-nome-ovr">{{ jogador.nomeExibicao }}</strong>
                         <small class="roster-nome-limpo">{{ jogador.nomeBruto }}</small>
                         <span class="roster-origem-tag" *ngIf="getFotoCustomByNome(jogador.nomeBruto) as foto">
-                          {{ foto.origem === 'supabase' ? '☁️ Storage' : '💾 Base64' }}
+                          <i class="fas" [ngClass]="foto.origem === 'supabase' ? 'fa-cloud' : 'fa-save'"></i> {{
+                          foto.origem === 'supabase' ? 'Storage' : 'Base64' }}
                         </span>
                       </div>
 
                       <div class="roster-photo-actions">
                         <button type="button" class="btn-roster-upload" (click)="dispararUploadFotoJogador(jogador)"
                           [disabled]="salvandoFotoJogadorChave !== null">
-                          {{ salvandoFotoJogadorChave === jogador.nomeChave ? 'Enviando…' :
-                          (possuiFotoCustom(jogador.nomeBruto) ? '📷 Trocar' : '📷 Subir Foto') }}
+                          <i class="fas fa-camera"></i> {{ possuiFotoCustom(jogador.nomeBruto) ? 'Trocar' : 'Subir Foto'
+                          }}
                         </button>
                         <button type="button" class="btn-roster-remove" *ngIf="possuiFotoCustom(jogador.nomeBruto)"
                           (click)="removerFotoJogadorCustom(jogador.nomeBruto)"
                           [disabled]="salvandoFotoJogadorChave !== null" aria-label="Remover foto personalizada">
-                          🗑️
+                          <i class="fas fa-trash"></i>
                         </button>
                       </div>
                     </article>
@@ -529,102 +564,134 @@
           </div>
         </div>
 
-        <!-- Loading -->
-        <div class="loading-state" *ngIf="carregandoTime" role="status" aria-live="polite">
-          Carregando prancheta tática…
+        <!-- Loading Skeleton -->
+        <div class="skeleton-container" *ngIf="carregandoTime" role="status" aria-live="polite">
+          <div class="skeleton-header"></div>
+          <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
         </div>
 
-        <!-- Campaigns table -->
-        <div class="tabela-wrapper" *ngIf="!carregandoTime" role="region" aria-label="Tabela de Campanhas">
-          <table class="tabela-tracker tabela-time" style="min-width:1200px">
-            <thead>
-              <tr>
-                <th scope="col">Ano</th>
-                <th scope="col">Campanha (Seed)</th>
-                <th scope="col">Playoffs</th>
-                <th scope="col">PG</th>
-                <th scope="col">SG</th>
-                <th scope="col">SF</th>
-                <th scope="col">PF</th>
-                <th scope="col">C</th>
-                <th scope="col">6º Homem</th>
-                <th scope="col">Draft</th>
-                <th scope="col">Obs.</th>
-                <th scope="col">Ações</th>
-              </tr>
-            </thead>
-            <ng-template #celulaJogador let-nome="nome" let-ovr="ovr" let-status="status">
-              <div class="player-cell" *ngIf="nome; else celulaJogadorVazia" [ngClass]="getOvrClass(ovr)"
-                [ngStyle]="getEstiloCardLegendario(ovr)">
-                <img [src]="getFotoJogador(nome)" [ngClass]="['micro-foto', getStatusBadgeClass(status)]" loading="lazy"
-                  [alt]="'Foto de ' + nome">
-                <span class="player-badge">
-                  <span class="ovr-inline" *ngIf="ovr" [ngClass]="getOvrClass(ovr)"
-                    [ngStyle]="getEstiloOvrBadge(ovr)">{{ ovr }}</span>
-                  <span class="name-text">{{ limparNomeJogador(nome) }}</span>
-                </span>
-                <span *ngIf="status !== 'nenhum'" [ngClass]="['status-chip', getStatusBadgeClass(status)]">{{
-                  getStatusShort(status) }}</span>
-              </div>
-              <ng-template #celulaJogadorVazia><span>—</span></ng-template>
-            </ng-template>
+        <!-- Tabs Internas da Franquia -->
+        <div class="franquia-tabs-container" *ngIf="!carregandoTime" [style.--tab-bg]="getCorSecundariaAbaAtiva()"
+          [style.--tab-text]="getCorAbaAtiva()">
+          <button class="btn-franquia-tab" [class.ativo]="abaFranquiaAtiva === 'temporadas'"
+            (click)="abaFranquiaAtiva = 'temporadas'">
+            <i class="fas fa-list"></i> <span>Temporadas Time</span>
+          </button>
+          <button class="btn-franquia-tab" [class.ativo]="abaFranquiaAtiva === 'idolos'"
+            (click)="abaFranquiaAtiva = 'idolos'">
+            <i class="fas fa-star"></i> <span>Ídolos Time</span>
+          </button>
+        </div>
 
-            <tbody>
-              <tr *ngFor="let camp of campanhasTime; trackBy: trackById" [ngClass]="{
+        <div class="tab-transition-content" *ngIf="!carregandoTime && abaFranquiaAtiva === 'temporadas'">
+          <!-- Top scrollbar -->
+          <div class="top-scrollbar-wrapper" (scroll)="sincronizarScroll($event, bottomScroll)" #topScroll>
+            <div style="height: 1px; min-width: 1400px;"></div>
+          </div>
+
+          <!-- Campaigns table -->
+          <div class="tabela-wrapper" role="region" aria-label="Tabela de Campanhas"
+            (scroll)="sincronizarScroll($event, topScroll)" #bottomScroll>
+            <table class="tabela-tracker tabela-time" style="min-width:1400px">
+              <thead>
+                <tr>
+                  <th scope="col">Ano</th>
+                  <th scope="col">Campanha (Seed)</th>
+                  <th scope="col">Playoffs</th>
+                  <th scope="col">PG</th>
+                  <th scope="col">SG</th>
+                  <th scope="col">SF</th>
+                  <th scope="col">PF</th>
+                  <th scope="col">C</th>
+                  <th scope="col">6º Homem</th>
+                  <th scope="col">Draft</th>
+                  <th scope="col">Obs.</th>
+                  <th scope="col">Ações</th>
+                </tr>
+              </thead>
+              <ng-template #celulaJogador let-nome="nome" let-ovr="ovr" let-status="status">
+                <div class="player-cell" *ngIf="nome; else celulaJogadorVazia" [ngClass]="getOvrClass(ovr)"
+                  [ngStyle]="getEstiloCardLegendario(ovr)">
+                  <img [src]="getFotoJogador(nome)" [ngClass]="['micro-foto', getStatusBadgeClass(status)]"
+                    loading="lazy" [alt]="'Foto de ' + nome">
+                  <span class="player-badge">
+                    <span class="ovr-inline" *ngIf="ovr" [ngClass]="getOvrClass(ovr)"
+                      [ngStyle]="getEstiloOvrBadge(ovr)">{{ ovr }}</span>
+                    <span class="name-text">{{ limparNomeJogador(nome) }}</span>
+                  </span>
+                  <span *ngIf="status !== 'nenhum'" [ngClass]="['status-chip', getStatusBadgeClass(status)]">{{
+                    getStatusShort(status) }}</span>
+                </div>
+                <ng-template #celulaJogadorVazia><span>—</span></ng-template>
+              </ng-template>
+
+              <tbody>
+                <tr *ngFor="let camp of campanhasTime; trackBy: trackById" [ngClass]="{
               'linha-dourada': isCampanhaCampeao(camp.resultado_playoffs),
               'linha-cinza':   isCampanhaVice(camp.resultado_playoffs)
             }" [ngStyle]="isCampanhaCampeao(camp.resultado_playoffs) ? {'--glow-color': getCorAtualFranquia()} : {}">
-                <td><strong>{{ camp.temporada }}</strong></td>
-                <td>{{ camp.recorde_wl || '—' }} ({{ camp.rank_conferencia ? camp.rank_conferencia + 'º' : '—' }})</td>
-                <td [ngClass]="{'campeao-jogador-cell': isCampanhaCampeao(camp.resultado_playoffs)}">
-                  <div [ngClass]="{'champion-content': isCampanhaCampeao(camp.resultado_playoffs)}">
-                    {{ camp.resultado_playoffs || '—' }}
-                  </div>
-                </td>
+                  <td><strong>{{ camp.temporada }}</strong></td>
+                  <td>{{ camp.recorde_wl || '—' }} ({{ camp.rank_conferencia ? camp.rank_conferencia + 'º' : '—' }})
+                  </td>
+                  <td [ngClass]="{'campeao-jogador-cell': isCampanhaCampeao(camp.resultado_playoffs)}">
+                    <div [ngClass]="{'champion-content': isCampanhaCampeao(camp.resultado_playoffs)}">
+                      {{ camp.resultado_playoffs || '—' }}
+                    </div>
+                  </td>
 
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.pg, ovr: camp.pg_ovr, status: camp.pg_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.sg, ovr: camp.sg_ovr, status: camp.sg_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.sf, ovr: camp.sf_ovr, status: camp.sf_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.pf, ovr: camp.pf_ovr, status: camp.pf_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.c, ovr: camp.c_ovr, status: camp.c_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.sexto_homem, ovr: camp.sexto_homem_ovr, status: camp.sexto_homem_status }"></ng-container>
-                </td>
-                <td><ng-container
-                    *ngTemplateOutlet="celulaJogador; context: { nome: camp.draftado, ovr: camp.draftado_ovr, status: camp.draftado_status }"></ng-container>
-                </td>
-                <td>{{ camp.observacoes || '—' }}</td>
-                <td>
-                  <button class="btn-base"
-                    style="background:transparent; font-size:1rem; padding:4px 8px; border:none; cursor:pointer; border-radius:6px;"
-                    (click)="editarCampanhaTime(camp)"
-                    [attr.aria-label]="'Editar campanha ' + camp.temporada">✏️</button>
-                </td>
-              </tr>
-              <tr *ngIf="campanhasTime.length === 0">
-                <td colspan="12" class="sem-dados">Nenhuma campanha registrada para esta franquia.</td>
-              </tr>
-            </tbody>
-          </table>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pg, ovr: camp.pg_ovr, status: camp.pg_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sg, ovr: camp.sg_ovr, status: camp.sg_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sf, ovr: camp.sf_ovr, status: camp.sf_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pf, ovr: camp.pf_ovr, status: camp.pf_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.c, ovr: camp.c_ovr, status: camp.c_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sexto_homem, ovr: camp.sexto_homem_ovr, status: camp.sexto_homem_status }"></ng-container>
+                  </td>
+                  <td><ng-container
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.draftado, ovr: camp.draftado_ovr, status: camp.draftado_status }"></ng-container>
+                  </td>
+                  <td>{{ camp.observacoes || '—' }}</td>
+                  <td>
+                    <button class="btn-icon-edit" (click)="editarCampanhaTime(camp)"
+                      [attr.aria-label]="'Editar campanha ' + camp.temporada"><i class="fas fa-edit"></i></button>
+                  </td>
+                </tr>
+                <tr *ngIf="campanhasTime.length === 0">
+                  <td colspan="12" class="sem-dados">Nenhuma campanha registrada para esta franquia.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
 
         <!-- ── Hall of Fame ───────────────────────────────────── -->
-        <article class="hall-fama-section" aria-label="Hall da Fama">
-          <div class="header-acao">
-            <h3>✨ Hall da Fama &amp; Números Aposentados</h3>
-            <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-robot"></i> Gerado
-              Automaticamente pela IA</span>
+        <article class="hall-fama-section tab-transition-content"
+          *ngIf="!carregandoTime && abaFranquiaAtiva === 'idolos'" aria-label="Hall da Fama">
+          <div class="header-acao hall-fama-header"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: linear-gradient(90deg, rgba(15,23,42,0.8), rgba(15,23,42,0.4)); border-radius: var(--radius-lg); border-left: 4px solid var(--gold); margin-bottom: 1.5rem;">
+            <div class="hall-fama-titles" style="display: flex; flex-direction: column; gap: 0.25rem;">
+              <h3
+                style="margin: 0; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-size: 1.25rem;">
+                ✨ Hall da Fama &amp; Números Aposentados</h3>
+              <span
+                style="font-size: 0.85rem; color: var(--gold-dim); display: flex; align-items: center; gap: 0.35rem; font-weight: 500;">
+                <i class="fas fa-robot"></i> Gerado Automaticamente pela IA
+              </span>
+            </div>
+            <button class="btn-add-idolo" (click)="abrirModalNovoIdolo()">
+              <i class="fas fa-plus"></i> Adicionar Manualmente
+            </button>
           </div>
 
 
@@ -652,75 +719,92 @@
           </div>
 
           <!-- Modal Edição Ídolo -->
-          <div class="modal-overlay" *ngIf="idoloSelecionado" (click)="fecharModalIdolo()">
-            <div class="modal-content glass-modal" (click)="$event.stopPropagation()">
-              <button class="modal-close" (click)="fecharModalIdolo()">✕</button>
-
-              <div class="modal-header">
-                <h2>Editar Ídolo: {{ idoloSelecionado.nome }}</h2>
-                <span class="modal-score-badge">Score: {{ idoloSelecionado.score || 0 }} pts</span>
-              </div>
-
-              <div class="modal-trophies"
-                *ngIf="idoloSelecionado.anosTitulos?.length > 0 || idoloSelecionado.anosMvp?.length > 0 || idoloSelecionado.anosDpoy?.length > 0 || idoloSelecionado.anosRoy?.length > 0 || idoloSelecionado.anosSexto?.length > 0"
-                style="display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center;">
-                <span class="premium-tooltip-wrapper" *ngFor="let ano of idoloSelecionado.anosTitulos"
-                  [title]="'Campeão pela franquia em: ' + ano">
-                  <img src="assets/trofeu.png" class="nba-trophy-logo"
-                    style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" alt="Troféu">
+          <div class="modal-luxury-overlay" *ngIf="idoloSelecionado" role="dialog" aria-modal="true" (click.self)="fecharModalIdolo()">
+            <div class="modal-luxury-container" style="max-width: 650px;">
+              <header class="modal-luxury-header" style="display: flex; align-items: center;">
+                <h2>
+                  {{ idoloSelecionado.isNovo ? 'Adicionar Ídolo Manualmente' : 'Editar Ídolo: ' + idoloSelecionado.nome }}
+                </h2>
+                <span class="modal-score-badge" *ngIf="!idoloSelecionado.isNovo" style="margin-left: 1rem; background: rgba(253, 185, 39, 0.2); color: var(--gold); padding: 4px 10px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(253, 185, 39, 0.4);">
+                  Score: {{ idoloSelecionado.score || 0 }} pts
                 </span>
+                <button class="btn-close-luxury" (click)="fecharModalIdolo()" aria-label="Fechar formulário" style="margin-left: auto;"><i class="fas fa-times"></i></button>
+              </header>
 
-                <span *ngFor="let ano of idoloSelecionado.anosMvp" [title]="'MVP da Liga em: ' + ano"
-                  style="background: var(--gold); color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; cursor: help; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                  <img src="assets/mvptrofeu.png" class="nba-trophy-logo"
-                    style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" alt="Troféu">MVP
-                  '{{ ano.length > 4 ? ano.slice(-2) : ano }}
-                </span>
+              <div class="modal-luxury-content">
+                <div class="form-grid" *ngIf="idoloSelecionado.isNovo" style="margin-bottom: 1.5rem;">
+                  <div class="modern-input-group">
+                    <input id="idolo-nome" type="text" [(ngModel)]="idoloSelecionado.nome" placeholder=" ">
+                    <label for="idolo-nome">Nome do Jogador/Treinador</label>
+                  </div>
+                  <div class="modern-input-group">
+                    <select id="idolo-categoria" [(ngModel)]="idoloSelecionado.categoria" placeholder=" ">
+                      <option value="Jogador">Jogador</option>
+                      <option value="Head Coach">Head Coach</option>
+                      <option value="Assistente Técnico">Assistente Técnico</option>
+                      <option value="GM/Executivo">GM/Executivo</option>
+                    </select>
+                    <label for="idolo-categoria">Categoria</label>
+                  </div>
+                </div>
 
-                <span *ngFor="let ano of idoloSelecionado.anosDpoy" [title]="'DPOY em: ' + ano"
-                  style="background: #334155; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #475569; display: flex; align-items: center; gap: 4px; cursor: help;">
-                  <img src="assets/dpoy.png" class="nba-trophy-logo"
-                    style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" alt="Troféu">
-                  DPOY '{{ ano.length > 4 ? ano.slice(-2) : ano }}
-                </span>
+                <!-- Troféus e prêmios do ídolo -->
+                <div class="modal-trophies-container"
+                  *ngIf="!idoloSelecionado.isNovo && (idoloSelecionado.anosTitulos?.length > 0 || idoloSelecionado.anosMvp?.length > 0 || idoloSelecionado.anosDpoy?.length > 0 || idoloSelecionado.anosRoy?.length > 0 || idoloSelecionado.anosSexto?.length > 0)"
+                  style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
 
-                <span *ngFor="let ano of idoloSelecionado.anosRoy" [title]="'Rookie of the Year em: ' + ano"
-                  style="background: #0ea5e9; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; cursor: help;">
-                  <img src="assets/roy.png" class="nba-trophy-logo"
-                    style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" alt="Troféu"> ROY
-                  '{{ ano.length > 4 ? ano.slice(-2) : ano }}
-                </span>
+                  <span class="award-badge award-badge-titulo premium-tooltip-wrapper"
+                    *ngFor="let ano of idoloSelecionado.anosTitulos" [title]="'Campeão pela franquia em: ' + ano">
+                    <img src="assets/trofeu.png" alt="Troféu" class="label-award-icon">
+                  </span>
 
-                <span *ngFor="let ano of idoloSelecionado.anosSexto" [title]="'6th Man em: ' + ano"
-                  style="background: #10b981; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; cursor: help;">
-                  <img src="assets/6man.png" class="nba-trophy-logo"
-                    style="width: 32px; height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" alt="Troféu"> 6TH
-                  '{{ ano.length > 4 ? ano.slice(-2) : ano }}
-                </span>
-              </div>
+                  <span class="award-badge award-badge-mvp" *ngFor="let ano of idoloSelecionado.anosMvp"
+                    [title]="'MVP da Liga em: ' + ano">
+                    <img src="assets/mvptrofeu.png" alt="MVP" class="label-award-icon"> MVP '{{ ano.length > 4 ?
+                    ano.slice(-2) : ano }}
+                  </span>
 
-              <div class="form-grid">
-                <div class="input-group">
-                  <label>Número da Camisa Aposentada</label>
-                  <input type="text" [(ngModel)]="idoloSelecionado.numero_camisa" placeholder="Ex: #24">
+                  <span class="award-badge award-badge-dpoy" *ngFor="let ano of idoloSelecionado.anosDpoy"
+                    [title]="'DPOY em: ' + ano">
+                    <img src="assets/dpoy.png" alt="DPOY" class="label-award-icon"> DPOY '{{ ano.length > 4 ?
+                    ano.slice(-2) : ano }}
+                  </span>
+
+                  <span class="award-badge award-badge-roy" *ngFor="let ano of idoloSelecionado.anosRoy"
+                    [title]="'Rookie of the Year em: ' + ano">
+                    <img src="assets/roy.png" alt="ROY" class="label-award-icon"> ROY '{{ ano.length > 4 ? ano.slice(-2) :
+                    ano }}
+                  </span>
+
+                  <span class="award-badge award-badge-6th" *ngFor="let ano of idoloSelecionado.anosSexto"
+                    [title]="'6th Man em: ' + ano">
+                    <img src="assets/6man.png" alt="6th Man" class="label-award-icon"> 6TH '{{ ano.length > 4 ?
+                    ano.slice(-2) : ano }}
+                  </span>
+                </div>
+
+                <div class="form-grid">
+                  <div class="modern-input-group">
+                    <input id="idolo-camisa" type="text" [(ngModel)]="idoloSelecionado.numero_camisa" placeholder=" ">
+                    <label for="idolo-camisa">Número da Camisa Aposentada</label>
+                  </div>
+                </div>
+
+                <div class="modern-input-group" style="margin-top: 1.5rem;">
+                  <textarea id="idolo-motivo" [(ngModel)]="idoloSelecionado.motivo" rows="3" placeholder=" "></textarea>
+                  <label for="idolo-motivo">O Porquê (Motivo)</label>
+                  <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block; font-size: 0.8rem; padding-left: 0.5rem;">
+                    <i class="fas fa-robot"></i> Nota: A IA pode reescrever esse texto automaticamente caso os stats do jogador mudem.
+                  </small>
                 </div>
               </div>
 
-              <div class="input-group" style="margin-top: 1rem;">
-                <label>O Porquê (Motivo)</label>
-                <textarea [(ngModel)]="idoloSelecionado.motivo" rows="3"
-                  style="width: 100%; border-radius: 6px; padding: 0.8rem; background: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--court-border);"></textarea>
-                <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">Nota: A IA pode
-                  reescrever esse texto automaticamente caso os stats do jogador mudem.</small>
-              </div>
-
-              <div class="modal-actions"
-                style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
-                <button class="btn-cancel" (click)="fecharModalIdolo()">Cancelar</button>
-                <button class="btn-salvar" (click)="salvarEdicaoIdolo()" [disabled]="salvandoIdoloEditado">
+              <footer class="modal-luxury-footer">
+                <button class="btn-luxury-cancel" (click)="fecharModalIdolo()">Cancelar</button>
+                <button class="btn-luxury-save" (click)="salvarEdicaoIdolo()" [disabled]="salvandoIdoloEditado">
                   {{ salvandoIdoloEditado ? 'Salvando...' : 'Salvar Alterações' }}
                 </button>
-              </div>
+              </footer>
             </div>
           </div>
         </article>
@@ -732,17 +816,17 @@
   ════════════════════════════════════════════════════════════ -->
       <section class="aba-conteudo" role="tabpanel" *ngIf="abaAtiva === 'lembrancas'" aria-label="Linha do Tempo">
 
-        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
-          <h3
-            style="margin:0; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--text-primary);">
-            📸 Momentos Históricos
-          </h3>
+        <header class="section-header">
+          <h3 class="section-header-title">📸 Momentos Históricos</h3>
           <div style="display:flex; gap:10px;">
             <button class="btn-global-ai" (click)="gerarLinhaDoTempoGlobal()" [disabled]="salvandoLembranca">
-              {{ salvandoLembranca ? 'Gerando Tudo...' : '⚡ Auto-Gerar Tudo (IA)' }}
+              <i class="fas" [ngClass]="salvandoLembranca ? 'fa-spinner fa-spin' : 'fa-bolt'"></i> {{ salvandoLembranca
+              ? 'Gerando Tudo...' : 'Auto-Gerar Tudo (IA)' }}
             </button>
             <button class="btn-add-temp" (click)="abrirFormularioNovaLembranca()">
-              {{ mostrarFormularioLembranca && !editandoIdLembranca ? '✕ Fechar' : '🗞️ Publicar Manchete' }}
+              <i class="fas"
+                [ngClass]="mostrarFormularioLembranca && !editandoIdLembranca ? 'fa-times' : 'fa-newspaper'"></i> {{
+              mostrarFormularioLembranca && !editandoIdLembranca ? 'Fechar' : 'Publicar Manchete' }}
             </button>
           </div>
         </header>
@@ -758,7 +842,7 @@
                 <option *ngFor="let t of temporadas" [value]="t.id">{{ t.temporada }} ({{ t.campeao_nba }})</option>
               </select>
               <button class="btn-magic-ai" (click)="sugerirNoticiaIA(selectIA.value)">
-                ✨ Auto-Preencher IA
+                <i class="fas fa-magic"></i> Auto-Preencher IA
               </button>
             </div>
           </div>
@@ -826,9 +910,9 @@
                 <span class="memory-date">{{ memory.data_evento }}</span>
                 <div style="display:flex; gap: 5px;">
                   <button class="btn-editar-memory" (click)="editarLembranca(memory)"
-                    [attr.aria-label]="'Editar memória: ' + memory.titulo">✏️</button>
+                    [attr.aria-label]="'Editar memória: ' + memory.titulo"><i class="fas fa-edit"></i></button>
                   <button class="btn-deletar-memory" (click)="excluirLembranca(memory.id)"
-                    [attr.aria-label]="'Excluir memória: ' + memory.titulo">🗑️</button>
+                    [attr.aria-label]="'Excluir memória: ' + memory.titulo"><i class="fas fa-trash"></i></button>
                 </div>
               </header>
               <h4 class="memory-title">{{ memory.titulo }}</h4>
@@ -862,7 +946,7 @@
               </button>
 
               <button class="time-card card-personalizado" (click)="modoPersonalizado = true">
-                ＋ Equipe Personalizada
+                <i class="fas fa-plus"></i> Equipe Personalizada
               </button>
             </div>
 
@@ -912,9 +996,9 @@
   ════════════════════════════════════════════════════════════ -->
       <section class="aba-conteudo" role="tabpanel" *ngIf="abaAtiva === 'rankings'" aria-label="Rankings Históricos">
         <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-          <h3
+          <h3 class="section-header-title"
             style="margin:0; font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:1.5px; color:var(--text-primary);">
-            🏆 Hall dos Deuses da NBA
+            <i class="fas fa-trophy"></i> Hall dos Deuses da NBA
           </h3>
         </header>
 
@@ -1046,7 +1130,7 @@
         <div class="modal-content modal-config">
 
           <header class="modal-header-flex">
-            <h2 id="modal-config-titulo">⚙️ Configurações da Liga</h2>
+            <h2 id="modal-config-titulo"><i class="fas fa-cog"></i> Configurações da Liga</h2>
             <button class="btn-close-modal" (click)="fecharModalConfiguracoes()"
               aria-label="Fechar configurações">✕</button>
           </header>
@@ -1058,7 +1142,7 @@
               <p class="config-section-label">Times Cadastrados</p>
 
               <div class="config-franquia-vazia" *ngIf="franquias.length === 0">
-                <span>🏀</span>
+                <span class="placeholder-icon"><i class="fas fa-basketball-ball"></i></span>
                 <p>Nenhum time cadastrado ainda.</p>
               </div>
 
@@ -1104,7 +1188,7 @@
                 </div>
 
                 <label class="btn-upload-logo" *ngIf="!franquiaEditandoForm.logo_url">
-                  📁 Selecionar Imagem
+                  <i class="fas fa-folder-open"></i> Selecionar Imagem
                   <input type="file" accept="image/*" hidden (change)="processarLogoEdicaoFranquia($event)">
                 </label>
               </div>
@@ -1114,7 +1198,7 @@
                   Cancelar
                 </button>
                 <button class="btn-salvar" (click)="salvarEdicaoFranquia()" [disabled]="salvandoEdicaoFranquia">
-                  {{ salvandoEdicaoFranquia ? 'Salvando…' : '✓ Salvar Alterações' }}
+                  {{ salvandoEdicaoFranquia ? 'Salvando…' : 'Salvar Alterações' }}
                 </button>
               </div>
 
@@ -1122,7 +1206,7 @@
 
             <ng-template #semSelecao>
               <div class="config-edicao-placeholder">
-                <span>←</span>
+                <span class="placeholder-icon"><i class="fas fa-arrow-left"></i></span>
                 <p>Selecione um time na lista para editar suas configurações.</p>
               </div>
             </ng-template>
