@@ -277,6 +277,27 @@ export class HistoricoGeralComponent implements OnInit {
   uploadFotoModo: 'base64' | 'supabase' = 'base64';
   uploadFotoJogadorAlvo: string | null = null;
   salvandoFotoJogadorChave: string | null = null;
+  sincronizandoIdolos = false;
+
+  async forcarSincronizacaoIdolos() {
+    if (this.sincronizandoIdolos) return;
+    const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
+    if (!timeAtivo) return;
+
+    this.sincronizandoIdolos = true;
+    this.cdr.detectChanges();
+    try {
+      await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
+      const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
+      this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
+    } catch (error) {
+      console.error('Erro ao forçar sincronização de ídolos:', error);
+      alert('Não foi possível sincronizar os ídolos neste momento.');
+    } finally {
+      this.sincronizandoIdolos = false;
+      this.cdr.detectChanges();
+    }
+  }
 
   @ViewChild('fotoElencoInput') fotoElencoInput?: ElementRef<HTMLInputElement>;
   
@@ -909,7 +930,7 @@ salvandoEdicaoFranquia = false;
           numero_camisa: this.idoloSelecionado.numero_camisa,
           categoria: this.idoloSelecionado.categoria,
           motivo: this.idoloSelecionado.motivo,
-          score: 100 // Manual idols get a default score so they appear
+          score: this.idoloSelecionado.score || 50 // Manual idols get a default minimum score so they appear if user forgets
         };
         const { data, error } = await this.supabaseService.supabase
           .from('hall_da_fama')
@@ -927,7 +948,9 @@ salvandoEdicaoFranquia = false;
           .from('hall_da_fama')
           .update({
             numero_camisa: this.idoloSelecionado.numero_camisa,
-            motivo: this.idoloSelecionado.motivo
+            motivo: this.idoloSelecionado.motivo,
+            score: this.idoloSelecionado.score,
+            categoria: this.idoloSelecionado.categoria
           })
           .eq('id', this.idoloSelecionado.id);
           
@@ -949,6 +972,24 @@ salvandoEdicaoFranquia = false;
     }
   }
 
+  async deletarIdolo() {
+    if (!this.idoloSelecionado || this.idoloSelecionado.isNovo) return;
+    if (!confirm(`Tem certeza que deseja excluir a lenda ${this.idoloSelecionado.nome}?`)) return;
+
+    this.salvandoIdoloEditado = true;
+    try {
+      await this.supabaseService.deletarIdoloUnico(this.idoloSelecionado.id);
+      this.lendasTime = this.lendasTime.filter(l => l.id !== this.idoloSelecionado.id);
+      this.fecharModalIdolo();
+    } catch (error) {
+      console.error('Erro ao deletar ídolo:', error);
+      alert('Não foi possível excluir o ídolo.');
+    } finally {
+      this.salvandoIdoloEditado = false;
+      this.cdr.detectChanges();
+    }
+  }
+
   async sincronizarEAtualizarIdolos(nomeFranquia: string) {
     if (!this.ligaId) return;
     
@@ -958,7 +999,15 @@ salvandoEdicaoFranquia = false;
     // 2. Extrair os jogadores que jogaram no time
     for (const campanha of this.campanhasTime) {
       const temporadaGeral = this.temporadas.find(t => t.temporada === campanha.temporada);
-      const isCampeao = temporadaGeral?.campeao_nba === nomeFranquia;
+      
+      let isCampeao = this.isCampanhaCampeao(campanha.resultado_playoffs);
+      if (!isCampeao && temporadaGeral?.campeao_nba) {
+         const nfLimpo = nomeFranquia.trim().toLowerCase();
+         const cNba = temporadaGeral.campeao_nba.trim().toLowerCase();
+         if (nfLimpo.includes(cNba) || cNba.includes(nfLimpo)) {
+             isCampeao = true;
+         }
+      }
       
       const jogadoresElenco = [
         { nome: campanha.pg, ovr: campanha.pg_ovr },

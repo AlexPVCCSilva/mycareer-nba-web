@@ -4893,3 +4893,77 @@ body {
     }
   }
 }
+
+/* ─── BUTTONS IDOLO (Adicionar / Atualizar) ─────────────────── */
+.btn-add-idolo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--gold, #FDB927) 0%, #d97706 100%);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 15px rgba(253, 185, 39, 0.25);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+
+  i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(253, 185, 39, 0.45);
+    
+    &::before {
+      left: 100%;
+    }
+    
+    i {
+      transform: scale(1.1);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(253, 185, 39, 0.3);
+  }
+
+  &.outline {
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.25) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      color: #fff;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+}

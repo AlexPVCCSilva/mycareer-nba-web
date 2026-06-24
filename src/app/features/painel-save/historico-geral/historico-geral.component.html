@@ -431,8 +431,8 @@
 
         <!-- Form: campaign MODAL -->
         <div class="modal-overlay" *ngIf="mostrarFormularioTime" role="dialog" aria-modal="true"
-          (click.self)="cancelarEdicaoTime()">
-          <div class="modal-content"
+          (click)="cancelarEdicaoTime()">
+          <div class="modal-content" (click)="$event.stopPropagation()"
             style="max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
             <article class="form-temporada form-time"
               style="margin: 0; box-shadow: none; border: none; border-radius: 0;" aria-label="Formulário de Campanha">
@@ -693,9 +693,14 @@
                 <i class="fas fa-history"></i> As maiores lendas imortalizadas na história do time
               </span>
             </div>
-            <button class="btn-add-idolo" (click)="abrirModalNovoIdolo()">
-              <i class="fas fa-plus"></i> Adicionar Manualmente
-            </button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-add-idolo outline" (click)="forcarSincronizacaoIdolos()" [disabled]="sincronizandoIdolos">
+                <i class="fas fa-sync-alt" [class.fa-spin]="sincronizandoIdolos"></i> {{ sincronizandoIdolos ? 'Sincronizando...' : 'Atualizar Automático' }}
+              </button>
+              <button class="btn-add-idolo" (click)="abrirModalNovoIdolo()">
+                <i class="fas fa-plus"></i> Adicionar Manualmente
+              </button>
+            </div>
           </div>
 
 
@@ -761,8 +766,8 @@
 
           <!-- Modal Edição Ídolo -->
           <div class="modal-luxury-overlay" *ngIf="idoloSelecionado" role="dialog" aria-modal="true"
-            (click.self)="fecharModalIdolo()">
-            <div class="modal-luxury-container" style="max-width: 650px;">
+            (click)="fecharModalIdolo()">
+            <div class="modal-luxury-container" style="max-width: 650px;" (click)="$event.stopPropagation()">
               <header class="modal-luxury-header" style="display: flex; align-items: center;">
                 <h2>
                   {{ idoloSelecionado.isNovo ? 'Adicionar Ídolo Manualmente' : 'Editar Ídolo: ' + idoloSelecionado.nome
@@ -778,18 +783,9 @@
 
               <div class="modal-luxury-content">
                 <div class="form-grid" *ngIf="idoloSelecionado.isNovo" style="margin-bottom: 1.5rem;">
-                  <div class="modern-input-group">
+                  <div class="modern-input-group" style="grid-column: 1 / -1;">
                     <input id="idolo-nome" type="text" [(ngModel)]="idoloSelecionado.nome" placeholder=" ">
-                    <label for="idolo-nome">Nome do Jogador/Treinador</label>
-                  </div>
-                  <div class="modern-input-group">
-                    <select id="idolo-categoria" [(ngModel)]="idoloSelecionado.categoria" placeholder=" ">
-                      <option value="Jogador">Jogador</option>
-                      <option value="Head Coach">Head Coach</option>
-                      <option value="Assistente Técnico">Assistente Técnico</option>
-                      <option value="GM/Executivo">GM/Executivo</option>
-                    </select>
-                    <label for="idolo-categoria">Categoria</label>
+                    <label for="idolo-nome">Nome da Lenda</label>
                   </div>
                 </div>
 
@@ -831,8 +827,22 @@
 
                 <div class="form-grid">
                   <div class="modern-input-group">
+                    <input id="idolo-score" type="number" [(ngModel)]="idoloSelecionado.score" placeholder=" ">
+                    <label for="idolo-score">Pontuação (Score Manual)</label>
+                  </div>
+                  <div class="modern-input-group">
+                    <select id="idolo-categoria" [(ngModel)]="idoloSelecionado.categoria" placeholder=" ">
+                      <option value="Xodó da Torcida">Xodó da Torcida</option>
+                      <option value="Lenda Cult">Lenda Cult</option>
+                      <option value="Rosto da Franquia">Rosto da Franquia</option>
+                      <option value="Lenda Histórica / Camisa Aposentada">Lenda Histórica / Camisa Aposentada</option>
+                      <option value="Imortal / Estátua na Arena">Imortal / Estátua na Arena</option>
+                    </select>
+                    <label for="idolo-categoria">Nível de Ídolo</label>
+                  </div>
+                  <div class="modern-input-group" style="grid-column: 1 / -1;">
                     <input id="idolo-camisa" type="text" [(ngModel)]="idoloSelecionado.numero_camisa" placeholder=" ">
-                    <label for="idolo-camisa">Número da Camisa Aposentada</label>
+                    <label for="idolo-camisa">Número da Camisa Aposentada (Ex: 24, 8)</label>
                   </div>
                 </div>
 
@@ -848,10 +858,13 @@
               </div>
 
               <footer class="modal-luxury-footer">
-                <button class="btn-luxury-cancel" (click)="fecharModalIdolo()">Cancelar</button>
-                <button class="btn-luxury-save" (click)="salvarEdicaoIdolo()" [disabled]="salvandoIdoloEditado">
-                  {{ salvandoIdoloEditado ? 'Salvando...' : 'Salvar Alterações' }}
-                </button>
+                <button class="btn-luxury-cancel" *ngIf="!idoloSelecionado.isNovo" (click)="deletarIdolo()" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.3);">Excluir Ídolo</button>
+                <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                  <button class="btn-luxury-cancel" (click)="fecharModalIdolo()">Cancelar</button>
+                  <button class="btn-luxury-save" (click)="salvarEdicaoIdolo()" [disabled]="salvandoIdoloEditado">
+                    {{ salvandoIdoloEditado ? 'Salvando...' : 'Salvar Alterações' }}
+                  </button>
+                </div>
               </footer>
             </div>
           </div>
@@ -978,8 +991,8 @@
        MODAL: ESCOLHER FRANQUIA
   ════════════════════════════════════════════════════════════ -->
       <div class="modal-overlay" *ngIf="mostrarModalFranquia" role="dialog" aria-modal="true"
-        aria-labelledby="modal-franquia-titulo" (click.self)="fecharModalFranquia()">
-        <div class="modal-content">
+        aria-labelledby="modal-franquia-titulo" (click)="fecharModalFranquia()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
           <h2 id="modal-franquia-titulo">Escolha sua Franquia</h2>
 
           <!-- List of pre-set teams -->
@@ -1180,8 +1193,8 @@
      MODAL: CONFIGURAÇÕES DA LIGA
 ════════════════════════════════════════════════════════ -->
       <div class="modal-overlay" *ngIf="mostrarModalConfiguracoes" role="dialog" aria-modal="true"
-        aria-labelledby="modal-config-titulo" (click.self)="fecharModalConfiguracoes()">
-        <div class="modal-content modal-config">
+        aria-labelledby="modal-config-titulo" (click)="fecharModalConfiguracoes()">
+        <div class="modal-content modal-config" (click)="$event.stopPropagation()">
 
           <header class="modal-header-flex">
             <h2 id="modal-config-titulo"><i class="fas fa-cog"></i> Configurações da Liga</h2>

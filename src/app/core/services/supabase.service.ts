@@ -280,12 +280,30 @@ export class SupabaseService {
       if (erroDel) throw erroDel;
     }
 
-    if (lendas.length > 0) {
+    const paraInserir = lendas.filter(l => !l.id);
+    const paraAtualizar = lendas.filter(l => l.id);
+
+    if (paraInserir.length > 0) {
+      const { error: erroIns } = await this.supabase
+        .from('hall_da_fama')
+        .insert(paraInserir);
+      if (erroIns) throw erroIns;
+    }
+
+    if (paraAtualizar.length > 0) {
       const { error: erroUpsert } = await this.supabase
         .from('hall_da_fama')
-        .upsert(lendas); // Supabase atualiza se tiver 'id', senão insere
+        .upsert(paraAtualizar);
       if (erroUpsert) throw erroUpsert;
     }
+  }
+
+  async deletarIdoloUnico(id: string) {
+    const { error } = await this.supabase
+      .from('hall_da_fama')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
   }
 
   // Atualiza uma temporada da História Geral
