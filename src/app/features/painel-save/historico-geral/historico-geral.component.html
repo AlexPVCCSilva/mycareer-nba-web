@@ -343,7 +343,8 @@
                 </td>
                 <td>
                   <button class="btn-icon-edit" (click)="editarTemporadaGeral(temp)"
-                    [attr.aria-label]="'Editar temporada ' + temp.temporada"><i class="fas fa-edit"></i></button>
+                    [attr.aria-label]="'Editar temporada ' + temp.temporada"><i class="fas fa-pencil-alt"></i>
+                    Editar</button>
                 </td>
               </tr>
               <tr *ngIf="temporadas.length === 0">
@@ -364,17 +365,18 @@
 
         <!-- Banner -->
         <div class="team-banner" [ngStyle]="{
-        'background-color': getCorAbaAtiva(),
-        'box-shadow': '0 12px 40px -10px ' + getCorAbaAtiva() + '80'
+        '--team-color': getCorAbaAtiva() || '#3b82f6',
+        '--team-glow': (getCorAbaAtiva() || '#3b82f6') + '40',
+        '--team-gradient': (getCorAbaAtiva() || '#3b82f6') + '80'
       }" role="banner">
           <div class="banner-info">
             <div class="banner-title-wrapper">
               <img *ngIf="getLogoTime(getNomeAbaAtiva())" [src]="getLogoTime(getNomeAbaAtiva())"
-                style="width:48px; height:48px; object-fit:contain; filter:drop-shadow(0 8px 8px rgba(0,0,0,0.4))"
+                style="width:54px; height:54px; object-fit:contain; filter:drop-shadow(0 8px 12px rgba(0,0,0,0.6))"
                 [alt]="getNomeAbaAtiva()">
               <span *ngIf="!getLogoTime(getNomeAbaAtiva())" class="placeholder-icon"><i
                   class="fas fa-basketball-ball"></i></span>
-              <h3>{{ getNomeAbaAtiva() }} - Titulos com sua Gestão:</h3>
+              <h3>{{ getNomeAbaAtiva() }} - Títulos com sua Gestão:</h3>
               <div class="trophy-case"
                 *ngIf="getArrayTitulos().length > 0 || getArrayVices().length > 0 || getArrayExecutivos().length > 0"
                 role="list" aria-label="Conquistas">
@@ -383,9 +385,9 @@
                   <img role="listitem" src="assets/trofeu.png" class="nba-trophy-logo" alt="Larry O'Brien Trophy">
                 </span>
                 <span class="premium-tooltip-wrapper" *ngFor="let v of getArrayVices()" [attr.data-year]="v.temporada"
-                  [title]="'Vice-campeão em: ' + v.temporada">
-                  <img role="listitem" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f948.png"
-                    class="nba-trophy-logo medal-silver" alt="Vice-campeonato">
+                  [title]="'Vice-campeão em: ' + v.temporada" style="display:flex; align-items:center;">
+                  <i class="fas fa-medal medal-silver"
+                    style="font-size: 1.3rem; color: #cbd5e1; filter: drop-shadow(0 2px 4px rgba(203,213,225,0.4));"></i>
                 </span>
                 <span class="premium-tooltip-wrapper" *ngFor="let ex of getArrayExecutivos()"
                   [attr.data-year]="ex.temporada"
@@ -403,9 +405,16 @@
                   {{ camisa.numero_camisa }}
                 </div>
               </div>
-
+              <div class="rafters-container">
+                <p class="banner-stats">
+                  <i class="fas fa-calendar-alt"></i> {{ campanhasTime.length }} Temporadas Disputadas
+                  &nbsp;&bull;&nbsp;
+                  <i class="fas fa-star"></i> {{ lendasTime.length }} Ídolos no Hall da Fama &nbsp;&bull;&nbsp;
+                  <i class="fas fa-ring"></i> {{ getArrayTitulos().length }} Campeonatos
+                </p>
+              </div>
             </div>
-            <p>Controle de Rotação · Campanhas · Lendas</p>
+
           </div>
 
           <div class="banner-acoes">
@@ -584,15 +593,8 @@
         </div>
 
         <div class="tab-transition-content" *ngIf="!carregandoTime && abaFranquiaAtiva === 'temporadas'">
-          <!-- Top scrollbar -->
-          <div class="top-scrollbar-wrapper" (scroll)="sincronizarScroll($event, bottomScroll)" #topScroll>
-            <div style="height: 1px; min-width: 1400px;"></div>
-          </div>
-
-          <!-- Campaigns table -->
-          <div class="tabela-wrapper" role="region" aria-label="Tabela de Campanhas"
-            (scroll)="sincronizarScroll($event, topScroll)" #bottomScroll>
-            <table class="tabela-tracker tabela-time" style="min-width:1400px">
+          <div class="tabela-wrapper" role="region" aria-label="Tabela de Campanhas">
+            <table class="tabela-tracker tabela-time tabela-compacta" style="width: 100%;">
               <thead>
                 <tr>
                   <th scope="col">Ano</th>
@@ -663,7 +665,8 @@
                   <td>{{ camp.observacoes || '—' }}</td>
                   <td>
                     <button class="btn-icon-edit" (click)="editarCampanhaTime(camp)"
-                      [attr.aria-label]="'Editar campanha ' + camp.temporada"><i class="fas fa-edit"></i></button>
+                      [attr.aria-label]="'Editar campanha ' + camp.temporada"><i class="fas fa-pencil-alt"></i>
+                      Editar</button>
                   </td>
                 </tr>
                 <tr *ngIf="campanhasTime.length === 0">
@@ -682,11 +685,12 @@
             style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: linear-gradient(90deg, rgba(15,23,42,0.8), rgba(15,23,42,0.4)); border-radius: var(--radius-lg); border-left: 4px solid var(--gold); margin-bottom: 1.5rem;">
             <div class="hall-fama-titles" style="display: flex; flex-direction: column; gap: 0.25rem;">
               <h3
-                style="margin: 0; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-size: 1.25rem;">
-                ✨ Hall da Fama &amp; Números Aposentados</h3>
+                style="margin: 0; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-size: 1.25rem; text-transform: uppercase; letter-spacing: 1px;">
+                <i class="fas fa-crown" style="color: var(--gold);"></i> Olimpo da Franquia
+              </h3>
               <span
                 style="font-size: 0.85rem; color: var(--gold-dim); display: flex; align-items: center; gap: 0.35rem; font-weight: 500;">
-                <i class="fas fa-robot"></i> Gerado Automaticamente pela IA
+                <i class="fas fa-history"></i> As maiores lendas imortalizadas na história do time
               </span>
             </div>
             <button class="btn-add-idolo" (click)="abrirModalNovoIdolo()">
@@ -700,16 +704,53 @@
             <div class="lenda-card" role="listitem" *ngFor="let lenda of lendasTime; let i = index; trackBy: trackById"
               [class.top-3-idolo]="i < 3" (click)="abrirModalIdolo(lenda)"
               [ngStyle]="i < 3 ? {'--glow-color': getCorAbaAtiva()} : {}">
+
               <div class="lenda-foto-wrapper">
                 <img [src]="getFotoJogador(lenda.nome)" [alt]="lenda.nome" class="lenda-foto">
-                <div class="lenda-jersey-badge" *ngIf="lenda.numero_camisa" aria-label="Número da camisa">
-                  {{ lenda.numero_camisa }}
-                </div>
               </div>
+
               <div class="lenda-info">
                 <h4>{{ lenda.nome }}</h4>
                 <span class="lenda-badge">{{ lenda.categoria }}</span>
-                <p *ngIf="lenda.motivo">"{{ lenda.motivo }}"</p>
+
+                <div class="lenda-stats-row">
+                  <span class="lenda-ovr-max" *ngIf="lenda.maxOvr > 0">
+                    <span class="ovr-label">Auge</span>
+                    <span class="ovr-value" [ngClass]="getOvrClass(lenda.maxOvr)">{{ lenda.maxOvr }} OVR</span>
+                  </span>
+
+                  <div class="lenda-awards-mini"
+                    *ngIf="lenda.anosTitulos?.length > 0 || lenda.anosMvp?.length > 0 || lenda.anosDpoy?.length > 0 || lenda.anosRoy?.length > 0 || lenda.anosSexto?.length > 0">
+                    <span class="award-mini-icon" *ngIf="lenda.anosTitulos?.length > 0"
+                      [title]="lenda.anosTitulos.length + 'x Campeão'">
+                      <img src="assets/trofeu.png" alt="Troféu"> {{ lenda.anosTitulos.length }}x
+                    </span>
+                    <span class="award-mini-icon" *ngIf="lenda.anosMvp?.length > 0"
+                      [title]="lenda.anosMvp.length + 'x MVP'">
+                      <img src="assets/mvptrofeu.png" alt="MVP"> {{ lenda.anosMvp.length }}x
+                    </span>
+                    <span class="award-mini-icon" *ngIf="lenda.anosDpoy?.length > 0"
+                      [title]="lenda.anosDpoy.length + 'x DPOY'">
+                      <img src="assets/dpoy.png" alt="DPOY"> {{ lenda.anosDpoy.length }}x
+                    </span>
+                    <span class="award-mini-icon" *ngIf="lenda.anosRoy?.length > 0"
+                      [title]="lenda.anosRoy.length + 'x ROY'">
+                      <img src="assets/roy.png" alt="ROY"> {{ lenda.anosRoy.length }}x
+                    </span>
+                    <span class="award-mini-icon" *ngIf="lenda.anosSexto?.length > 0"
+                      [title]="lenda.anosSexto.length + 'x 6TH Man'">
+                      <img src="assets/6man.png" alt="6th"> {{ lenda.anosSexto.length }}x
+                    </span>
+                  </div>
+                </div>
+
+                <p class="lenda-historia" *ngIf="lenda.motivo">"{{ lenda.motivo }}"</p>
+
+                <div class="lenda-footer" *ngIf="lenda.numero_camisa">
+                  <span class="lenda-jersey-badge-bottom" aria-label="Número da camisa aposentada">
+                    #{{ lenda.numero_camisa }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -719,16 +760,20 @@
           </div>
 
           <!-- Modal Edição Ídolo -->
-          <div class="modal-luxury-overlay" *ngIf="idoloSelecionado" role="dialog" aria-modal="true" (click.self)="fecharModalIdolo()">
+          <div class="modal-luxury-overlay" *ngIf="idoloSelecionado" role="dialog" aria-modal="true"
+            (click.self)="fecharModalIdolo()">
             <div class="modal-luxury-container" style="max-width: 650px;">
               <header class="modal-luxury-header" style="display: flex; align-items: center;">
                 <h2>
-                  {{ idoloSelecionado.isNovo ? 'Adicionar Ídolo Manualmente' : 'Editar Ídolo: ' + idoloSelecionado.nome }}
+                  {{ idoloSelecionado.isNovo ? 'Adicionar Ídolo Manualmente' : 'Editar Ídolo: ' + idoloSelecionado.nome
+                  }}
                 </h2>
-                <span class="modal-score-badge" *ngIf="!idoloSelecionado.isNovo" style="margin-left: 1rem; background: rgba(253, 185, 39, 0.2); color: var(--gold); padding: 4px 10px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(253, 185, 39, 0.4);">
+                <span class="modal-score-badge" *ngIf="!idoloSelecionado.isNovo"
+                  style="margin-left: 1rem; background: rgba(253, 185, 39, 0.2); color: var(--gold); padding: 4px 10px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(253, 185, 39, 0.4);">
                   Score: {{ idoloSelecionado.score || 0 }} pts
                 </span>
-                <button class="btn-close-luxury" (click)="fecharModalIdolo()" aria-label="Fechar formulário" style="margin-left: auto;"><i class="fas fa-times"></i></button>
+                <button class="btn-close-luxury" (click)="fecharModalIdolo()" aria-label="Fechar formulário"
+                  style="margin-left: auto;"><i class="fas fa-times"></i></button>
               </header>
 
               <div class="modal-luxury-content">
@@ -772,7 +817,8 @@
 
                   <span class="award-badge award-badge-roy" *ngFor="let ano of idoloSelecionado.anosRoy"
                     [title]="'Rookie of the Year em: ' + ano">
-                    <img src="assets/roy.png" alt="ROY" class="label-award-icon"> ROY '{{ ano.length > 4 ? ano.slice(-2) :
+                    <img src="assets/roy.png" alt="ROY" class="label-award-icon"> ROY '{{ ano.length > 4 ? ano.slice(-2)
+                    :
                     ano }}
                   </span>
 
@@ -793,8 +839,10 @@
                 <div class="modern-input-group" style="margin-top: 1.5rem;">
                   <textarea id="idolo-motivo" [(ngModel)]="idoloSelecionado.motivo" rows="3" placeholder=" "></textarea>
                   <label for="idolo-motivo">O Porquê (Motivo)</label>
-                  <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block; font-size: 0.8rem; padding-left: 0.5rem;">
-                    <i class="fas fa-robot"></i> Nota: A IA pode reescrever esse texto automaticamente caso os stats do jogador mudem.
+                  <small
+                    style="color: var(--text-secondary); margin-top: 0.5rem; display: block; font-size: 0.8rem; padding-left: 0.5rem;">
+                    <i class="fas fa-robot"></i> Nota: A IA pode reescrever esse texto automaticamente caso os stats do
+                    jogador mudem.
                   </small>
                 </div>
               </div>
@@ -1033,6 +1081,10 @@
               <div class="bento-list-item"
                 *ngFor="let time of topCampeoes | slice:3:(expandido.campeoes ? topCampeoes.length : 5); let i = index; trackBy: trackById">
                 <span class="rank-list">{{ i + 4 }}º</span>
+                <img *ngIf="getLogoTime(time.nome)" [src]="getLogoTime(time.nome)" class="bento-logo-list"
+                  [alt]="'Logo ' + time.nome">
+                <span *ngIf="!getLogoTime(time.nome)" class="cor-badge bento-logo-list"
+                  [ngStyle]="{'background-color': getCorFranquia(time.nome) || '#333'}"></span>
                 <span class="nome-list">{{ time.nome }}</span>
                 <span class="total-list">{{ time.total }}x</span>
               </div>
@@ -1069,6 +1121,7 @@
               <div class="bento-list-item"
                 *ngFor="let jogador of topMVPs | slice:3:(expandido.mvps ? topMVPs.length : 5); let i = index; trackBy: trackById">
                 <span class="rank-list">{{ i + 4 }}º</span>
+                <img [src]="getFotoJogador(jogador.nome)" class="bento-foto-list" [alt]="'Foto de ' + jogador.nome">
                 <span class="nome-list">{{ jogador.nome }}</span>
                 <span class="total-list">{{ jogador.total }}x</span>
               </div>
@@ -1104,6 +1157,7 @@
               <div class="bento-list-item"
                 *ngFor="let jogador of topDPOYs | slice:3:(expandido.dpoys ? topDPOYs.length : 5); let i = index; trackBy: trackById">
                 <span class="rank-list">{{ i + 4 }}º</span>
+                <img [src]="getFotoJogador(jogador.nome)" class="bento-foto-list" [alt]="'Foto de ' + jogador.nome">
                 <span class="nome-list">{{ jogador.nome }}</span>
                 <span class="total-list">{{ jogador.total }}x</span>
               </div>

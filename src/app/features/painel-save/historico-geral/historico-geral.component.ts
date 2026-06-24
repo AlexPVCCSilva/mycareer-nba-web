@@ -676,7 +676,7 @@ salvandoEdicaoFranquia = false;
           await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
           
           const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
-          this.lendasTime = lendasBrutas.sort((a, b) => (b.score || 0) - (a.score || 0));
+          this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
         } catch (error) {
           console.error('Erro ao carregar dados da franquia:', error);
           this.campanhasTime = [];
@@ -711,7 +711,7 @@ salvandoEdicaoFranquia = false;
       // Sincroniza logo após salvar uma nova campanha
       await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
       const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId, timeAtivo.nome);
-      this.lendasTime = lendasBrutas.sort((a, b) => (b.score || 0) - (a.score || 0));
+      this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
     } catch (error) {
       console.error('Erro ao salvar elenco:', error);
       alert('Erro ao salvar no banco.');
@@ -826,27 +826,36 @@ salvandoEdicaoFranquia = false;
     };
   }
 
-  abrirModalIdolo(idolo: any) {
-    this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
-    
-    // Descobrir quais anos ele ganhou título por esse time para mostrar as tacinhas e prêmios
+  enriquecerLendaComEstatisticas(lenda: any) {
     const anosTitulos: string[] = [];
     const anosMvp: string[] = [];
     const anosDpoy: string[] = [];
     const anosRoy: string[] = [];
     const anosSexto: string[] = [];
+    let maxOvr = 0;
     
-    const nomeLimpado = SupabaseService.normalizarNomeJogador(idolo.nome);
+    const nomeLimpado = SupabaseService.normalizarNomeJogador(lenda.nome);
     
     if (nomeLimpado && this.campanhasTime) {
       for (const campanha of this.campanhasTime) {
         const temporadaGeral = this.temporadas.find(t => t.temporada === campanha.temporada);
         
-        const jogouNoTime = [
-          campanha.pg, campanha.sg, campanha.sf, campanha.pf, campanha.c, campanha.sexto_homem, campanha.draftado
-        ].some(n => n && SupabaseService.normalizarNomeJogador(n) === nomeLimpado);
+        const jogadoresElenco = [
+          { nome: campanha.pg, ovr: campanha.pg_ovr },
+          { nome: campanha.sg, ovr: campanha.sg_ovr },
+          { nome: campanha.sf, ovr: campanha.sf_ovr },
+          { nome: campanha.pf, ovr: campanha.pf_ovr },
+          { nome: campanha.c, ovr: campanha.c_ovr },
+          { nome: campanha.sexto_homem, ovr: campanha.sexto_homem_ovr },
+          { nome: campanha.draftado, ovr: campanha.draftado_ovr }
+        ];
 
-        if (jogouNoTime) {
+        const jogadorStats = jogadoresElenco.find(n => n.nome && SupabaseService.normalizarNomeJogador(n.nome) === nomeLimpado);
+
+        if (jogadorStats) {
+          const ovr = Number(jogadorStats.ovr) || 0;
+          if (ovr > maxOvr) maxOvr = ovr;
+
           if (temporadaGeral?.campeao_nba === this.getNomeAbaAtiva()) {
             anosTitulos.push(campanha.temporada);
           }
@@ -864,11 +873,19 @@ salvandoEdicaoFranquia = false;
         }
       }
     }
-    this.idoloSelecionado.anosTitulos = anosTitulos;
-    this.idoloSelecionado.anosMvp = anosMvp;
-    this.idoloSelecionado.anosDpoy = anosDpoy;
-    this.idoloSelecionado.anosRoy = anosRoy;
-    this.idoloSelecionado.anosSexto = anosSexto;
+
+    lenda.anosTitulos = anosTitulos;
+    lenda.anosMvp = anosMvp;
+    lenda.anosDpoy = anosDpoy;
+    lenda.anosRoy = anosRoy;
+    lenda.anosSexto = anosSexto;
+    lenda.maxOvr = maxOvr;
+    return lenda;
+  }
+
+  abrirModalIdolo(idolo: any) {
+    this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
+    this.idoloSelecionado = this.enriquecerLendaComEstatisticas(this.idoloSelecionado);
   }
 
   fecharModalIdolo() {
