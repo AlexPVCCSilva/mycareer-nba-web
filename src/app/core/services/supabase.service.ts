@@ -96,18 +96,35 @@ export class SupabaseService {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
 
-  async criarLiga(nome: string, era_2k: string, ano_inicio: string, admin_id: string) {
+  async criarLiga(nome: string, era_2k: string, ano_inicio: string, admin_id: string, historicoInicial?: any) {
     const codigo = Math.random().toString(36).substring(2, 8).toUpperCase();
     const codigo_convite = `LIGA-${codigo}`;
 
-    const { data, error } = await this.supabase
+    const { data: ligaData, error: ligaError } = await this.supabase
       .from('ligas')
       .insert([
         { nome, era_2k, ano_inicio, admin_id, codigo_convite }
       ])
       .select();
-    if (error) throw error;
-    return data[0];
+    if (ligaError) throw ligaError;
+
+    const ligaCriada = ligaData[0];
+
+    if (historicoInicial) {
+      const payload = {
+        ...historicoInicial,
+        liga_id: ligaCriada.id
+      };
+      const { error: histError } = await this.supabase
+        .from('historia_geral')
+        .insert([payload]);
+      
+      if (histError) {
+        console.warn('Erro ao inserir o histórico inicial da era:', histError);
+      }
+    }
+
+    return ligaCriada;
   }
 
   // 1. Atualizamos esta função para buscar ligas criadas E ligas convidadas

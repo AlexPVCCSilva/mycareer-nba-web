@@ -1958,8 +1958,9 @@ salvandoEdicaoFranquia = false;
     const matchIfen = ultimaTemporada.match(/^(\d{4})-(\d{2})$/);
     if (matchIfen) {
       const anoInicio = parseInt(matchIfen[1], 10);
-      const anoFim = parseInt(matchIfen[2], 10);
-      return `${anoInicio + 1}-${String(anoFim + 1).padStart(2, '0')}`;
+      const nextAnoInicio = anoInicio + 1;
+      const nextAnoFimStr = String(nextAnoInicio + 1).slice(-2);
+      return `${nextAnoInicio}-${nextAnoFimStr}`;
     }
     const matchSimples = ultimaTemporada.match(/^(\d{4})$/);
     if (matchSimples) {
@@ -1969,8 +1970,9 @@ salvandoEdicaoFranquia = false;
     const matchBarra = ultimaTemporada.match(/^(\d{2})\/(\d{2})$/);
     if (matchBarra) {
       const anoInicio = parseInt(matchBarra[1], 10);
-      const anoFim = parseInt(matchBarra[2], 10);
-      return `${String(anoInicio + 1).padStart(2, '0')}/${String(anoFim + 1).padStart(2, '0')}`;
+      const nextAnoInicio = anoInicio + 1;
+      const nextAnoFimStr = String(nextAnoInicio + 1).slice(-2);
+      return `${String(nextAnoInicio).slice(-2)}/${nextAnoFimStr}`;
     }
     return '';
   }

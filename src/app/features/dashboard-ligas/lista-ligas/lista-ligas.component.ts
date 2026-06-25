@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms'; // <-- Adicionado!
 import { Router } from '@angular/router';
 import { SupabaseService } from 'src/app/core/services/supabase.service';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { HISTORICAL_ERAS_DATA } from 'src/app/core/constants/nba-historical-data';
 
 @Component({
   selector: 'app-lista-ligas',
@@ -81,11 +82,14 @@ export class ListaLigasComponent implements OnInit {
 
     this.salvandoLiga = true;
     try {
+      const historicoInicial = HISTORICAL_ERAS_DATA[this.novaLiga.era];
+      
       const ligaCriada = await this.supabaseService.criarLiga(
         this.novaLiga.nome, 
         this.novaLiga.era, 
         this.novaLiga.ano, 
-        this.userId
+        this.userId,
+        historicoInicial
       );
       
       console.log('Liga criada com sucesso!', ligaCriada);
