@@ -48,6 +48,20 @@ interface ICampanhaForm {
   c_status: StatusElenco;
   sexto_homem_status: StatusElenco;
   draftado_status: StatusElenco;
+  pg_lesao: number | null;
+  sg_lesao: number | null;
+  sf_lesao: number | null;
+  pf_lesao: number | null;
+  c_lesao: number | null;
+  sexto_homem_lesao: number | null;
+  draftado_lesao: number | null;
+  pg_lesao_desc: string | null;
+  sg_lesao_desc: string | null;
+  sf_lesao_desc: string | null;
+  pf_lesao_desc: string | null;
+  c_lesao_desc: string | null;
+  sexto_homem_lesao_desc: string | null;
+  draftado_lesao_desc: string | null;
 }
 
 interface ITemporadaGeralForm {
@@ -316,14 +330,14 @@ export class HistoricoGeralComponent implements OnInit {
     { key: 'mip', label: 'MIP' }
   ];
   
-  readonly camposHierarquiaElenco: { key: string; label: string; statusKey: string; ovrKey: string }[] = [
-    { key: 'pg', label: 'PG', statusKey: 'pg_status', ovrKey: 'pg_ovr' },
-    { key: 'sg', label: 'SG', statusKey: 'sg_status', ovrKey: 'sg_ovr' },
-    { key: 'sf', label: 'SF', statusKey: 'sf_status', ovrKey: 'sf_ovr' },
-    { key: 'pf', label: 'PF', statusKey: 'pf_status', ovrKey: 'pf_ovr' },
-    { key: 'c', label: 'C', statusKey: 'c_status', ovrKey: 'c_ovr' },
-    { key: 'sexto_homem', label: '6º Homem', statusKey: 'sexto_homem_status', ovrKey: 'sexto_homem_ovr' },
-    { key: 'draftado', label: 'Draftado', statusKey: 'draftado_status', ovrKey: 'draftado_ovr' }
+  readonly camposHierarquiaElenco: { key: string; label: string; statusKey: string; ovrKey: string; lesaoKey: string; lesaoDescKey: string }[] = [
+    { key: 'pg', label: 'PG', statusKey: 'pg_status', ovrKey: 'pg_ovr', lesaoKey: 'pg_lesao', lesaoDescKey: 'pg_lesao_desc' },
+    { key: 'sg', label: 'SG', statusKey: 'sg_status', ovrKey: 'sg_ovr', lesaoKey: 'sg_lesao', lesaoDescKey: 'sg_lesao_desc' },
+    { key: 'sf', label: 'SF', statusKey: 'sf_status', ovrKey: 'sf_ovr', lesaoKey: 'sf_lesao', lesaoDescKey: 'sf_lesao_desc' },
+    { key: 'pf', label: 'PF', statusKey: 'pf_status', ovrKey: 'pf_ovr', lesaoKey: 'pf_lesao', lesaoDescKey: 'pf_lesao_desc' },
+    { key: 'c', label: 'C', statusKey: 'c_status', ovrKey: 'c_ovr', lesaoKey: 'c_lesao', lesaoDescKey: 'c_lesao_desc' },
+    { key: 'sexto_homem', label: '6º Homem', statusKey: 'sexto_homem_status', ovrKey: 'sexto_homem_ovr', lesaoKey: 'sexto_homem_lesao', lesaoDescKey: 'sexto_homem_lesao_desc' },
+    { key: 'draftado', label: 'Draftado', statusKey: 'draftado_status', ovrKey: 'draftado_ovr', lesaoKey: 'draftado_lesao', lesaoDescKey: 'draftado_lesao_desc' }
   ];
   
   // --- Hall da Fama ---
@@ -386,6 +400,9 @@ salvandoEdicaoFranquia = false;
 
   editandoIdGeral: string | null = null;
   editandoIdTime: string | null = null;
+  
+  isLesionado: { [key: string]: boolean } = {};
+  descLesao: { [key: string]: string } = {};
 
   topMVPs: any[] = [];
   topDPOYs: any[] = [];
@@ -437,7 +454,11 @@ salvandoEdicaoFranquia = false;
       pf_status: 'principal',
       c_status: 'principal',
       sexto_homem_status: 'secundario',
-      draftado_status: 'terciario'
+      draftado_status: 'terciario',
+      pg_lesao: null, sg_lesao: null, sf_lesao: null, pf_lesao: null, c_lesao: null,
+      sexto_homem_lesao: null, draftado_lesao: null,
+      pg_lesao_desc: null, sg_lesao_desc: null, sf_lesao_desc: null, pf_lesao_desc: null, c_lesao_desc: null,
+      sexto_homem_lesao_desc: null, draftado_lesao_desc: null
     };
   }
 
@@ -467,6 +488,20 @@ salvandoEdicaoFranquia = false;
       c_ovr: camp.c_ovr ?? migrado.c_ovr ?? null,
       sexto_homem_ovr: camp.sexto_homem_ovr ?? migrado.sexto_homem_ovr ?? null,
       draftado_ovr: camp.draftado_ovr ?? migrado.draftado_ovr ?? null,
+      pg_lesao: camp.pg_lesao ?? null,
+      sg_lesao: camp.sg_lesao ?? null,
+      sf_lesao: camp.sf_lesao ?? null,
+      pf_lesao: camp.pf_lesao ?? null,
+      c_lesao: camp.c_lesao ?? null,
+      sexto_homem_lesao: camp.sexto_homem_lesao ?? null,
+      draftado_lesao: camp.draftado_lesao ?? null,
+      pg_lesao_desc: camp.pg_lesao_desc ?? null,
+      sg_lesao_desc: camp.sg_lesao_desc ?? null,
+      sf_lesao_desc: camp.sf_lesao_desc ?? null,
+      pf_lesao_desc: camp.pf_lesao_desc ?? null,
+      c_lesao_desc: camp.c_lesao_desc ?? null,
+      sexto_homem_lesao_desc: camp.sexto_homem_lesao_desc ?? null,
+      draftado_lesao_desc: camp.draftado_lesao_desc ?? null,
       pg_status: this.normalizarStatusElenco(camp.pg_status),
       sg_status: this.normalizarStatusElenco(camp.sg_status),
       sf_status: this.normalizarStatusElenco(camp.sf_status),
@@ -539,7 +574,21 @@ salvandoEdicaoFranquia = false;
       pf_status: this.novaCampanha.pf_status,
       c_status: this.novaCampanha.c_status,
       sexto_homem_status: this.novaCampanha.sexto_homem_status,
-      draftado_status: this.novaCampanha.draftado_status
+      draftado_status: this.novaCampanha.draftado_status,
+      pg_lesao: this.novaCampanha.pg_lesao,
+      sg_lesao: this.novaCampanha.sg_lesao,
+      sf_lesao: this.novaCampanha.sf_lesao,
+      pf_lesao: this.novaCampanha.pf_lesao,
+      c_lesao: this.novaCampanha.c_lesao,
+      sexto_homem_lesao: this.novaCampanha.sexto_homem_lesao,
+      draftado_lesao: this.novaCampanha.draftado_lesao,
+      pg_lesao_desc: this.novaCampanha.pg_lesao_desc,
+      sg_lesao_desc: this.novaCampanha.sg_lesao_desc,
+      sf_lesao_desc: this.novaCampanha.sf_lesao_desc,
+      pf_lesao_desc: this.novaCampanha.pf_lesao_desc,
+      c_lesao_desc: this.novaCampanha.c_lesao_desc,
+      sexto_homem_lesao_desc: this.novaCampanha.sexto_homem_lesao_desc,
+      draftado_lesao_desc: this.novaCampanha.draftado_lesao_desc
     };
   }
 
@@ -676,12 +725,29 @@ salvandoEdicaoFranquia = false;
       alert('Não foi possível carregar as franquias agora.');
     }
     this.cdr.detectChanges();
+    this.atualizarIndicador();
+  }
+
+  indicatorTop = 0;
+  indicatorHeight = 0;
+
+  atualizarIndicador() {
+    setTimeout(() => {
+      // Forçamos a busca dentro do .sidebar-nav para garantir que não pegamos de outro menu
+      const el = document.querySelector(`.sidebar-nav .sidebar-item.active`) as HTMLElement;
+      if (el) {
+        this.indicatorTop = el.offsetTop;
+        this.indicatorHeight = el.offsetHeight;
+        this.cdr.detectChanges();
+      }
+    }, 50);
   }
 
   async trocarAba(abaId: string | undefined) {
     if (!abaId) return;
     this.abaAtiva = abaId;
     this.abaFranquiaAtiva = 'temporadas'; // Reseta aba interna
+    this.atualizarIndicador();
     if (abaId === 'lembrancas') {
       await this.carregarLembrancas();
     } else if (abaId !== 'geral') {
@@ -718,6 +784,17 @@ salvandoEdicaoFranquia = false;
       const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
       if (!timeAtivo) throw new Error('Nenhuma franquia ativa selecionada.');
       
+      // Processa lesões (reseta campos se a checkbox for desmarcada e seta descrições)
+      for (const campo of this.camposHierarquiaElenco) {
+        if (!this.isLesionado[campo.key]) {
+          (this.novaCampanha as any)[campo.lesaoKey] = null;
+          (this.novaCampanha as any)[campo.lesaoDescKey] = null;
+        } else {
+          const desc = this.descLesao[campo.key];
+          (this.novaCampanha as any)[campo.lesaoDescKey] = desc && desc.trim().length > 0 ? desc.trim() : null;
+        }
+      }
+
       const dadosParaSalvar = this.montarDadosCampanhaParaSalvar(timeAtivo.nome);
 
       if (this.editandoIdTime) {
@@ -1188,8 +1265,23 @@ salvandoEdicaoFranquia = false;
       sexto_homem_ovr: c.sexto_homem_ovr, draftado_ovr: c.draftado_ovr,
       pg_status: c.pg_status, sg_status: c.sg_status, sf_status: c.sf_status,
       pf_status: c.pf_status, c_status: c.c_status,
-      sexto_homem_status: c.sexto_homem_status, draftado_status: c.draftado_status
+      sexto_homem_status: c.sexto_homem_status, draftado_status: c.draftado_status,
+      pg_lesao: c.pg_lesao ?? null, sg_lesao: c.sg_lesao ?? null, sf_lesao: c.sf_lesao ?? null,
+      pf_lesao: c.pf_lesao ?? null, c_lesao: c.c_lesao ?? null,
+      sexto_homem_lesao: c.sexto_homem_lesao ?? null, draftado_lesao: c.draftado_lesao ?? null,
+      pg_lesao_desc: c.pg_lesao_desc ?? null, sg_lesao_desc: c.sg_lesao_desc ?? null, sf_lesao_desc: c.sf_lesao_desc ?? null,
+      pf_lesao_desc: c.pf_lesao_desc ?? null, c_lesao_desc: c.c_lesao_desc ?? null,
+      sexto_homem_lesao_desc: c.sexto_homem_lesao_desc ?? null, draftado_lesao_desc: c.draftado_lesao_desc ?? null
     };
+    
+    this.isLesionado = {};
+    this.descLesao = {};
+    for (const key of ['pg', 'sg', 'sf', 'pf', 'c', 'sexto_homem', 'draftado']) {
+      if ((c as any)[key + '_lesao']) {
+        this.isLesionado[key] = true;
+        this.descLesao[key] = (c as any)[key + '_lesao_desc'] || '';
+      }
+    }
     this.mostrarFormularioTime = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1203,6 +1295,8 @@ salvandoEdicaoFranquia = false;
   cancelarEdicaoTime() {
     this.editandoIdTime = null;
     this.novaCampanha = this.getCampanhaInicial();
+    this.isLesionado = {};
+    this.descLesao = {};
     this.mostrarFormularioTime = false;
   }
   
@@ -1223,7 +1317,7 @@ salvandoEdicaoFranquia = false;
 
   getCorAbaAtiva(): string {
     const franquia = this.franquias.find(f => f.id === this.abaAtiva);
-    return franquia ? franquia.cor_hex : '#222222';
+    return franquia ? franquia.cor_hex : '#FDB927';
   }
 
   getCorSecundariaAbaAtiva(): string {
@@ -1525,6 +1619,9 @@ salvandoEdicaoFranquia = false;
   getOvrClass(ovr: number | null | undefined): string {
     const ovrValido = this.sanitizarOvr(ovr);
     if (!ovrValido) return '';
+    if (ovrValido >= 99) return 'tier-goat';
+    if (ovrValido >= 97) return 'tier-dark-matter';
+    if (ovrValido >= 95) return 'tier-mythic';
     if (ovrValido >= 90) return 'tier-legend';
     if (ovrValido >= 85) return 'tier-emerald';
     if (ovrValido >= 80) return 'tier-gold';
@@ -2005,6 +2102,7 @@ salvandoEdicaoFranquia = false;
     const ultima = this.normalizarCampanhaCarregada(this.campanhasTime[0]);
 
     this.novaCampanha = {
+      ...this.getCampanhaInicial(),
       // ── Resultados zerados (o usuário vai preencher) ──
       temporada:          this.calcularProximoAnoTemporada(ultima.temporada),
       recorde_wl:         '',
@@ -2017,34 +2115,44 @@ salvandoEdicaoFranquia = false;
 
       // ── Elenco herdado da última temporada ──
       pg:              ultima.pg           ?? '',
-      pg_ovr:          ultima.pg_ovr,
+      pg_ovr:          (ultima.pg_ovr !== null && ultima.pg_ovr !== undefined) ? ultima.pg_ovr - (ultima.pg_lesao ?? 0) : null,
       pg_status:       ultima.pg_status,
+      pg_lesao:        null,
 
       sg:              ultima.sg           ?? '',
-      sg_ovr:          ultima.sg_ovr,
+      sg_ovr:          (ultima.sg_ovr !== null && ultima.sg_ovr !== undefined) ? ultima.sg_ovr - (ultima.sg_lesao ?? 0) : null,
       sg_status:       ultima.sg_status,
+      sg_lesao:        null,
 
       sf:              ultima.sf           ?? '',
-      sf_ovr:          ultima.sf_ovr,
+      sf_ovr:          (ultima.sf_ovr !== null && ultima.sf_ovr !== undefined) ? ultima.sf_ovr - (ultima.sf_lesao ?? 0) : null,
       sf_status:       ultima.sf_status,
+      sf_lesao:        null,
 
       pf:              ultima.pf           ?? '',
-      pf_ovr:          ultima.pf_ovr,
+      pf_ovr:          (ultima.pf_ovr !== null && ultima.pf_ovr !== undefined) ? ultima.pf_ovr - (ultima.pf_lesao ?? 0) : null,
       pf_status:       ultima.pf_status,
+      pf_lesao:        null,
 
       c:               ultima.c            ?? '',
-      c_ovr:           ultima.c_ovr,
+      c_ovr:           (ultima.c_ovr !== null && ultima.c_ovr !== undefined) ? ultima.c_ovr - (ultima.c_lesao ?? 0) : null,
       c_status:        ultima.c_status,
+      c_lesao:         null,
 
       sexto_homem:     ultima.sexto_homem  ?? '',
-      sexto_homem_ovr: ultima.sexto_homem_ovr,
+      sexto_homem_ovr: (ultima.sexto_homem_ovr !== null && ultima.sexto_homem_ovr !== undefined) ? ultima.sexto_homem_ovr - (ultima.sexto_homem_lesao ?? 0) : null,
       sexto_homem_status: ultima.sexto_homem_status,
+      sexto_homem_lesao: null,
+      
+      draftado_lesao:  null,
     };
   } else {
     // Sem histórico: abre em branco
     this.novaCampanha = this.getCampanhaInicial();
   }
 
+  this.isLesionado = {};
+  this.descLesao = {};
   this.editandoIdTime = null;
   this.mostrarFormularioTime = true;
   window.scrollTo({ top: 0, behavior: 'smooth' });

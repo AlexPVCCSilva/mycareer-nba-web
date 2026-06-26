@@ -24,6 +24,7 @@
     </div>
 
     <nav class="sidebar-nav" role="tablist" aria-label="Navegação do Painel">
+      <div class="sidebar-indicator" [style.transform]="'translateY(' + indicatorTop + 'px)'" [style.height.px]="indicatorHeight" [style.background-color]="getCorAbaAtiva() + '1a'" [style.border-left-color]="getCorAbaAtiva()"></div>
       <div class="nav-group-title">Principal</div>
 
       <button role="tab" class="sidebar-item" [class.active]="abaAtiva === 'geral'"
@@ -43,9 +44,7 @@
 
       <button *ngFor="let time of franquias; trackBy: trackById" role="tab" class="sidebar-item custom-tab"
         [class.active]="abaAtiva === time.id" [attr.aria-selected]="abaAtiva === time.id"
-        [style.border-left-color]="abaAtiva === time.id ? (time.cor_hex || 'transparent') : null"
         [style.color]="abaAtiva === time.id ? (time.cor_hex || 'inherit') : null"
-        [style.background-color]="abaAtiva === time.id ? ((time.cor_hex || '#000000') + '1a') : null"
         (click)="trocarAba(time.id); fecharMenuMobile()">
         <img *ngIf="getLogoTime(time.nome)" [src]="getLogoTime(time.nome)" class="tab-logo" [alt]="'Logo ' + time.nome">
         <span *ngIf="!getLogoTime(time.nome)" class="color-dot" [ngStyle]="{'background-color': time.cor_hex}"></span>
@@ -471,12 +470,21 @@
                 <div class="hierarquia-grid">
                   <div class="hierarquia-card" *ngFor="let campo of camposHierarquiaElenco; trackBy: trackByCampo">
                     <div class="input-group">
-                      <label>{{ campo.label }}</label>
+                      <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>{{ campo.label }}</span>
+                        <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.7rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                          <input type="checkbox" [(ngModel)]="isLesionado[campo.key]"> 🏥 Lesionado?
+                        </label>
+                      </label>
                       <div class="jogador-ovr-row">
                         <input type="text" class="jogador-nome-input" [(ngModel)]="novaCampanha[campo.key]"
                           [placeholder]="'Nome do ' + campo.label">
                         <input type="number" class="jogador-ovr-input" [(ngModel)]="novaCampanha[campo.ovrKey]" min="40"
                           max="99" placeholder="OVR" [attr.aria-label]="'Overall de ' + campo.label">
+                      </div>
+                      <div class="jogador-lesao-detalhes" *ngIf="isLesionado[campo.key]" style="display: flex; gap: 8px; margin-top: 4px;">
+                        <input type="number" class="jogador-lesao-input" [(ngModel)]="novaCampanha[campo.lesaoKey]" min="1" max="99" placeholder="-OVR" title="Queda OVR" [attr.aria-label]="'Queda de OVR'">
+                        <input type="text" class="jogador-lesao-desc-input" [(ngModel)]="descLesao[campo.key]" placeholder="Ex: Torceu o tornozelo (opcional)" style="flex: 1;">
                       </div>
                     </div>
                     <div class="input-group">
@@ -611,7 +619,7 @@
                   <th scope="col">Ações</th>
                 </tr>
               </thead>
-              <ng-template #celulaJogador let-nome="nome" let-ovr="ovr" let-status="status">
+              <ng-template #celulaJogador let-nome="nome" let-ovr="ovr" let-status="status" let-lesao="lesao" let-lesaoDesc="lesaoDesc">
                 <div class="player-cell" *ngIf="nome; else celulaJogadorVazia" [ngClass]="getOvrClass(ovr)"
                   [ngStyle]="getEstiloCardLegendario(ovr)">
                   <img [src]="getFotoJogador(nome)" [ngClass]="['micro-foto', getStatusBadgeClass(status)]"
@@ -620,6 +628,7 @@
                     <span class="ovr-inline" *ngIf="ovr" [ngClass]="getOvrClass(ovr)"
                       [ngStyle]="getEstiloOvrBadge(ovr)">{{ ovr }}</span>
                     <span class="name-text">{{ limparNomeJogador(nome) }}</span>
+                    <span class="lesao-badge" *ngIf="lesao" [title]="lesaoDesc ? lesaoDesc + ' (-' + lesao + ' OVR)' : 'OVR caiu devido a lesão (-' + lesao + ' OVR)'">🏥 -{{ lesao }} OVR</span>
                   </span>
                   <span *ngIf="status !== 'nenhum'" [ngClass]="['status-chip', getStatusBadgeClass(status)]">{{
                     getStatusShort(status) }}</span>
@@ -628,7 +637,7 @@
               </ng-template>
 
               <tbody>
-                <tr *ngFor="let camp of campanhasTime; trackBy: trackById" [ngClass]="{
+                <tr *ngFor="let camp of campanhasTime; trackBy: trackById; let i = index" class="stagger-row" [style.animation-delay]="(i * 0.05) + 's'" [ngClass]="{
               'linha-dourada': isCampanhaCampeao(camp.resultado_playoffs),
               'linha-cinza':   isCampanhaVice(camp.resultado_playoffs)
             }" [ngStyle]="isCampanhaCampeao(camp.resultado_playoffs) ? {'--glow-color': getCorAtualFranquia()} : {}">
@@ -642,26 +651,27 @@
                   </td>
 
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pg, ovr: camp.pg_ovr, status: camp.pg_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pg, ovr: camp.pg_ovr, status: camp.pg_status, lesao: camp.pg_lesao, lesaoDesc: camp.pg_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sg, ovr: camp.sg_ovr, status: camp.sg_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sg, ovr: camp.sg_ovr, status: camp.sg_status, lesao: camp.sg_lesao, lesaoDesc: camp.sg_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sf, ovr: camp.sf_ovr, status: camp.sf_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sf, ovr: camp.sf_ovr, status: camp.sf_status, lesao: camp.sf_lesao, lesaoDesc: camp.sf_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pf, ovr: camp.pf_ovr, status: camp.pf_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.pf, ovr: camp.pf_ovr, status: camp.pf_status, lesao: camp.pf_lesao, lesaoDesc: camp.pf_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.c, ovr: camp.c_ovr, status: camp.c_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.c, ovr: camp.c_ovr, status: camp.c_status, lesao: camp.c_lesao, lesaoDesc: camp.c_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sexto_homem, ovr: camp.sexto_homem_ovr, status: camp.sexto_homem_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.sexto_homem, ovr: camp.sexto_homem_ovr, status: camp.sexto_homem_status, lesao: camp.sexto_homem_lesao, lesaoDesc: camp.sexto_homem_lesao_desc }"></ng-container>
                   </td>
                   <td><ng-container
-                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.draftado, ovr: camp.draftado_ovr, status: camp.draftado_status }"></ng-container>
+                      *ngTemplateOutlet="celulaJogador; context: { nome: camp.draftado, ovr: camp.draftado_ovr, status: camp.draftado_status, lesao: camp.draftado_lesao, lesaoDesc: camp.draftado_lesao_desc }"></ng-container>
                   </td>
+
                   <td>{{ camp.observacoes || '—' }}</td>
                   <td>
                     <button class="btn-icon-edit" (click)="editarCampanhaTime(camp)"

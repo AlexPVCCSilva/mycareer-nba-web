@@ -56,6 +56,20 @@ export interface ICampanhaFranquia {
   c_status: StatusElenco;
   sexto_homem_status: StatusElenco;
   draftado_status: StatusElenco;
+  pg_lesao?: number | null;
+  sg_lesao?: number | null;
+  sf_lesao?: number | null;
+  pf_lesao?: number | null;
+  c_lesao?: number | null;
+  sexto_homem_lesao?: number | null;
+  draftado_lesao?: number | null;
+  pg_lesao_desc?: string | null;
+  sg_lesao_desc?: string | null;
+  sf_lesao_desc?: string | null;
+  pf_lesao_desc?: string | null;
+  c_lesao_desc?: string | null;
+  sexto_homem_lesao_desc?: string | null;
+  draftado_lesao_desc?: string | null;
 }
 
 export interface IJogadorFotoCustom {

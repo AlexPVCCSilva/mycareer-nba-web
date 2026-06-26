@@ -946,6 +946,33 @@ body {
       opacity: 1;
     }
   }
+
+  .jogador-lesao-input {
+    flex-shrink: 0;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+    border: 1px solid rgba(255, 60, 60, 0.4);
+    background: rgba(255, 60, 60, 0.05);
+    color: #ff6b6b;
+
+    &::placeholder {
+      color: rgba(255, 107, 107, 0.5);
+      font-weight: normal;
+    }
+
+    &:focus {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      opacity: 1;
+    }
+  }
 }
 
 .ovr-inline {
@@ -1098,6 +1125,20 @@ body {
   background: var(--court-black);
   color: var(--gold);
   border: 1px solid var(--gold-dim);
+  white-space: nowrap;
+}
+
+.lesao-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 60, 60, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 60, 60, 0.3);
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
   white-space: nowrap;
 }
 
@@ -2518,6 +2559,233 @@ body {
   }
 }
 
+/* ─── TIER MYTHIC (95+) - Efeito God/Diamond Tier ─── */
+.tier-mythic {
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 30px var(--glow-color, #FDB927), 0 0 10px #ffffff !important;
+  border-color: transparent !important;
+  z-index: 1;
+
+  &,
+  .player-badge,
+  .name-text {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 15px var(--glow-color, #FDB927) !important;
+  }
+
+  .ovr-inline {
+    background: transparent !important;
+    color: #FFFFFF !important;
+    border: 1px solid #FFFFFF !important;
+    box-shadow: 0 0 15px #FFFFFF, inset 0 0 10px var(--glow-color, #FDB927) !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9) !important;
+  }
+}
+
+.tier-mythic::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 250%;
+  background: conic-gradient(
+    transparent, 
+    #FFFFFF 10%, 
+    transparent 20%, 
+    var(--glow-color, #FDB927) 35%, 
+    transparent 50%, 
+    #FFFFFF 60%, 
+    transparent 70%, 
+    var(--glow-color, #FDB927) 85%,
+    transparent
+  );
+  transform: translate(-50%, -50%);
+  animation: spinMythic 2.5s linear infinite;
+  z-index: -2;
+}
+
+.tier-mythic::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(15, 23, 42, 0.85);
+  border-radius: inherit;
+  z-index: -1;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.tier-mythic > :not(.status-chip) {
+  position: relative;
+  z-index: 2;
+}
+
+.tier-mythic > .status-chip {
+  z-index: 3;
+}
+
+@keyframes spinMythic {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(-360deg); } /* Gira no sentido inverso para dar um tchan diferente */
+}
+
+/* ─── TIER DARK MATTER (97+) - Efeito Cósmico/Nebulosa ─── */
+.tier-dark-matter {
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 0 40px rgba(128, 0, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5) !important;
+  border: 1px solid rgba(255, 0, 255, 0.5) !important;
+  z-index: 1;
+
+  &,
+  .player-badge,
+  .name-text {
+    color: #e0d4ff !important;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #8000ff !important;
+  }
+
+  .ovr-inline {
+    background: rgba(10, 0, 20, 0.8) !important;
+    color: #00ffff !important;
+    border: 1px solid #ff00ff !important;
+    box-shadow: 0 0 20px #8000ff, inset 0 0 15px #00ffff !important;
+    text-shadow: 0 0 8px #00ffff !important;
+  }
+}
+
+.tier-dark-matter::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 250%;
+  /* Mistura cores de nebulosa: roxo profundo, rosa choque, ciano, escuro */
+  background: conic-gradient(
+    #1a0033, 
+    #ff00ff, 
+    #00ffff, 
+    #1a0033, 
+    var(--glow-color, #8000ff), 
+    #000000, 
+    #1a0033
+  );
+  transform: translate(-50%, -50%);
+  animation: spinDarkMatter 4s ease-in-out infinite alternate; /* Vai e volta pulsando */
+  z-index: -2;
+  filter: blur(4px); /* Borrão para dar efeito de fumaça cósmica */
+}
+
+.tier-dark-matter::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(5, 5, 10, 0.9); /* Quase preto para destacar os neons */
+  border-radius: inherit;
+  z-index: -1;
+  box-shadow: inset 0 0 30px rgba(128, 0, 255, 0.4);
+}
+
+.tier-dark-matter > :not(.status-chip) {
+  position: relative;
+  z-index: 2;
+}
+
+.tier-dark-matter > .status-chip {
+  z-index: 3;
+}
+
+@keyframes spinDarkMatter {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); filter: blur(4px); }
+  100% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); filter: blur(8px); }
+}
+
+/* ─── TIER GOAT (99) - Efeito Iridescente/Absolute Pinnacle ─── */
+.tier-goat {
+  position: relative !important;
+  overflow: hidden !important;
+  /* Brilho insano: dourado + platina/branco + cor da franquia */
+  box-shadow: 0 0 50px #ffdf00, 0 0 20px #ffffff, 0 0 100px var(--glow-color, #ffdf00) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  z-index: 1;
+
+  &,
+  .player-badge,
+  .name-text {
+    /* Gradiente no texto simulando ouro puro refletindo luz */
+    background: linear-gradient(to right, #ffdf00, #ffffff, #ffdf00, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(255, 223, 0, 0.5) !important; /* Só um glow sutil pq o background-clip remove o text-shadow duro */
+    font-weight: 900 !important;
+  }
+
+  .ovr-inline {
+    background: linear-gradient(45deg, #ffd700, #ff8c00, #ffd700) !important;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    color: #000000 !important; /* Texto preto para estourar o contraste no badge dourado */
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 0 25px #ffdf00, inset 0 0 15px #ffffff !important;
+    text-shadow: none !important;
+    font-weight: 900 !important;
+    animation: goatPulse 1.5s infinite;
+  }
+}
+
+.tier-goat::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  /* Arco íris iridescente + Dourado */
+  background: conic-gradient(
+    #ffdf00, 
+    #ffffff, 
+    #ff8c00, 
+    #ffdf00, 
+    var(--glow-color, #ffffff),
+    #ffdf00
+  );
+  transform: translate(-50%, -50%);
+  animation: spinGoat 1.5s linear infinite; /* Bem rápido, energia transbordando */
+  z-index: -2;
+}
+
+.tier-goat::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  /* Fundo quase branco estourado ou um dourado muito escuro. Vamos de dark gold */
+  background: rgba(20, 15, 0, 0.9);
+  border-radius: inherit;
+  z-index: -1;
+  box-shadow: inset 0 0 40px rgba(255, 223, 0, 0.6);
+}
+
+.tier-goat > :not(.status-chip) {
+  position: relative;
+  z-index: 2;
+}
+
+.tier-goat > .status-chip {
+  z-index: 3;
+}
+
+@keyframes spinGoat {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes goatPulse {
+  0% { transform: scale(1); box-shadow: 0 0 15px #ffdf00; }
+  50% { transform: scale(1.1); box-shadow: 0 0 35px #ffffff; }
+  100% { transform: scale(1); box-shadow: 0 0 15px #ffdf00; }
+}
+
 /* Larry O'Brien NBA Trophy (and medals) styling */
 .nba-trophy-logo {
   height: 32px;
@@ -3142,8 +3410,22 @@ body {
 }
 
 .sidebar-nav {
+  position: relative;
   padding: 1rem 0;
   flex: 1;
+}
+
+.sidebar-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 1.5rem; /* give some margin on the right */
+  border-left: 3px solid var(--gold); /* fallback color */
+  background-color: rgba(253, 185, 39, 0.1);
+  border-radius: 0 8px 8px 0;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s ease, background-color 0.3s ease, border-left-color 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .nav-group-title {
@@ -3157,6 +3439,8 @@ body {
 }
 
 .sidebar-item {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -3171,7 +3455,7 @@ body {
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, font-weight 0.2s ease;
 
   .icon {
     font-size: 1.1rem;
@@ -3182,21 +3466,20 @@ body {
   }
 
   &:hover {
-    background: var(--court-surface);
     color: var(--text-primary);
   }
 
   &.active {
-    background: rgba(245, 200, 66, 0.05);
+    /* Background and border are handled by .sidebar-indicator now */
+    background: transparent !important;
+    border-left-color: transparent !important;
     color: var(--gold);
     font-weight: 700;
-    border-left-color: var(--gold);
   }
 
   &.custom-tab.active {
-    background: transparent;
-    color: inherit;
-    border-left-color: transparent;
+    background: transparent !important;
+    border-left-color: transparent !important;
   }
 
   &.add-tab-btn {
@@ -3733,6 +4016,33 @@ body {
   border-radius: var(--radius-lg, 12px);
   margin-bottom: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: calc(50% - 0.75rem); /* half width minus gap compensation */
+    /* Usando a cor secundária e primária passadas pelo HTML via variáveis */
+    background: linear-gradient(135deg, var(--tab-bg, rgba(253, 185, 39, 0.15)) 0%, rgba(0,0,0,0.2) 100%);
+    border: 1px solid var(--tab-text, rgba(253, 185, 39, 0.3));
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-md, 8px);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1;
+  }
+
+  /* Segment Sliding Logic */
+  &:has(.btn-franquia-tab:nth-child(1).ativo)::before {
+    transform: translateX(0);
+  }
+
+  &:has(.btn-franquia-tab:nth-child(2).ativo)::before {
+    transform: translateX(calc(100% + 0.5rem));
+  }
 }
 
 .franquia-tabs-container .btn-franquia-tab {
@@ -3746,7 +4056,7 @@ body {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3760,21 +4070,21 @@ body {
 }
 
 .franquia-tabs-container .btn-franquia-tab:hover {
-  background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
 }
 
 .franquia-tabs-container .btn-franquia-tab.ativo {
-  background: linear-gradient(135deg, rgba(253, 185, 39, 0.15) 0%, rgba(253, 185, 39, 0.05) 100%);
-  color: var(--gold);
-  border: 1px solid rgba(253, 185, 39, 0.3);
-  box-shadow: inset 0 0 20px rgba(253, 185, 39, 0.05);
+  /* Removemos o background estático para deixar o ::before de fundo aparecer */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--tab-text, var(--gold));
 }
 
 .franquia-tabs-container .btn-franquia-tab.ativo i {
   opacity: 1;
-  color: var(--gold);
-  filter: drop-shadow(0 0 8px rgba(253, 185, 39, 0.4));
+  color: var(--tab-text, var(--gold));
+  filter: drop-shadow(0 0 8px var(--tab-text, var(--gold)));
 }
 
 
@@ -4643,15 +4953,45 @@ body {
       display: flex;
       gap: 8px;
 
-      .jogador-nome-input {
+      input.jogador-nome-input {
         flex: 1;
+        width: auto;
       }
 
-      .jogador-ovr-input {
-        width: 80px;
+      input.jogador-ovr-input {
+        width: 80px !important;
+        flex-shrink: 0;
         text-align: center;
         font-weight: 700;
         color: var(--gold, #FDB927);
+      }
+    }
+
+    .jogador-lesao-detalhes {
+      input.jogador-lesao-input {
+        width: 80px !important;
+        flex-shrink: 0;
+        text-align: center;
+        font-weight: 700;
+        border: 1px solid rgba(255, 60, 60, 0.4) !important;
+        background: rgba(255, 60, 60, 0.05) !important;
+        color: #ff6b6b !important;
+        
+        &::placeholder {
+          color: rgba(255, 107, 107, 0.5) !important;
+        }
+      }
+
+      input.jogador-lesao-desc-input {
+        flex: 1;
+        width: auto;
+        border: 1px solid rgba(255, 60, 60, 0.4) !important;
+        background: rgba(255, 60, 60, 0.02) !important;
+        color: #ffbaba !important;
+
+        &::placeholder {
+          color: rgba(255, 107, 107, 0.3) !important;
+        }
       }
     }
   }
@@ -4922,8 +5262,10 @@ body {
   &::before {
     content: '';
     position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transition: left 0.5s ease;
   }
@@ -4931,11 +5273,11 @@ body {
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(253, 185, 39, 0.45);
-    
+
     &::before {
       left: 100%;
     }
-    
+
     i {
       transform: scale(1.1);
     }
@@ -4959,11 +5301,118 @@ body {
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       color: #fff;
     }
-    
+
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
     }
   }
+}
+
+/* ─── ENHANCEMENT MICRO-ANIMATIONS ─── */
+
+/* 1. Staggered Table Fade-in */
+@keyframes fadeUpStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-row {
+  opacity: 0;
+  animation: fadeUpStagger 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 2. Shine Effect on Trophies/Medals */
+.nba-trophy-logo, .medal-logo {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.nba-trophy-logo:hover, .medal-logo:hover {
+  transform: translateY(-2px) scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(253, 185, 39, 0.6));
+}
+
+/* We can add a pure CSS shine overlay for images if we wrap them, but since they are straight <img>, we can use a brightness pulse */
+@keyframes goldPulse {
+  0% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
+  50% { filter: brightness(1.3) drop-shadow(0 0 10px rgba(253, 185, 39, 0.8)); }
+  100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
+}
+.nba-trophy-logo:hover {
+  animation: goldPulse 1.5s infinite;
+}
+
+/* 3. Modal Scale-in & Blur Backdrop */
+.modal-overlay {
+  backdrop-filter: blur(8px) brightness(0.8);
+  transition: backdrop-filter 0.3s ease;
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-content, .painel-card {
+  animation: modalScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 4. Tab Transitions (Cross-fade/Slide) */
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.tab-transition-content {
+  animation: tabFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 5. Hall of Fame 3D Tilt Effect */
+.legend-card-luxury {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.legend-card-luxury:hover {
+  transform: translateY(-8px) scale(1.03) rotateX(4deg) rotateY(-4deg);
+  box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.8), -5px -5px 15px rgba(255, 255, 255, 0.1) !important;
+  z-index: 10;
+}
+
+/* Small reflection gradient overlay on hover */
+.legend-card-luxury::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.15) 45%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.legend-card-luxury:hover::after {
+  opacity: 1;
 }
