@@ -82,6 +82,8 @@ interface ITemporadaGeralForm {
   mip_time: string;
   executivo_do_ano?: string;
   executivo_do_ano_time?: string;
+  finals_mvp?: string;
+  finals_mvp_time?: string;
 }
 
 const NBA_PLAYERS: { [key: string]: string } = {
@@ -428,6 +430,40 @@ salvandoEdicaoFranquia = false;
   }
   topCampeoes: any[] = [];
   
+  // -- LÓGICA DO NOVO MODAL DE FINAIS --
+  selecionarCampeao(time: string | null | undefined) {
+    if (time) {
+      this.novaTemporada.campeao_nba = time;
+    }
+  }
+
+  get scoreOeste(): number | null {
+    if (!this.novaTemporada.resultado_finais) return null;
+    const parts = this.novaTemporada.resultado_finais.split('-');
+    const val = parseInt(parts[0]?.trim(), 10);
+    return isNaN(val) ? null : val;
+  }
+
+  set scoreOeste(val: number | null) {
+    const s2 = this.scoreLeste !== null ? this.scoreLeste : '';
+    const s1 = val !== null ? val : '';
+    this.novaTemporada.resultado_finais = (s1 === '' && s2 === '') ? '' : `${s1}-${s2}`;
+  }
+
+  get scoreLeste(): number | null {
+    if (!this.novaTemporada.resultado_finais) return null;
+    const parts = this.novaTemporada.resultado_finais.split('-');
+    const val = parseInt(parts[1]?.trim(), 10);
+    return isNaN(val) ? null : val;
+  }
+
+  set scoreLeste(val: number | null) {
+    const s1 = this.scoreOeste !== null ? this.scoreOeste : '';
+    const s2 = val !== null ? val : '';
+    this.novaTemporada.resultado_finais = (s1 === '' && s2 === '') ? '' : `${s1}-${s2}`;
+  }
+  // ------------------------------------
+
   lembrancas: any[] = [];
   mostrarFormularioLembranca = false;
   salvandoLembranca = false;
@@ -597,7 +633,7 @@ salvandoEdicaoFranquia = false;
       temporada: '', campeao_oeste: '', campeao_leste: '', campeao_nba: '', resultado_finais: '',
       mvp: '', rookie_of_the_year: '', sixth_man: '', dpoy: '', mip: '',
       mvp_time: '', rookie_of_the_year_time: '', sixth_man_time: '', dpoy_time: '', mip_time: '',
-      executivo_do_ano: '', executivo_do_ano_time: ''
+      executivo_do_ano: '', executivo_do_ano_time: '', finals_mvp: '', finals_mvp_time: ''
     };
   }
 
@@ -683,7 +719,9 @@ salvandoEdicaoFranquia = false;
         dpoy_time: this.novaTemporada.dpoy_time || null,
         mip_time: this.novaTemporada.mip_time || null,
         executivo_do_ano: this.novaTemporada.executivo_do_ano || null,
-        executivo_do_ano_time: this.novaTemporada.executivo_do_ano_time || null
+        executivo_do_ano_time: this.novaTemporada.executivo_do_ano_time || null,
+        finals_mvp: this.novaTemporada.finals_mvp || null,
+        finals_mvp_time: this.novaTemporada.finals_mvp_time || null
       };
 
       if (this.editandoIdGeral) {
@@ -1033,10 +1071,11 @@ salvandoEdicaoFranquia = false;
           
         if (error) throw error;
         
-        // Atualiza o card local para refletir imediatamente
+        // Atualiza o card local para refletir imediatamente e reordena a prateleira
         const idx = this.lendasTime.findIndex(l => l.id === this.idoloSelecionado.id);
         if (idx !== -1) {
           this.lendasTime[idx] = { ...this.idoloSelecionado };
+          this.lendasTime.sort((a, b) => (b.score || 0) - (a.score || 0));
         }
       }
       this.fecharModalIdolo();
@@ -1156,32 +1195,45 @@ salvandoEdicaoFranquia = false;
 
       if (resultado.isIdolo) {
         const nomeDisplay = nomeFormatadoMap[nomeLimpado] || nomeLimpado;
+        
+        let finalScore = resultado.scoreTotal;
+        let finalCategoria = resultado.nivel;
+        let finalMotivo = resultado.badgeCompleto;
+
+        // Se o usuário editou manualmente o score para ser MAIOR que o calculado, preservamos a edição manual!
+        if (lendaExistente && lendaExistente.score && lendaExistente.score > finalScore) {
+          finalScore = lendaExistente.score;
+          finalCategoria = lendaExistente.categoria || finalCategoria;
+          finalMotivo = lendaExistente.motivo || finalMotivo;
+        }
+
         lendasParaSalvar.push({
           ...(lendaExistente && lendaExistente.id ? { id: lendaExistente.id } : {}),
           liga_id: this.ligaId,
           franquia: nomeFranquia,
           nome: nomeDisplay,
-          categoria: resultado.nivel,
-          motivo: resultado.badgeCompleto,
-          score: resultado.scoreTotal, // Adicionado score para ordenação
+          categoria: finalCategoria,
+          motivo: finalMotivo,
+          score: finalScore,
           numero_camisa: lendaExistente ? lendaExistente.numero_camisa : ''
         });
       } else {
-        if (lendaExistente && lendaExistente.id) {
-          idsParaDeletar.push(lendaExistente.id);
+        // Se não atingiu o critério, mas o usuário manualmente deu um score alto (ex: 50+) para forçar a entrada:
+        if (lendaExistente && lendaExistente.score && lendaExistente.score >= 50) {
+           lendasParaSalvar.push(lendaExistente); // Mantém a lenda manual intocada!
+        } else if (lendaExistente && lendaExistente.id) {
+           idsParaDeletar.push(lendaExistente.id);
         }
       }
     }
 
-    // Identificar lendas no banco que não têm MAIS jogador nas campanhas (foram apagadas as campanhas)
+    // Identificar lendas no banco que não têm MAIS jogador nas campanhas (foram apagadas as campanhas ou criadas manualmente)
     for (const lenda of lendasExistentes) {
       const nomeLimpado = SupabaseService.normalizarNomeJogador(lenda.nome);
       if (!statsJogadores[nomeLimpado] && lenda.id && !idsParaDeletar.includes(lenda.id)) {
-        // Esta lenda foi adicionada, mas o jogador não existe mais nas campanhas do time (ou nunca existiu e foi manual)
-        // Como o usuário quer automação 100%, vamos limpar quem não joga mais
-        // a não ser que tenha sido Técnico ou Dono. Se for "Técnico" ou "Dono/Executivo", a gente mantém!
-        if (lenda.categoria === 'Técnico' || lenda.categoria === 'Dono/Executivo') {
-          continue; // Mantém equipe técnica salva
+        // Preserva técnicos, donos e jogadores adicionados manualmente com score alto
+        if (lenda.categoria === 'Técnico' || lenda.categoria === 'Dono/Executivo' || (lenda.score && lenda.score >= 50)) {
+          continue; 
         }
         idsParaDeletar.push(lenda.id);
       }

@@ -24,6 +24,8 @@ export interface ITemporadaGeral {
   mip_time: string | null;
   executivo_do_ano?: string | null;
   executivo_do_ano_time?: string | null;
+  finals_mvp?: string | null;
+  finals_mvp_time?: string | null;
 }
 
 export interface ICampanhaFranquia {

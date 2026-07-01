@@ -611,9 +611,9 @@ body {
   border: 1px solid var(--court-border);
   overflow-x: auto;
   /* Deixa a tabela crescer o quanto for necessário, a página rola */
-  margin-bottom: 5rem;
+  margin-bottom: 7rem;
   /* "Vazio" embaixo */
-  margin-top: 1rem;
+  margin-top: 5rem;
   /* "Vazio" em cima */
   display: block;
   padding: 8px;
@@ -645,28 +645,29 @@ body {
   border-spacing: 0 8px;
   /* O espaço para a animação flutuante */
   text-align: left;
-  min-width: 1400px;
-  /* Garante que não esmaga no telemóvel */
+  min-width: 100%;
+  /* Garante que se ajusta na tela, mas scrolla apenas se a tela for muito pequena */
 
   th {
-    padding: 1rem;
-    font-size: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.5px;
     color: var(--text-muted);
     background: var(--court-dark);
     border-bottom: 2px solid var(--court-border2);
     position: sticky;
     top: 0;
     z-index: 20;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: center;
   }
 
   td {
-    padding: 0.85rem 1rem;
+    padding: 0.35rem 0.25rem;
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     vertical-align: middle;
     background: rgba(255, 255, 255, 0.02);
     /* Fundo padrão da linha separada */
@@ -991,16 +992,94 @@ body {
 }
 
 .award-cell {
-  display: inline-flex;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 4px;
+  white-space: normal; /* Permite quebrar a linha do texto longo */
+  text-align: center;
+  line-height: 1.1;
+  width: 75px; /* Exatamente como o player-cell, bem compacto */
+  margin: 0 auto;
 }
 
 .award-logo {
-  width: 48px;
-  height: 48px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+  flex-shrink: 0;
+}
+
+.texto-campeao {
+  color: var(--gold);
+  font-weight: 800;
+  text-shadow: 0 0 5px rgba(253, 185, 39, 0.3);
+}
+
+.champion-silhouette-container {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+
+  /* The actual base PNG logo */
+  .champ-logo-base {
+    position: relative;
+    z-index: 2;
+    /* Fica na frente da animação */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px var(--champ-color, #FDB927));
+  }
+
+  /* The LED beam effect that traces the silhouette */
+  .silhouette-beam {
+    position: absolute;
+    inset: -4px;
+    z-index: 1;
+    /* Fica por trás do logo */
+    overflow: hidden; /* FIX: Clipping para evitar flickering da barra de rolagem vertical */
+
+    -webkit-mask-image: var(--logo-url);
+    mask-image: var(--logo-url);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+
+    pointer-events: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg,
+          transparent 75%,
+          var(--champ-color, #ffffff) 90%,
+          #ffffff 95%,
+          transparent 100%);
+      animation: spinBeam 2s linear infinite;
+    }
+  }
+}
+
+@keyframes spinBeam {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .input-group-premiacao {
@@ -2559,233 +2638,6 @@ body {
   }
 }
 
-/* ─── TIER MYTHIC (95+) - Efeito God/Diamond Tier ─── */
-.tier-mythic {
-  position: relative !important;
-  overflow: hidden !important;
-  box-shadow: 0 0 30px var(--glow-color, #FDB927), 0 0 10px #ffffff !important;
-  border-color: transparent !important;
-  z-index: 1;
-
-  &,
-  .player-badge,
-  .name-text {
-    color: #FFFFFF !important;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 15px var(--glow-color, #FDB927) !important;
-  }
-
-  .ovr-inline {
-    background: transparent !important;
-    color: #FFFFFF !important;
-    border: 1px solid #FFFFFF !important;
-    box-shadow: 0 0 15px #FFFFFF, inset 0 0 10px var(--glow-color, #FDB927) !important;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9) !important;
-  }
-}
-
-.tier-mythic::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 250%;
-  height: 250%;
-  background: conic-gradient(
-    transparent, 
-    #FFFFFF 10%, 
-    transparent 20%, 
-    var(--glow-color, #FDB927) 35%, 
-    transparent 50%, 
-    #FFFFFF 60%, 
-    transparent 70%, 
-    var(--glow-color, #FDB927) 85%,
-    transparent
-  );
-  transform: translate(-50%, -50%);
-  animation: spinMythic 2.5s linear infinite;
-  z-index: -2;
-}
-
-.tier-mythic::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  background: rgba(15, 23, 42, 0.85);
-  border-radius: inherit;
-  z-index: -1;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.15);
-}
-
-.tier-mythic > :not(.status-chip) {
-  position: relative;
-  z-index: 2;
-}
-
-.tier-mythic > .status-chip {
-  z-index: 3;
-}
-
-@keyframes spinMythic {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(-360deg); } /* Gira no sentido inverso para dar um tchan diferente */
-}
-
-/* ─── TIER DARK MATTER (97+) - Efeito Cósmico/Nebulosa ─── */
-.tier-dark-matter {
-  position: relative !important;
-  overflow: hidden !important;
-  box-shadow: 0 0 40px rgba(128, 0, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5) !important;
-  border: 1px solid rgba(255, 0, 255, 0.5) !important;
-  z-index: 1;
-
-  &,
-  .player-badge,
-  .name-text {
-    color: #e0d4ff !important;
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #8000ff !important;
-  }
-
-  .ovr-inline {
-    background: rgba(10, 0, 20, 0.8) !important;
-    color: #00ffff !important;
-    border: 1px solid #ff00ff !important;
-    box-shadow: 0 0 20px #8000ff, inset 0 0 15px #00ffff !important;
-    text-shadow: 0 0 8px #00ffff !important;
-  }
-}
-
-.tier-dark-matter::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 250%;
-  height: 250%;
-  /* Mistura cores de nebulosa: roxo profundo, rosa choque, ciano, escuro */
-  background: conic-gradient(
-    #1a0033, 
-    #ff00ff, 
-    #00ffff, 
-    #1a0033, 
-    var(--glow-color, #8000ff), 
-    #000000, 
-    #1a0033
-  );
-  transform: translate(-50%, -50%);
-  animation: spinDarkMatter 4s ease-in-out infinite alternate; /* Vai e volta pulsando */
-  z-index: -2;
-  filter: blur(4px); /* Borrão para dar efeito de fumaça cósmica */
-}
-
-.tier-dark-matter::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  background: rgba(5, 5, 10, 0.9); /* Quase preto para destacar os neons */
-  border-radius: inherit;
-  z-index: -1;
-  box-shadow: inset 0 0 30px rgba(128, 0, 255, 0.4);
-}
-
-.tier-dark-matter > :not(.status-chip) {
-  position: relative;
-  z-index: 2;
-}
-
-.tier-dark-matter > .status-chip {
-  z-index: 3;
-}
-
-@keyframes spinDarkMatter {
-  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); filter: blur(4px); }
-  100% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); filter: blur(8px); }
-}
-
-/* ─── TIER GOAT (99) - Efeito Iridescente/Absolute Pinnacle ─── */
-.tier-goat {
-  position: relative !important;
-  overflow: hidden !important;
-  /* Brilho insano: dourado + platina/branco + cor da franquia */
-  box-shadow: 0 0 50px #ffdf00, 0 0 20px #ffffff, 0 0 100px var(--glow-color, #ffdf00) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  z-index: 1;
-
-  &,
-  .player-badge,
-  .name-text {
-    /* Gradiente no texto simulando ouro puro refletindo luz */
-    background: linear-gradient(to right, #ffdf00, #ffffff, #ffdf00, #ff8c00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(255, 223, 0, 0.5) !important; /* Só um glow sutil pq o background-clip remove o text-shadow duro */
-    font-weight: 900 !important;
-  }
-
-  .ovr-inline {
-    background: linear-gradient(45deg, #ffd700, #ff8c00, #ffd700) !important;
-    -webkit-background-clip: initial;
-    -webkit-text-fill-color: initial;
-    color: #000000 !important; /* Texto preto para estourar o contraste no badge dourado */
-    border: 2px solid #ffffff !important;
-    box-shadow: 0 0 25px #ffdf00, inset 0 0 15px #ffffff !important;
-    text-shadow: none !important;
-    font-weight: 900 !important;
-    animation: goatPulse 1.5s infinite;
-  }
-}
-
-.tier-goat::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300%;
-  height: 300%;
-  /* Arco íris iridescente + Dourado */
-  background: conic-gradient(
-    #ffdf00, 
-    #ffffff, 
-    #ff8c00, 
-    #ffdf00, 
-    var(--glow-color, #ffffff),
-    #ffdf00
-  );
-  transform: translate(-50%, -50%);
-  animation: spinGoat 1.5s linear infinite; /* Bem rápido, energia transbordando */
-  z-index: -2;
-}
-
-.tier-goat::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  /* Fundo quase branco estourado ou um dourado muito escuro. Vamos de dark gold */
-  background: rgba(20, 15, 0, 0.9);
-  border-radius: inherit;
-  z-index: -1;
-  box-shadow: inset 0 0 40px rgba(255, 223, 0, 0.6);
-}
-
-.tier-goat > :not(.status-chip) {
-  position: relative;
-  z-index: 2;
-}
-
-.tier-goat > .status-chip {
-  z-index: 3;
-}
-
-@keyframes spinGoat {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes goatPulse {
-  0% { transform: scale(1); box-shadow: 0 0 15px #ffdf00; }
-  50% { transform: scale(1.1); box-shadow: 0 0 35px #ffffff; }
-  100% { transform: scale(1); box-shadow: 0 0 15px #ffdf00; }
-}
-
 /* Larry O'Brien NBA Trophy (and medals) styling */
 .nba-trophy-logo {
   height: 32px;
@@ -3052,12 +2904,6 @@ body {
   background: rgba(255, 255, 255, 0.05) !important;
   color: var(--text-primary) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.sidebar-item.active {
-  background: #1f1f1f !important;
-  color: #fff !important;
-  font-weight: 600;
 }
 
 /* Rankings Header */
@@ -3410,20 +3256,18 @@ body {
 }
 
 .sidebar-nav {
-  position: relative;
   padding: 1rem 0;
   flex: 1;
+  position: relative; /* OBRIGATÓRIO PARA O INDICADOR ABSOLUTO FUNCIONAR */
 }
 
 .sidebar-indicator {
   position: absolute;
   top: 0;
   left: 0;
-  right: 1.5rem; /* give some margin on the right */
-  border-left: 3px solid var(--gold); /* fallback color */
-  background-color: rgba(253, 185, 39, 0.1);
-  border-radius: 0 8px 8px 0;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s ease, background-color 0.3s ease, border-left-color 0.3s ease;
+  width: 100%;
+  border-left: 3px solid transparent;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, border-left-color 0.3s ease;
   pointer-events: none;
   z-index: 0;
 }
@@ -3439,14 +3283,12 @@ body {
 }
 
 .sidebar-item {
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
   padding: 0.75rem 1.5rem;
-  background: transparent;
+  background: transparent !important; /* Força o fundo a ser transparente para o indicador brilhar */
   border: none;
   border-left: 3px solid transparent;
   text-align: left;
@@ -3455,31 +3297,33 @@ body {
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: color 0.2s ease, font-weight 0.2s ease;
+  transition: all 0.2s ease;
+  position: relative; /* OBRIGATÓRIO PARA FICAR ACIMA DO INDICADOR */
+  z-index: 1;
 
   .icon {
     font-size: 1.1rem;
+    z-index: 2;
   }
 
   .text {
     flex: 1;
+    z-index: 2;
   }
 
   &:hover {
+    background: rgba(255,255,255,0.03) !important;
     color: var(--text-primary);
   }
 
   &.active {
-    /* Background and border are handled by .sidebar-indicator now */
-    background: transparent !important;
-    border-left-color: transparent !important;
     color: var(--gold);
     font-weight: 700;
+    /* Removemos o background daqui pois o .sidebar-indicator cuida disso */
   }
 
   &.custom-tab.active {
-    background: transparent !important;
-    border-left-color: transparent !important;
+    color: inherit;
   }
 
   &.add-tab-btn {
@@ -4007,6 +3851,190 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
+/* ─── NOVA UI DE FINAIS (MATCHUP) ──────────────────── */
+.finals-matchup-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sombras radiais atrás de cada lado */
+.finals-matchup-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.finals-matchup-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.matchup-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 140px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.5; /* Escurecido por padrão, se não for o campeão (ou se nada foi clicado) */
+
+  &.is-champion {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.team-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.invisible-team-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-primary);
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(253, 185, 39, 0.3);
+  }
+}
+
+.team-logo-normal {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)) grayscale(50%);
+  transition: all 0.4s ease;
+}
+
+.matchup-side.is-champion .team-logo-normal {
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8)) grayscale(0%);
+}
+
+.matchup-side .champion-silhouette-container {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+
+  .champ-logo-base {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.champ-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 0.25rem;
+  text-shadow: 0 0 5px rgba(253, 185, 39, 0.5);
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.matchup-scoreboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.series-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.score-inputs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(0,0,0,0.6);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.score-box {
+  width: 45px;
+  height: 55px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  text-align: center;
+  outline: none;
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+  transition: all 0.3s ease;
+
+  &:focus {
+    color: var(--gold);
+    text-shadow: 0 0 15px var(--gold);
+  }
+
+  /* Ocultar setinhas (spinners) do input number */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
+}
+
+.score-divider {
+  color: var(--text-muted);
+  font-size: 2rem;
+  font-weight: 300;
+}
+
 /* ─── TABS DA FRANQUIA (Temporadas / Ídolos) ──────────────────── */
 .franquia-tabs-container {
   display: flex;
@@ -4016,33 +4044,6 @@ body {
   border-radius: var(--radius-lg, 12px);
   margin-bottom: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-  z-index: 1;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    left: 0.5rem;
-    width: calc(50% - 0.75rem); /* half width minus gap compensation */
-    /* Usando a cor secundária e primária passadas pelo HTML via variáveis */
-    background: linear-gradient(135deg, var(--tab-bg, rgba(253, 185, 39, 0.15)) 0%, rgba(0,0,0,0.2) 100%);
-    border: 1px solid var(--tab-text, rgba(253, 185, 39, 0.3));
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-    border-radius: var(--radius-md, 8px);
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: -1;
-  }
-
-  /* Segment Sliding Logic */
-  &:has(.btn-franquia-tab:nth-child(1).ativo)::before {
-    transform: translateX(0);
-  }
-
-  &:has(.btn-franquia-tab:nth-child(2).ativo)::before {
-    transform: translateX(calc(100% + 0.5rem));
-  }
 }
 
 .franquia-tabs-container .btn-franquia-tab {
@@ -4056,7 +4057,7 @@ body {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4070,21 +4071,21 @@ body {
 }
 
 .franquia-tabs-container .btn-franquia-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
 }
 
 .franquia-tabs-container .btn-franquia-tab.ativo {
-  /* Removemos o background estático para deixar o ::before de fundo aparecer */
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: var(--tab-text, var(--gold));
+  background: linear-gradient(135deg, rgba(253, 185, 39, 0.15) 0%, rgba(253, 185, 39, 0.05) 100%);
+  color: var(--gold);
+  border: 1px solid rgba(253, 185, 39, 0.3);
+  box-shadow: inset 0 0 20px rgba(253, 185, 39, 0.05);
 }
 
 .franquia-tabs-container .btn-franquia-tab.ativo i {
   opacity: 1;
-  color: var(--tab-text, var(--gold));
-  filter: drop-shadow(0 0 8px var(--tab-text, var(--gold)));
+  color: var(--gold);
+  filter: drop-shadow(0 0 8px rgba(253, 185, 39, 0.4));
 }
 
 
@@ -4953,45 +4954,15 @@ body {
       display: flex;
       gap: 8px;
 
-      input.jogador-nome-input {
+      .jogador-nome-input {
         flex: 1;
-        width: auto;
       }
 
-      input.jogador-ovr-input {
-        width: 80px !important;
-        flex-shrink: 0;
+      .jogador-ovr-input {
+        width: 80px;
         text-align: center;
         font-weight: 700;
         color: var(--gold, #FDB927);
-      }
-    }
-
-    .jogador-lesao-detalhes {
-      input.jogador-lesao-input {
-        width: 80px !important;
-        flex-shrink: 0;
-        text-align: center;
-        font-weight: 700;
-        border: 1px solid rgba(255, 60, 60, 0.4) !important;
-        background: rgba(255, 60, 60, 0.05) !important;
-        color: #ff6b6b !important;
-        
-        &::placeholder {
-          color: rgba(255, 107, 107, 0.5) !important;
-        }
-      }
-
-      input.jogador-lesao-desc-input {
-        flex: 1;
-        width: auto;
-        border: 1px solid rgba(255, 60, 60, 0.4) !important;
-        background: rgba(255, 60, 60, 0.02) !important;
-        color: #ffbaba !important;
-
-        &::placeholder {
-          color: rgba(255, 107, 107, 0.3) !important;
-        }
       }
     }
   }
@@ -5309,110 +5280,203 @@ body {
     }
   }
 }
+/* ==========================================================================
+   2K MYTEAM / FUT STYLE PLAYER CARDS - RARITY TIERS
+   Aplique estas classes no seu componente `.player-cell`
+   ========================================================================== */
 
-/* ─── ENHANCEMENT MICRO-ANIMATIONS ─── */
-
-/* 1. Staggered Table Fade-in */
-@keyframes fadeUpStagger {
-  0% {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.stagger-row {
-  opacity: 0;
-  animation: fadeUpStagger 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-/* 2. Shine Effect on Trophies/Medals */
-.nba-trophy-logo, .medal-logo {
+/* Garante que o texto e a foto fiquem acima das camadas de animação */
+.player-cell > * {
   position: relative;
+  z-index: 2;
+}
+
+/* 1. LEGEND (OVR 90 - 94) - Elegância e Ouro Suave */
+.player-cell.tier-legend {
+  border: none;
+  isolation: isolate;
+  box-shadow: 0 4px 15px rgba(253, 185, 39, 0.15);
   overflow: hidden;
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
 
-.nba-trophy-logo:hover, .medal-logo:hover {
-  transform: translateY(-2px) scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(253, 185, 39, 0.6));
-}
-
-/* We can add a pure CSS shine overlay for images if we wrap them, but since they are straight <img>, we can use a brightness pulse */
-@keyframes goldPulse {
-  0% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
-  50% { filter: brightness(1.3) drop-shadow(0 0 10px rgba(253, 185, 39, 0.8)); }
-  100% { filter: brightness(1) drop-shadow(0 0 0 transparent); }
-}
-.nba-trophy-logo:hover {
-  animation: goldPulse 1.5s infinite;
-}
-
-/* 3. Modal Scale-in & Blur Backdrop */
-.modal-overlay {
-  backdrop-filter: blur(8px) brightness(0.8);
-  transition: backdrop-filter 0.3s ease;
-}
-
-@keyframes modalScaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    z-index: -2;
+    background: conic-gradient(from 0deg, transparent 70%, rgba(253, 185, 39, 0.9) 100%);
+    animation: rotate-beam 3s linear infinite;
   }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    z-index: -1;
+    background: rgba(20, 20, 22, 0.95);
+    border-radius: calc(var(--radius-sm) - 2px);
   }
 }
 
-.modal-content, .painel-card {
-  animation: modalScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+/* 2. MYTHIC (OVR 95 - 96) - Prisma Holográfico Radiante */
+.player-cell.tier-mythic {
+  border: none;
+  isolation: isolate;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+  overflow: hidden;
+  animation: mythic-float 3s ease-in-out infinite alternate;
 
-/* 4. Tab Transitions (Cross-fade/Slide) */
-@keyframes tabFadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(15px);
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    z-index: -2;
+    /* Prisma multi-colorido insano */
+    background: conic-gradient(from 0deg, #ff00ea, #00f0ff, #ffea00, #00ff7f, #ff00ea);
+    animation: rotate-beam 1.2s linear infinite;
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    z-index: -1;
+    border-radius: calc(var(--radius-sm) - 2px);
+    /* Fundo escuro + Holograma de Foil cortando agressivamente na diagonal */
+    background: 
+      linear-gradient(115deg, transparent 15%, rgba(255, 255, 255, 0.7) 25%, rgba(0, 255, 255, 0.5) 35%, rgba(255, 0, 234, 0.5) 45%, transparent 55%),
+      linear-gradient(to bottom right, #090914, #121226);
+    background-size: 300% 300%, 100% 100%;
+    animation: mythic-foil-fast 1.8s infinite linear;
   }
 }
 
-.tab-transition-content {
-  animation: tabFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+/* 3. DARK MATTER (OVR 97 - 98) - Matéria Escura e Instabilidade Dimensional */
+.player-cell.tier-dark-matter {
+  border: none;
+  isolation: isolate;
+  box-shadow: 0 0 35px rgba(138, 43, 226, 0.8), inset 0 0 10px rgba(0, 0, 0, 1);
+  overflow: hidden;
+  /* Tremor removido a pedido do usuário */
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    z-index: -2;
+    /* Feixes reversos ultra-rápidos e agressivos */
+    background: conic-gradient(from 0deg, #000 0%, #ff00ff 10%, #000 20%, #8a2be2 30%, #000 50%, #ff00ff 60%, #000 70%, #8a2be2 80%, #000 100%);
+    animation: rotate-beam 0.5s linear infinite reverse;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    z-index: -1;
+    border-radius: calc(var(--radius-sm) - 2px);
+    /* Buraco negro supermassivo sugando o fundo com saturação pesada */
+    background: radial-gradient(circle at 50% 50%, #000 20%, #2b0052 60%, #110022 100%);
+    box-shadow: inset 0 0 25px rgba(255, 0, 255, 0.8);
+    animation: dark-matter-void 0.6s infinite alternate cubic-bezier(0.8, 0, 0.2, 1);
+  }
 }
 
-/* 5. Hall of Fame 3D Tilt Effect */
-.legend-card-luxury {
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+/* 4. GOAT (OVR 99) - AURA DIVINA ABSOLUTA (Ultimate Tier) */
+.player-cell.tier-goat {
+  border: none;
+  isolation: isolate;
+  /* Aura colossal dourada e branca */
+  box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 255, 255, 0.6), inset 0 0 15px rgba(255, 215, 0, 1);
+  /* Levitação dramática e expansão de aura */
+  animation: goat-divine-float 1.2s infinite alternate ease-in-out;
+  overflow: hidden;
+
+  /* Garante legibilidade máxima do texto sobre o fundo super brilhante */
+  .player-badge {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 1), 0 0 15px rgba(0, 0, 0, 1), 0 0 5px rgba(0, 0, 0, 1);
+    
+    .name-text {
+      font-weight: 800;
+      color: #fff;
+    }
+    .ovr-value {
+      color: #ffd700; /* Destaca o OVR 99 em dourado absoluto */
+      text-shadow: 0 0 15px rgba(255,215,0,1), 0 2px 4px #000;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    z-index: -2;
+    /* Feixe espesso de pura luz divina (Ouro e Branco) girando alucinadamente */
+    background: conic-gradient(from 0deg, #fff 0%, #ffd700 15%, #ff8c00 25%, #fff 40%, #ffd700 50%, #ff8c00 65%, #fff 80%, #ffd700 90%, #fff 100%);
+    animation: rotate-beam 0.3s linear infinite;
+    filter: contrast(1.5) brightness(1.5);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 3px; /* Borda 3px (mais grossa que os outros tiers) para ser muito mais imponente */
+    z-index: -1;
+    border-radius: calc(var(--radius-sm) - 3px);
+    /* Foil Divino que passa cortando + Fundo negro dourado + Explosão central */
+    background: 
+      linear-gradient(135deg, transparent 20%, rgba(255, 255, 255, 0.8) 25%, rgba(255, 215, 0, 0.8) 30%, transparent 35%),
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 215, 0, 0.5) 40%, transparent 80%),
+      linear-gradient(0deg, #100b00 0%, #302000 50%, #100b00 100%);
+    background-size: 200% 200%, 100% 100%, 100% 100%;
+    box-shadow: inset 0 0 40px rgba(255, 215, 0, 0.9);
+    animation: goat-heavenly-fire 1s infinite alternate ease-in-out, goat-foil-flash 1.5s infinite linear;
+  }
 }
 
-.legend-card-luxury:hover {
-  transform: translateY(-8px) scale(1.03) rotateX(4deg) rotateY(-4deg);
-  box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.8), -5px -5px 15px rgba(255, 255, 255, 0.1) !important;
-  z-index: 10;
+/* ==========================================================================
+   KEYFRAMES GERAIS PARA AS CARTAS
+   ========================================================================== */
+
+@keyframes rotate-beam {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Small reflection gradient overlay on hover */
-.legend-card-luxury::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.15) 45%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  border-radius: inherit;
+@keyframes mythic-float {
+  0% { transform: translateY(0); box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2); }
+  100% { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 255, 255, 0.7); }
 }
 
-.legend-card-luxury:hover::after {
-  opacity: 1;
+@keyframes mythic-foil-fast {
+  0% { background-position: 250% 0, 0 0; }
+  100% { background-position: -50% 0, 0 0; }
 }
+
+@keyframes dark-matter-tremor {
+  0% { transform: translate(0.5px, 0.5px) rotate(0.1deg); }
+  25% { transform: translate(-0.5px, 0.5px) rotate(-0.1deg); }
+  50% { transform: translate(-0.5px, -0.5px) rotate(0.1deg); }
+  75% { transform: translate(0.5px, -0.5px) rotate(-0.1deg); }
+  100% { transform: translate(0.5px, 0.5px) rotate(0.1deg); }
+}
+
+@keyframes dark-matter-void {
+  0% { background-size: 100% 100%; filter: saturate(1.2); box-shadow: inset 0 0 15px #ff00ff; }
+  100% { background-size: 150% 150%; filter: saturate(2); box-shadow: inset 0 0 45px #8a2be2; }
+}
+
+@keyframes goat-divine-float {
+  0% { transform: translateY(0) scale(1.01); box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 255, 255, 0.3); }
+  100% { transform: translateY(-4px) scale(1.05); box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 255, 255, 0.8); }
+}
+
+@keyframes goat-heavenly-fire {
+  0% { filter: brightness(1) contrast(1); box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.6); }
+  100% { filter: brightness(1.6) contrast(1.2); box-shadow: inset 0 0 80px rgba(255, 255, 255, 1); }
+}
+
+@keyframes goat-foil-flash {
+  0% { background-position: 250% 0, 50% 0, 0 0; }
+  100% { background-position: -50% 0, 50% 100%, 0 0; }
+}
+
