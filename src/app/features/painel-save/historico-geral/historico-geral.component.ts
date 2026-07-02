@@ -1243,6 +1243,7 @@ salvandoEdicaoFranquia = false;
     const anosDpoy: string[] = [];
     const anosRoy: string[] = [];
     const anosSexto: string[] = [];
+    const historicoOvr: { temporada: string, ovr: number }[] = [];
     let maxOvr = 0;
     
     const nomeLimpado = SupabaseService.normalizarNomeJogador(lenda.nome);
@@ -1265,6 +1266,9 @@ salvandoEdicaoFranquia = false;
 
         if (jogadorStats) {
           const ovr = Number(jogadorStats.ovr) || 0;
+          if (ovr > 0) {
+            historicoOvr.push({ temporada: campanha.temporada, ovr });
+          }
           if (ovr > maxOvr) maxOvr = ovr;
 
           if (temporadaGeral?.campeao_nba === this.getNomeAbaAtiva()) {
@@ -1291,6 +1295,10 @@ salvandoEdicaoFranquia = false;
     lenda.anosRoy = anosRoy;
     lenda.anosSexto = anosSexto;
     lenda.maxOvr = maxOvr;
+    lenda.historicoOvr = historicoOvr.sort((a, b) => {
+      const getYear = (t: string) => parseInt(t.split('-')[0], 10);
+      return getYear(a.temporada) - getYear(b.temporada);
+    });
     return lenda;
   }
 
@@ -2956,6 +2964,75 @@ Regras ESTRITAS:
       topIdolos: []
     };
     this.mostrarModalEvolucao = true;
+
+    // Renderizar gráfico
+    setTimeout(() => {
+      if (this.evolucaoChartCanvas && this.evolucaoChartCanvas.nativeElement) {
+        const ctx = this.evolucaoChartCanvas.nativeElement.getContext('2d');
+        if ((this as any).evolucaoChartInstance) {
+          (this as any).evolucaoChartInstance.destroy();
+        }
+
+        const labels = lenda.historicoOvr?.map((h: any) => h.temporada) || [];
+        const dataOvr = lenda.historicoOvr?.map((h: any) => h.ovr) || [];
+
+        (this as any).evolucaoChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'OVR (Overall)',
+              data: dataOvr,
+              borderColor: '#FFD700',
+              backgroundColor: 'rgba(255, 215, 0, 0.1)',
+              borderWidth: 3,
+              pointBackgroundColor: '#fff',
+              pointBorderColor: '#FFD700',
+              pointHoverBackgroundColor: '#FFD700',
+              pointHoverBorderColor: '#fff',
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#cbd5e1', font: { family: 'Bebas Neue', size: 16 } }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#FFD700',
+                titleFont: { family: 'Bebas Neue', size: 18 },
+                bodyFont: { size: 14 },
+                padding: 12,
+                borderColor: 'rgba(255,215,0,0.3)',
+                borderWidth: 1,
+                callbacks: {
+                  label: (context: any) => ` OVR: ${context.parsed.y}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8', font: { family: 'Bebas Neue', size: 14 } }
+              },
+              y: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#94a3b8', font: { family: 'Bebas Neue', size: 14 } },
+                beginAtZero: false,
+                suggestedMin: 70,
+                suggestedMax: 99
+              }
+            }
+          }
+        });
+      }
+    }, 100);
   }
 
   fecharGraficoEvolucao() {
