@@ -498,6 +498,12 @@
             </div>
 
             <div class="banner-acoes">
+              <button class="btn-banner outline"
+                style="background: rgba(255, 199, 44, 0.1); border-color: var(--gold); color: var(--gold);"
+                (click)="gerarInfograficoFimDeEra()">
+                <i class="fas fa-camera" [class.fa-spin]="gerandoInfografico"></i> {{ gerandoInfografico ?
+                'Renderizando...' : 'Fim de Era (Exportar)' }}
+              </button>
               <input type="file" #fileInputTime style="display:none" accept=".csv" (change)="processarCSVTime($event)"
                 aria-hidden="true">
               <button class="btn-banner outline" (click)="fileInputTime.click()"><i class="fas fa-file-import"></i>
@@ -517,8 +523,9 @@
               <span class="item-label">Títulos:</span>
               <div class="item-content" role="list">
                 <span class="premium-tooltip-wrapper" *ngFor="let t of getArrayTitulos()" [attr.data-year]="t.temporada"
-                  [title]="'Campeão em: ' + t.temporada">
-                  <img src="assets/trofeu.png" class="nba-trophy-logo" alt="Larry O'Brien Trophy">
+                  [title]="'Campeão em: ' + t.temporada" style="cursor: pointer;" (click)="abrirModalTrofeu(t)">
+                  <img src="assets/trofeu.png" class="nba-trophy-logo" alt="Larry O'Brien Trophy"
+                    style="transition: transform 0.3s ease;">
                 </span>
                 <span class="premium-tooltip-wrapper" *ngFor="let v of getArrayVices()" [attr.data-year]="v.temporada"
                   [title]="'Vice-campeão em: ' + v.temporada">
@@ -761,6 +768,21 @@
             (click)="abaFranquiaAtiva = 'idolos'">
             <i class="fas fa-star"></i> <span>Ídolos Time</span>
           </button>
+          <button class="btn-franquia-tab" [class.ativo]="abaFranquiaAtiva === 'trofeus'"
+            (click)="abaFranquiaAtiva = 'trofeus'">
+            <i class="fas fa-trophy"></i> <span>Vitrine de Troféus</span>
+          </button>
+          <button class="btn-franquia-tab" [class.ativo]="abaFranquiaAtiva === 'recordes'"
+            (click)="abaFranquiaAtiva = 'recordes'">
+            <i class="fas fa-book"></i> <span>Recordes</span>
+          </button>
+
+          <div style="flex-grow: 1;"></div>
+
+          <button class="btn-franquia-tab btn-tv-debate" (click)="ligarTVDebate()"
+            style="background: var(--dark-red); color: white; border-color: transparent;">
+            <i class="fas fa-tv"></i> <span>Inside the NBA (Ligar TV)</span>
+          </button>
         </div>
 
         <div class="tab-transition-content" *ngIf="!carregandoTime && abaFranquiaAtiva === 'temporadas'">
@@ -841,6 +863,12 @@
 
                   <td>{{ camp.observacoes || '—' }}</td>
                   <td>
+                    <button class="btn-icon-ia"
+                      style="margin-right: 0.5rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.5); padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; transition: all 0.3s ease;"
+                      (click)="abrirModalManchete(camp)"
+                      [attr.aria-label]="'Ler manchete da temporada ' + camp.temporada">
+                      <i class="fas fa-newspaper"></i> Manchete
+                    </button>
                     <button class="btn-icon-edit" (click)="editarCampanhaTime(camp)"
                       [attr.aria-label]="'Editar campanha ' + camp.temporada"><i class="fas fa-pencil-alt"></i>
                       Editar</button>
@@ -883,10 +911,29 @@
           </div>
 
 
-          <!-- Camisas Aposentadas (Rafters) -->
-          <div class="rafters-container" *ngIf="camisasAposentadas.length > 0">
-            <h4 class="rafters-title">Teto do Ginásio (Camisas Aposentadas)</h4>
+          <!-- Camisas Aposentadas e Banners (Rafters) -->
+          <div class="rafters-container" *ngIf="camisasAposentadas.length > 0 || getArrayTitulos().length > 0">
+            <!-- Spotlights no teto -->
+            <div class="rafter-spotlight left"></div>
+            <div class="rafter-spotlight right"></div>
+
+            <h4 class="rafters-title">Teto do Ginásio (Rafters)</h4>
             <div class="rafters-roof">
+              <!-- Banners de Campeão -->
+              <div class="rafter-banner" *ngFor="let titulo of getArrayTitulos()"
+                [ngStyle]="{'--team-primary': getCorAbaAtiva(), '--team-secondary': getCorSecundariaAbaAtiva()}"
+                [title]="'Campeão da NBA - ' + titulo.temporada">
+                <div class="banner-string"></div>
+                <div class="banner-body">
+                  <span class="banner-year">{{ titulo.temporada }}</span>
+                  <div class="banner-logo-container">
+                    <img src="assets/trofeu.png" class="banner-logo" alt="Troféu">
+                  </div>
+                  <span class="banner-text">WORLD<br>CHAMPIONS</span>
+                </div>
+              </div>
+
+              <!-- Camisas Aposentadas -->
               <div class="rafter-jersey" *ngFor="let lenda of camisasAposentadas"
                 [ngStyle]="{'--team-primary': getCorAbaAtiva(), '--team-secondary': getCorSecundariaAbaAtiva()}"
                 [title]="lenda.nome">
@@ -898,6 +945,11 @@
               </div>
             </div>
           </div>
+
+          <!-- ============================================== -->
+          <!-- TRADE TREE / DRAFT TIMELINE (Linha do Tempo)   -->
+          <!-- ============================================== -->
+
 
           <!-- Legends grid -->
           <div class="lendas-grid" *ngIf="lendasTime.length > 0" role="list">
@@ -953,10 +1005,16 @@
 
                 <p class="lenda-historia" *ngIf="lenda.motivo">"{{ lenda.motivo }}"</p>
 
-                <div class="lenda-footer" *ngIf="lenda.numero_camisa">
-                  <span class="lenda-jersey-badge-bottom" aria-label="Número da camisa aposentada">
+                <div class="lenda-footer" *ngIf="lenda.numero_camisa || true">
+                  <span class="lenda-jersey-badge-bottom" aria-label="Número da camisa aposentada"
+                    *ngIf="lenda.numero_camisa">
                     #{{ lenda.numero_camisa }}
                   </span>
+                  <button class="btn-icon-ia"
+                    style="margin-top: 0.5rem; width: 100%; padding: 0.4rem; justify-content: center; background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3);"
+                    (click)="$event.stopPropagation(); abrirGraficoEvolucao(lenda)">
+                    <i class="fas fa-chart-line"></i> Evolução OVR
+                  </button>
                 </div>
               </div>
             </div>
@@ -1071,7 +1129,112 @@
               </footer>
             </div>
           </div>
+
+          <div class="trade-tree-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+              <h4
+                style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); margin: 0; letter-spacing: 2px;">
+                <i class="fas fa-project-diagram" style="margin-right: 10px;"></i> Timeline da Gestão
+              </h4>
+              <button class="btn-luxury" (click)="abrirModalTransacao()">
+                <i class="fas fa-plus"></i> Novo Registro
+              </button>
+            </div>
+
+            <div class="timeline-empty" *ngIf="transacoes.length === 0">
+              <i class="fas fa-history" style="font-size: 3rem; color: rgba(255,255,255,0.1); margin-bottom: 1rem;"></i>
+              <p>Nenhuma transação registrada ainda.</p>
+              <p style="font-size: 0.9rem; color: #64748b;">Registre drafts, trocas ou assinaturas que mudaram o rumo da
+                franquia.</p>
+            </div>
+
+            <div class="timeline" *ngIf="transacoes.length > 0">
+              <div class="timeline-line"></div>
+
+              <div class="timeline-item" *ngFor="let tr of transacoes; let i = index"
+                [ngClass]="{'left': i % 2 === 0, 'right': i % 2 !== 0}">
+                <div class="timeline-dot" [ngClass]="tr.tipo.toLowerCase()">
+                  <i class="fas fa-exchange-alt" *ngIf="tr.tipo === 'TRADE'"></i>
+                  <i class="fas fa-user-graduate" *ngIf="tr.tipo === 'DRAFT'"></i>
+                  <i class="fas fa-file-signature" *ngIf="tr.tipo === 'FREE_AGENCY'"></i>
+                  <i class="fas fa-pen-nib" *ngIf="tr.tipo === 'EXTENSION'"></i>
+                </div>
+                <div class="timeline-content">
+                  <button class="btn-delete-node" (click)="excluirTransacao(tr.id)" title="Excluir"><i
+                      class="fas fa-trash"></i></button>
+                  <span class="timeline-year">{{ tr.temporada }}</span>
+                  <h5 class="timeline-player">{{ tr.jogador }}</h5>
+                  <span class="timeline-badge" [ngClass]="tr.tipo.toLowerCase()">
+                    {{ tr.tipo === 'TRADE' ? 'Troca' : tr.tipo === 'DRAFT' ? 'Pick de Draft' : tr.tipo === 'FREE_AGENCY'
+                    ? 'Agência Livre' : 'Extensão' }}
+                  </span>
+                  <p class="timeline-details" *ngIf="tr.detalhes">{{ tr.detalhes }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </article>
+
+        <!-- ABA: VITRINE DE TROFÉUS -->
+        <div class="tab-transition-content vitrine-trofeus" *ngIf="!carregandoTime && abaFranquiaAtiva === 'trofeus'">
+          <div class="vitrine-header">
+            <h3><i class="fas fa-trophy"></i> Vitrine de Conquistas da Franquia</h3>
+            <p>O panteão dos prêmios individuais e campeonatos.</p>
+          </div>
+
+          <div class="prateleira-container" [style.--team-glow]="getCorAbaAtiva() + '40'">
+            <div class="prateleira" *ngIf="trofeusFranquia.length > 0; else semTrofeus">
+              <div class="trofeu-item" *ngFor="let trofeu of trofeusFranquia" (click)="abrirTrofeuVitrine(trofeu)"
+                style="cursor: pointer; transition: transform 0.3s ease;">
+                <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                  <img [src]="trofeu.icon" alt="Troféu">
+                  <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                </div>
+                <div class="trofeu-base">
+                  <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                  <span class="trofeu-ano">{{trofeu.ano}}</span>
+                </div>
+              </div>
+            </div>
+            <ng-template #semTrofeus>
+              <div class="empty-state-luxury"
+                style="padding: 4rem 2rem; text-align: center; color: var(--text-secondary);">
+                <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>Nenhum troféu ou prêmio registrado para esta franquia ainda.</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- ABA: RECORDES DE 1 JOGO -->
+        <div class="tab-transition-content recordes-container"
+          *ngIf="!carregandoTime && abaFranquiaAtiva === 'recordes'">
+          <div class="vitrine-header">
+            <h3><i class="fas fa-book"></i> Livro de Recordes Pessoais (Single-Game)</h3>
+            <p>As noites mais iluminadas da história da sua franquia.</p>
+          </div>
+
+          <div class="recordes-grid">
+            <div class="recorde-card" *ngFor="let cat of categoriasRecordes"
+              (click)="abrirModalRecorde(cat.id, cat.titulo)">
+              <div class="recorde-card-inner" [style.--border-color]="getCorAbaAtiva()">
+                <h4>{{cat.titulo}}</h4>
+                <div class="recorde-valor" *ngIf="recordesSalvos[cat.id]; else noRecord">
+                  <span class="valor-gigante">{{recordesSalvos[cat.id].valor}}</span>
+                  <span class="recorde-jogador">{{recordesSalvos[cat.id].jogador}}</span>
+                  <span class="recorde-data"><i class="far fa-calendar-alt"></i> {{recordesSalvos[cat.id].data}}
+                    <br><span class="vs-text">vs {{recordesSalvos[cat.id].adversario}}</span></span>
+                </div>
+                <ng-template #noRecord>
+                  <div class="no-record">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Registrar Recorde</span>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
 
@@ -1083,10 +1246,6 @@
         <header class="section-header">
           <h3 class="section-header-title">📸 Momentos Históricos</h3>
           <div style="display:flex; gap:10px;">
-            <button class="btn-global-ai" (click)="gerarLinhaDoTempoGlobal()" [disabled]="salvandoLembranca">
-              <i class="fas" [ngClass]="salvandoLembranca ? 'fa-spinner fa-spin' : 'fa-bolt'"></i> {{ salvandoLembranca
-              ? 'Gerando Tudo...' : 'Auto-Gerar Tudo (IA)' }}
-            </button>
             <button class="btn-add-temp" (click)="abrirFormularioNovaLembranca()">
               <i class="fas"
                 [ngClass]="mostrarFormularioLembranca && !editandoIdLembranca ? 'fa-times' : 'fa-newspaper'"></i> {{
@@ -1107,6 +1266,11 @@
               </select>
               <button class="btn-magic-ai" (click)="sugerirNoticiaIA(selectIA.value)">
                 <i class="fas fa-magic"></i> Auto-Preencher IA
+              </button>
+              <button class="btn-magic-ai" style="background:var(--primary);"
+                (click)="copiarPromptImagemIA(selectIA.value)"
+                title="Gera um prompt com IA e copia para a área de transferência para usar em geradores como o Midjourney.">
+                <i class="fas fa-copy"></i> Copiar Prompt de Imagem
               </button>
             </div>
           </div>
@@ -1271,7 +1435,7 @@
                   <span class="color-codigo">{{ novaFranquia.corHex }}</span>
                 </div>
               </div>
-              
+
               <div class="form-group" style="flex: 1;">
                 <label>Cor Secundária</label>
                 <div class="color-picker-wrapper">
@@ -1436,6 +1600,62 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════
+     MODAL: MANCHETE DA TEMPORADA (IA)
+════════════════════════════════════════════════════════ -->
+      <div class="modal-overlay" *ngIf="mostrarModalManchete" role="dialog" aria-modal="true"
+        aria-labelledby="modal-manchete-titulo" (click)="fecharModalManchete()">
+        <div class="modal-content"
+          style="max-width: 600px; padding: 2rem; border-top: 4px solid #60a5fa; background: linear-gradient(to bottom, #1e293b, #0f172a);"
+          (click)="$event.stopPropagation()">
+
+          <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+              <h2 id="modal-manchete-titulo"
+                style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; margin: 0; color: #f8fafc; letter-spacing: 1px;">
+                <i class="fas fa-newspaper" style="color: #60a5fa; margin-right: 0.5rem;"></i> Manchete: Temporada {{
+                campanhaManchete?.temporada }}
+              </h2>
+              <p style="font-size: 0.9rem; color: #94a3b8; margin: 0;">Relato jornalístico da temporada</p>
+            </div>
+            <button class="btn-close-modal" (click)="fecharModalManchete()" aria-label="Fechar">✕</button>
+          </header>
+
+          <div class="manchete-body"
+            style="min-height: 150px; display: flex; flex-direction: column; justify-content: center;">
+            <div *ngIf="gerandoManchete" style="text-align: center; color: #60a5fa;">
+              <i class="fas fa-spinner fa-spin fa-2x" style="margin-bottom: 1rem;"></i>
+              <p>O Gemini está redigindo a matéria esportiva...</p>
+            </div>
+
+            <div *ngIf="!gerandoManchete && campanhaManchete?.narrativa_ia"
+              style="background: rgba(0,0,0,0.3); border-left: 4px solid #60a5fa; padding: 1.5rem; border-radius: 4px;">
+              <p
+                style="font-family: 'Georgia', serif; font-size: 1.1rem; line-height: 1.6; color: #e2e8f0; white-space: pre-line; margin: 0;">
+                {{ campanhaManchete?.narrativa_ia }}
+              </p>
+            </div>
+
+            <div *ngIf="!gerandoManchete && !campanhaManchete?.narrativa_ia" style="text-align: center;">
+              <p style="color: #94a3b8; margin-bottom: 1.5rem;">Nenhum relato gerado para esta temporada ainda.</p>
+              <button class="btn-confirm"
+                style="font-size: 1.1rem; padding: 0.8rem 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;"
+                (click)="gerarMancheteTemporada()">
+                <i class="fas fa-magic"></i> Gerar Matéria com IA
+              </button>
+            </div>
+          </div>
+
+          <footer *ngIf="!gerandoManchete && campanhaManchete?.narrativa_ia"
+            style="margin-top: 1.5rem; text-align: right;">
+            <button class="btn-cancel" style="margin-right: 1rem;" (click)="gerarMancheteTemporada()">
+              <i class="fas fa-redo"></i> Reescrever
+            </button>
+            <button class="btn-confirm" (click)="fecharModalManchete()">Concluído</button>
+          </footer>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
      MODAL: CONFIGURAÇÕES DA LIGA
 ════════════════════════════════════════════════════════ -->
       <div class="modal-overlay" *ngIf="mostrarModalConfiguracoes" role="dialog" aria-modal="true"
@@ -1450,8 +1670,21 @@
 
           <div class="config-body">
 
-            <!-- Lista de franquias -->
+            <!-- Lista de franquias e Configs Globais -->
             <aside class="config-franquias-lista">
+
+              <p class="config-section-label" style="margin-top:0;">Integração IA</p>
+              <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.3rem; display:block;">Google Gemini API
+                  Key (Opcional)</label>
+                <div style="display:flex; gap:0.5rem;">
+                  <input type="password" [(ngModel)]="geminiApiKey" placeholder="Sua API Key..."
+                    style="flex:1; padding: 0.4rem; border-radius: 4px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff;">
+                  <button class="btn-confirm" style="padding: 0.4rem 0.8rem;"
+                    (click)="salvarGeminiApiKey()">Salvar</button>
+                </div>
+              </div>
+
               <p class="config-section-label">Times Cadastrados</p>
 
               <div class="config-franquia-vazia" *ngIf="franquias.length === 0">
@@ -1490,11 +1723,12 @@
                     <span class="color-codigo">{{ franquiaEditandoForm.corHex }}</span>
                   </div>
                 </div>
-                
+
                 <div class="input-group" style="flex: 1;">
                   <label>Cor Secundária</label>
                   <div class="color-picker-wrapper">
-                    <input type="color" [(ngModel)]="franquiaEditandoForm.corSecundaria" aria-label="Selecionar cor secundária do time">
+                    <input type="color" [(ngModel)]="franquiaEditandoForm.corSecundaria"
+                      aria-label="Selecionar cor secundária do time">
                     <span class="color-preview-swatch"
                       [ngStyle]="{ 'background-color': franquiaEditandoForm.corSecundaria }"></span>
                     <span class="color-codigo">{{ franquiaEditandoForm.corSecundaria }}</span>
@@ -1599,4 +1833,471 @@
       </div>
     </div>
   </main>
+</div>
+
+<!-- Modal: Sala de Troféus Interativa -->
+<div class="modal-luxury-overlay" *ngIf="mostrarModalTrofeu" role="dialog" aria-modal="true"
+  (click.self)="fecharModalTrofeu()">
+  <div class="modal-luxury-container modal-manchete"
+    style="max-width: 650px; background: #0c111a; border: 1px solid var(--gold); position: relative; overflow: hidden;">
+    <!-- Background Decorativo do Time Campeão -->
+    <div
+      style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, var(--champ-color, #ffc72c) 0%, transparent 70%); opacity: 0.15; filter: blur(40px); z-index: 0; pointer-events: none;">
+    </div>
+
+    <button class="btn-close-luxury" style="position: absolute; top: 1rem; right: 1rem; z-index: 10;"
+      (click)="fecharModalTrofeu()">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="modal-luxury-content" style="position: relative; z-index: 1; padding: 2.5rem 2rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <img src="assets/trofeu.png" alt="Larry O'Brien"
+          style="height: 100px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); margin-bottom: 1rem; animation: pulse-soft 2s infinite;">
+        <h2
+          style="font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; letter-spacing: 2px; color: var(--gold); margin: 0; text-transform: uppercase;">
+          Campeões da NBA
+        </h2>
+        <h3 style="font-family: 'Inter', sans-serif; font-size: 1.2rem; color: #a0aec0; margin: 0.5rem 0 0 0;">
+          Temporada {{ trofeuSelecionado?.temporada }}
+        </h3>
+      </div>
+
+      <!-- MVP das Finais -->
+      <div *ngIf="trofeuMVPFinais"
+        style="background: linear-gradient(135deg, rgba(255, 199, 44, 0.1) 0%, rgba(255, 199, 44, 0.05) 100%); border: 1px solid rgba(255, 199, 44, 0.2); border-radius: 8px; padding: 1.5rem; text-align: center; margin-bottom: 2rem;">
+        <span
+          style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); font-weight: 700; display: block; margin-bottom: 0.5rem;">Bill
+          Russell Finals MVP</span>
+        <span style="font-size: 1.5rem; font-weight: 800; color: #fff;">{{ trofeuMVPFinais }}</span>
+      </div>
+
+      <!-- Quinteto Titular Campeão -->
+      <div *ngIf="trofeuCampanha" style="position: relative;">
+        <h4
+          style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; margin-bottom: 1.5rem; text-align: center;">
+          Quinteto Titular</h4>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+          <!-- PG -->
+          <div *ngIf="trofeuCampanha.pg"
+            style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 50%; background: #1a202c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #cbd5e1; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1);">
+              PG</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: #f8fafc; font-size: 0.95rem;">{{ limpaNomeJogador(trofeuCampanha.pg)
+                }}</div>
+              <div *ngIf="trofeuCampanha.pg_ovr" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">OVR {{
+                trofeuCampanha.pg_ovr }}</div>
+            </div>
+          </div>
+          <!-- SG -->
+          <div *ngIf="trofeuCampanha.sg"
+            style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 50%; background: #1a202c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #cbd5e1; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1);">
+              SG</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: #f8fafc; font-size: 0.95rem;">{{ limpaNomeJogador(trofeuCampanha.sg)
+                }}</div>
+              <div *ngIf="trofeuCampanha.sg_ovr" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">OVR {{
+                trofeuCampanha.sg_ovr }}</div>
+            </div>
+          </div>
+          <!-- SF -->
+          <div *ngIf="trofeuCampanha.sf"
+            style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 50%; background: #1a202c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #cbd5e1; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1);">
+              SF</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: #f8fafc; font-size: 0.95rem;">{{ limpaNomeJogador(trofeuCampanha.sf)
+                }}</div>
+              <div *ngIf="trofeuCampanha.sf_ovr" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">OVR {{
+                trofeuCampanha.sf_ovr }}</div>
+            </div>
+          </div>
+          <!-- PF -->
+          <div *ngIf="trofeuCampanha.pf"
+            style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 50%; background: #1a202c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #cbd5e1; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1);">
+              PF</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: #f8fafc; font-size: 0.95rem;">{{ limpaNomeJogador(trofeuCampanha.pf)
+                }}</div>
+              <div *ngIf="trofeuCampanha.pf_ovr" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">OVR {{
+                trofeuCampanha.pf_ovr }}</div>
+            </div>
+          </div>
+          <!-- C -->
+          <div *ngIf="trofeuCampanha.c"
+            style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 50%; background: #1a202c; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #cbd5e1; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1);">
+              C</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; color: #f8fafc; font-size: 0.95rem;">{{ limpaNomeJogador(trofeuCampanha.c)
+                }}</div>
+              <div *ngIf="trofeuCampanha.c_ovr" style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem;">OVR {{
+                trofeuCampanha.c_ovr }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!trofeuCampanha" style="text-align: center; color: #94a3b8; padding: 2rem; font-style: italic;">
+        Os dados da campanha dessa franquia na temporada {{ trofeuSelecionado?.temporada }} não foram encontrados.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Registro de Recorde Single-Game -->
+<div class="modal-luxury-overlay" *ngIf="mostrarModalRecorde" role="dialog" aria-modal="true"
+  (click.self)="mostrarModalRecorde = false">
+  <div class="modal-luxury-container" style="max-width: 500px; background: #0c111a; border: 1px solid var(--gold);">
+    <header class="modal-luxury-header"
+      style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.5rem 2rem;">
+      <div>
+        <h2
+          style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); margin: 0; letter-spacing: 1px;">
+          Registrar Recorde</h2>
+        <h3 style="font-size: 0.9rem; color: #94a3b8; margin: 0;">{{ recordeEdicao.id | uppercase }}</h3>
+      </div>
+      <button class="btn-close-luxury" style="margin-left: auto;" (click)="mostrarModalRecorde = false">
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+
+    <div class="modal-luxury-content" style="padding: 2rem;">
+      <div class="form-grid">
+        <div class="modern-input-group" style="grid-column: 1 / -1;">
+          <input id="rec-jogador" type="text" [(ngModel)]="recordeEdicao.jogador" placeholder=" ">
+          <label for="rec-jogador">Nome do Jogador</label>
+        </div>
+        <div class="modern-input-group">
+          <input id="rec-valor" type="number" [(ngModel)]="recordeEdicao.valor" placeholder=" ">
+          <label for="rec-valor">Valor do Recorde</label>
+        </div>
+        <div class="modern-input-group">
+          <input id="rec-data" type="text" [(ngModel)]="recordeEdicao.data" placeholder=" ">
+          <label for="rec-data">Data ou Temporada</label>
+        </div>
+        <div class="modern-input-group" style="grid-column: 1 / -1;">
+          <input id="rec-adversario" type="text" [(ngModel)]="recordeEdicao.adversario" placeholder=" ">
+          <label for="rec-adversario">Adversário (Ex: Los Angeles Lakers)</label>
+        </div>
+      </div>
+    </div>
+
+    <footer class="modal-luxury-footer">
+      <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+        <button class="btn-luxury-cancel" (click)="mostrarModalRecorde = false">Cancelar</button>
+        <button class="btn-luxury-save" (click)="salvarRecorde()" [disabled]="salvandoLembranca">
+          {{ salvandoLembranca ? 'Salvando...' : 'Salvar Recorde' }}
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- Modal: Debate na TV (Inside the NBA) -->
+<div class="modal-luxury-overlay modal-tv-overlay" *ngIf="mostrarModalTV" role="dialog" aria-modal="true">
+  <div class="modal-luxury-container tv-container"
+    style="max-width: 900px; background: #000; border: 4px solid #333; border-radius: 12px; overflow: hidden; padding: 0;">
+
+    <div class="tv-screen" style="position: relative; min-height: 500px; display: flex; flex-direction: column;">
+      <!-- Barra superior estilo TNT -->
+      <div class="tv-header"
+        style="background: linear-gradient(90deg, #e50914, #8b0000); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10;">
+        <h2
+          style="font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: #fff; margin: 0; letter-spacing: 2px; font-style: italic;">
+          INSIDE THE NBA</h2>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <span
+            style="color: rgba(255,255,255,0.7); font-family: monospace; font-size: 1.2rem; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">LIVE</span>
+          <button (click)="fecharTV()"
+            style="background: transparent; border: none; color: white; cursor: pointer; font-size: 1.5rem;"
+            title="Desligar TV"><i class="fas fa-power-off"></i></button>
+          <button (click)="fecharTV()"
+            style="background: transparent; border: none; color: #ff4444; cursor: pointer; font-size: 1.5rem; margin-left: 10px;"
+            title="Fechar"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+
+      <!-- Corpo da TV -->
+      <div class="tv-body"
+        style="flex: 1; background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; position: relative; overflow-y: auto;">
+
+        <!-- Estado Inicial (Pedindo a temporada) -->
+        <div *ngIf="!tvScript && !gerandoTV" style="text-align: center; margin-top: 4rem;">
+          <i class="fas fa-satellite-dish"
+            style="font-size: 4rem; color: rgba(255,255,255,0.2); margin-bottom: 2rem; animation: pulse 2s infinite;"></i>
+          <h3 style="color: white; font-family: 'Bebas Neue', sans-serif; font-size: 2rem; margin-bottom: 1rem;">
+            Conectando ao Satélite...</h3>
+          <p style="color: #aaa; margin-bottom: 2rem;">Selecione o ano da temporada para ligar o painel de debate de
+            acordo com a época.</p>
+
+          <div
+            style="display: inline-flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+            <select [(ngModel)]="tvTemporadaAno"
+              style="padding: 10px 15px; background: #222; color: white; border: 1px solid #444; border-radius: 4px; font-size: 1rem; min-width: 200px;">
+              <option value="">-- Escolher Ano --</option>
+              <option *ngFor="let t of campanhasTime" [value]="t.temporada">{{t.temporada}}</option>
+            </select>
+            <button (click)="iniciarDebateTV()" [disabled]="!tvTemporadaAno"
+              style="padding: 10px 25px; background: #e50914; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase;">Sintonizar</button>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="gerandoTV" style="text-align: center; margin-top: 6rem;">
+          <div class="tv-static-noise"
+            style="width: 100%; height: 100%; position: absolute; top:0; left:0; background: url('assets/static.png') repeat; opacity: 0.1; z-index: 1;">
+          </div>
+          <i class="fas fa-circle-notch fa-spin"
+            style="font-size: 3rem; color: #e50914; margin-bottom: 1rem; position: relative; z-index: 2;"></i>
+          <h3 style="color: white; font-family: monospace; position: relative; z-index: 2;">RECEBENDO SINAL...</h3>
+        </div>
+
+        <!-- Script Result -->
+        <div *ngIf="tvScript && !gerandoTV" class="tv-script-container"
+          style="color: white; line-height: 1.6; font-size: 1.1rem; padding-bottom: 3rem;">
+          <!-- Using innerHTML since we'll generate HTML directly, or just text -->
+          <div [innerHTML]="renderMarkdown(tvScript)" style="font-family: 'Inter', sans-serif;"></div>
+        </div>
+
+      </div>
+
+      <!-- Lower Third Ticker -->
+      <div class="tv-ticker"
+        style="background: #111; border-top: 2px solid #333; padding: 8px 0; overflow: hidden; white-space: nowrap;">
+        <div
+          style="display: inline-block; color: #e50914; font-weight: bold; font-family: monospace; font-size: 0.9rem;">
+          BREAKING NEWS: VOCÊ ESTÁ ASSISTINDO A ANÁLISE ESPECIAL DA TEMPORADA {{tvTemporadaAno}} DA SUA FRANQUIA
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Gráfico Evolução de OVR -->
+<div class="modal-luxury-overlay" *ngIf="mostrarModalEvolucao" role="dialog" aria-modal="true"
+  (click.self)="fecharGraficoEvolucao()">
+  <div class="modal-luxury-container"
+    style="max-width: 800px; background: #0c111a; border: 1px solid var(--gold); overflow: visible;">
+    <header class="modal-luxury-header"
+      style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.5rem 2rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <img [src]="getFotoJogador(idoloEvolucao?.nome)" alt="Foto"
+          style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold);">
+        <div>
+          <h2
+            style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); margin: 0; letter-spacing: 1px;">
+            {{ idoloEvolucao?.nome }}</h2>
+          <h3 style="font-size: 0.9rem; color: #94a3b8; margin: 0;">Evolução de OVR na Franquia</h3>
+        </div>
+      </div>
+      <button class="btn-close-luxury" style="margin-left: auto;" (click)="fecharGraficoEvolucao()">
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+
+    <div class="modal-luxury-content" style="padding: 2rem;">
+      <div style="position: relative; height: 350px; width: 100%;">
+        <canvas #evolucaoChartCanvas></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTAINER INVISÍVEL PARA EXPORTAR INFOGRÁFICO DE FIM DE ERA -->
+<div style="position: absolute; left: -9999px; top: -9999px;">
+  <div #fimDeEraContainer
+    style="width: 1080px; height: 1920px; background: #0c111a; position: relative; overflow: hidden; display: flex; flex-direction: column; font-family: 'Inter', sans-serif;">
+    <!-- Background -->
+    <div
+      style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 30%, var(--infografico-cor, #1d428a) 0%, #0c111a 70%); opacity: 0.3; pointer-events: none;">
+    </div>
+
+    <!-- Top Header -->
+    <div style="text-align: center; padding: 4rem 2rem 2rem 2rem; position: relative; z-index: 1;">
+      <h1
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 6rem; letter-spacing: 4px; color: var(--gold); margin: 0; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+        O FIM DE UMA ERA
+      </h1>
+      <h2 style="font-size: 2.5rem; color: #fff; margin: 1rem 0; text-transform: uppercase; font-weight: 800;">
+        {{ infograficoDados?.nomeTime }}
+      </h2>
+    </div>
+
+    <!-- Estatísticas Gerais -->
+    <div style="display: flex; justify-content: center; gap: 3rem; padding: 2rem; position: relative; z-index: 1;">
+      <div
+        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; width: 250px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="font-size: 4rem; font-weight: 900; color: #fff; line-height: 1;">{{
+          infograficoDados?.temporadasCount }}</div>
+        <div
+          style="font-size: 1.2rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem;">
+          Temporadas</div>
+      </div>
+      <div
+        style="background: rgba(253, 185, 39, 0.1); border: 1px solid rgba(253, 185, 39, 0.3); border-radius: 16px; padding: 2rem; width: 250px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="font-size: 4rem; font-weight: 900; color: var(--gold); line-height: 1;">{{
+          infograficoDados?.titulosCount }}</div>
+        <div
+          style="font-size: 1.2rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem;">
+          Títulos da NBA</div>
+      </div>
+      <div
+        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; width: 250px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="font-size: 4rem; font-weight: 900; color: #fff; line-height: 1;">{{ infograficoDados?.idolosCount }}
+        </div>
+        <div
+          style="font-size: 1.2rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-top: 1rem;">
+          Ídolos no Hall</div>
+      </div>
+    </div>
+
+    <!-- Narrativa do Gemini -->
+    <div style="padding: 3rem 6rem; position: relative; z-index: 1;">
+      <div
+        style="background: rgba(0,0,0,0.4); border-left: 6px solid var(--gold); padding: 2.5rem; border-radius: 0 16px 16px 0;">
+        <i class="fas fa-quote-left"
+          style="font-size: 2.5rem; color: var(--gold); opacity: 0.5; margin-bottom: 1rem;"></i>
+        <p style="font-size: 1.5rem; color: #e2e8f0; line-height: 1.6; font-style: italic; margin: 0;">
+          "{{ infograficoDados?.narrativaIa }}"
+        </p>
+      </div>
+    </div>
+
+    <!-- Maiores Ídolos -->
+    <div style="padding: 2rem 4rem; flex: 1; position: relative; z-index: 1;">
+      <h3
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: #fff; text-align: center; letter-spacing: 2px; margin-bottom: 3rem; text-transform: uppercase;">
+        Lendas que marcaram a era</h3>
+
+      <div style="display: flex; justify-content: center; gap: 2rem;">
+        <div *ngFor="let idolo of infograficoDados?.topIdolos"
+          style="background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; width: 280px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <img [src]="idolo.foto"
+            style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid var(--infografico-cor, #3b82f6); margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(0,0,0,0.5);">
+          <div
+            style="font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: #fff; line-height: 1.1; margin-bottom: 0.5rem;">
+            {{ idolo.nome }}</div>
+          <div
+            style="font-size: 1rem; color: #94a3b8; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+            {{ idolo.categoria }}</div>
+
+          <div style="display: flex; gap: 0.5rem; margin-top: auto; flex-wrap: wrap; justify-content: center;">
+            <div *ngIf="idolo.campeao > 0"
+              style="background: rgba(253, 185, 39, 0.2); border: 1px solid rgba(253, 185, 39, 0.5); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.9rem; color: var(--gold); font-weight: 700;">
+              {{ idolo.campeao }}x 🏆
+            </div>
+            <div *ngIf="idolo.mvp > 0"
+              style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.9rem; color: #60a5fa; font-weight: 700;">
+              {{ idolo.mvp }}x MVP
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Logo -->
+    <div
+      style="text-align: center; padding: 2rem; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;">
+      <div style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #64748b; letter-spacing: 2px;">
+        MYCAREER NBA TRACKER</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Detalhes do Troféu da Vitrine -->
+<div class="modal-luxury-overlay" *ngIf="mostrarModalVitrine" role="dialog" aria-modal="true"
+  (click.self)="fecharTrofeuVitrine()">
+  <div class="modal-luxury-container"
+    style="max-width: 450px; background: radial-gradient(circle at center, #1a1f2e 0%, #0c111a 100%); border: 1px solid var(--gold); position: relative; overflow: hidden; text-align: center; padding: 3rem 2rem;">
+
+    <button class="btn-close-luxury" style="position: absolute; top: 1rem; right: 1rem; z-index: 10;"
+      (click)="fecharTrofeuVitrine()">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Efeito de luz atrás do troféu -->
+    <div class="trofeu-glow-bg"
+      style="position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: 250px; height: 250px; background: var(--gold); filter: blur(70px); opacity: 0.15; z-index: 0; pointer-events: none;">
+    </div>
+
+    <img [src]="trofeuVitrineSelecionado?.icon" [ngClass]="trofeuVitrineSelecionado?.tipo"
+      style="position: relative; z-index: 1; height: 200px; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)); animation: float-slow 4s ease-in-out infinite;"
+      alt="Troféu">
+
+    <div style="position: relative; z-index: 1; margin-top: 2.5rem;">
+      <h4
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: #94a3b8; margin: 0; text-transform: uppercase;">
+        {{ getNomePremio(trofeuVitrineSelecionado?.tipo) }}</h4>
+      <h2
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--gold); margin: 0.5rem 0; text-transform: uppercase; text-shadow: 0 2px 10px rgba(255,199,44,0.3);">
+        {{ trofeuVitrineSelecionado?.jogador }}</h2>
+      <div
+        style="display: inline-block; margin-top: 1rem; padding: 0.4rem 1.2rem; border: 1px solid rgba(255,199,44,0.3); border-radius: 20px; color: #f8fafc; font-weight: 600; letter-spacing: 1px; background: rgba(0,0,0,0.5);">
+        {{ trofeuVitrineSelecionado?.ano }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Adicionar Transação (Timeline) -->
+<div class="modal-luxury-overlay" *ngIf="mostrarModalTransacao" role="dialog" aria-modal="true"
+  (click.self)="fecharModalTransacao()">
+  <div class="modal-luxury-container modal-manchete"
+    style="max-width: 500px; background: #0c111a; border: 1px solid var(--gold);">
+    <button class="btn-close-luxury" style="position: absolute; top: 1rem; right: 1rem; z-index: 10;"
+      (click)="fecharModalTransacao()">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-luxury-content" style="padding: 2.5rem 2rem;">
+      <h2
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-top: 0; margin-bottom: 1.5rem; text-align: center;">
+        Registrar Movimento
+      </h2>
+
+      <div class="static-input-group" style="margin-bottom: 1rem;">
+        <label>Tipo de Evento</label>
+        <select [(ngModel)]="novaTransacao.tipo" class="nba-input" style="width: 100%;">
+          <option value="DRAFT">Draft</option>
+          <option value="TRADE">Troca</option>
+          <option value="FREE_AGENCY">Agência Livre</option>
+          <option value="EXTENSION">Extensão Contratual</option>
+        </select>
+      </div>
+
+      <div class="static-input-group" style="margin-bottom: 1rem;">
+        <label>Jogador Principal</label>
+        <input type="text" [(ngModel)]="novaTransacao.jogador" class="nba-input" style="width: 100%;"
+          placeholder="Ex: LeBron James, Pick #1">
+      </div>
+
+      <div class="static-input-group" style="margin-bottom: 1rem;">
+        <label>Temporada (Ex: 2023-2024)</label>
+        <input type="text" [(ngModel)]="novaTransacao.temporada" class="nba-input" style="width: 100%;"
+          placeholder="2024-2025">
+      </div>
+
+      <div class="static-input-group" style="margin-bottom: 2rem;">
+        <label>Detalhes da Transação</label>
+        <textarea [(ngModel)]="novaTransacao.detalhes" class="nba-input"
+          style="width: 100%; height: 80px; resize: none;"
+          placeholder="Ex: Trocado por 2 picks de primeira rodada e um pacote de salgadinho."></textarea>
+      </div>
+
+      <div style="text-align: center;">
+        <button class="btn-luxury" style="width: 100%;" (click)="salvarTransacao()">
+          SALVAR NA HISTÓRIA
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

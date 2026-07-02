@@ -6097,19 +6097,38 @@ body {
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow: visible;
-  /* To allow floating jerseys to pop out if needed */
-  background: radial-gradient(circle at top, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 25, 0.95) 100%);
+  overflow: hidden; /* mudado para hidden para esconder o corte da luz */
+  background: radial-gradient(circle at top, rgba(20, 30, 50, 0.9) 0%, rgba(5, 10, 15, 1) 100%);
   background-image:
-    radial-gradient(circle at top, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 25, 0.95) 100%),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    radial-gradient(circle at top, rgba(20, 30, 50, 0.9) 0%, rgba(5, 10, 15, 1) 100%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 40px 40px, 40px 40px;
   border-radius: var(--radius-xl, 16px);
-  padding: 3rem 1.5rem;
+  padding: 4rem 1.5rem;
   margin-bottom: 3rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.5), var(--elevation-2);
+  box-shadow: inset 0 20px 50px rgba(0, 0, 0, 0.8), var(--elevation-2);
+}
+
+.rafter-spotlight {
+  position: absolute;
+  top: -50px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 80%);
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0% 100%);
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(8px);
+}
+.rafter-spotlight.left {
+  left: 20%;
+  transform: rotate(-15deg);
+}
+.rafter-spotlight.right {
+  right: 20%;
+  transform: rotate(15deg);
 }
 
 .rafters-title {
@@ -6198,6 +6217,107 @@ body {
   margin-bottom: 4px;
 }
 
+/* =========================================================
+   RAFTER BANNERS (Banners de Campeão)
+========================================================= */
+.rafter-banner {
+  position: relative;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-style: preserve-3d;
+  animation: floatBannerPremium 5s ease-in-out infinite;
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(60deg);
+    width: 80px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    filter: blur(8px);
+    border-radius: 50%;
+    animation: shadowPulsePremium 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+}
+
+.banner-string {
+  width: 2px;
+  height: 25px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.rafter-banner .banner-body {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background-color: var(--team-primary, #333);
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.3) 100%);
+  border: 2px solid var(--gold, #FFD700);
+  border-top: 4px solid var(--gold, #FFD700);
+  border-radius: 2px 2px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 5px;
+  position: relative;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(255,255,255,0.2);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rafter-banner:hover .banner-body {
+  transform: scale(1.1) rotateY(15deg);
+}
+
+.banner-year {
+  font-family: var(--font-sports);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gold, #FFD700);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  margin-bottom: 5px;
+}
+
+.banner-logo-container {
+  width: 45px;
+  height: 45px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.banner-logo {
+  height: 35px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+}
+
+.banner-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  line-height: 1.1;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+@keyframes floatBannerPremium {
+  0%, 100% { transform: translateY(0) rotateZ(0deg) rotateY(0deg); }
+  25% { transform: translateY(-5px) rotateZ(1deg) rotateY(5deg); }
+  50% { transform: translateY(3px) rotateZ(0deg) rotateY(0deg); }
+  75% { transform: translateY(-3px) rotateZ(-1deg) rotateY(-5deg); }
+}
+
 @keyframes floatRafterPremium {
 
   0%,
@@ -6240,6 +6360,156 @@ body {
     transform: translateX(-50%) rotateX(60deg) scale(0.9);
     opacity: 0.5;
   }
+}
+
+/* =========================================================
+   TRADE TREE / TIMELINE DE GESTÃO
+========================================================= */
+.trade-tree-container {
+  margin-top: 4rem;
+  padding: 2rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.timeline-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  border: 1px dashed rgba(255,255,255,0.1);
+}
+
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  background: linear-gradient(to bottom, rgba(255,199,44,0.1) 0%, rgba(255,199,44,0.5) 50%, rgba(255,199,44,0.1) 100%);
+  transform: translateX(-50%);
+  border-radius: 4px;
+}
+
+.timeline-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 30px;
+  position: relative;
+  margin: 10px 0;
+  width: 50%;
+}
+.timeline-item.right {
+  align-self: flex-end;
+  justify-content: flex-start;
+  padding-left: 30px;
+  padding-right: 0;
+  margin-left: 50%;
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  width: 40px;
+  height: 40px;
+  background: #1e293b;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 1.2rem;
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(255,199,44,0.3);
+}
+.timeline-item.right .timeline-dot {
+  left: -20px;
+  right: auto;
+}
+
+.timeline-dot.draft { color: #60a5fa; border-color: #60a5fa; box-shadow: 0 0 10px rgba(96,165,250,0.3); }
+.timeline-dot.trade { color: #f43f5e; border-color: #f43f5e; box-shadow: 0 0 10px rgba(244,63,94,0.3); }
+.timeline-dot.free_agency { color: #34d399; border-color: #34d399; box-shadow: 0 0 10px rgba(52,211,153,0.3); }
+.timeline-dot.extension { color: #a78bfa; border-color: #a78bfa; box-shadow: 0 0 10px rgba(167,139,250,0.3); }
+
+.timeline-content {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.btn-delete-node {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(244,63,94,0.1);
+  color: #f43f5e;
+  border: 1px solid rgba(244,63,94,0.3);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-delete-node:hover {
+  background: #f43f5e;
+  color: #fff;
+}
+
+.timeline-year {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.timeline-player {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: #fff;
+  margin: 5px 0 10px 0;
+  letter-spacing: 1px;
+}
+
+.timeline-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+.timeline-badge.draft { background: rgba(96,165,250,0.2); color: #60a5fa; }
+.timeline-badge.trade { background: rgba(244,63,94,0.2); color: #f43f5e; }
+.timeline-badge.free_agency { background: rgba(52,211,153,0.2); color: #34d399; }
+.timeline-badge.extension { background: rgba(167,139,250,0.2); color: #a78bfa; }
+
+.timeline-details {
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+  padding-top: 15px;
 }
 
 
@@ -6555,4 +6825,223 @@ body {
   100% {
     background-position: -200% center;
   }
+}/* TRINDADE DA IMERSÃƒO CSS */
+
+/* Vitrine de Trofeus */
+.vitrine-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.vitrine-header h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin: 0;
+}
+.vitrine-header p {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.prateleira-container {
+  padding: 3rem 1rem;
+  background: radial-gradient(circle at top, var(--team-glow, rgba(255,255,255,0.1)) 0%, transparent 70%);
+  border-radius: 12px;
+  position: relative;
+}
+.prateleira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+/* Efeito de Vidro da Prateleira */
+.prateleira::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 5%;
+  right: 5%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  transform: perspective(300px) rotateX(15deg);
+  border-radius: 4px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  z-index: -1;
+}
+
+.trofeu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.trofeu-item:hover {
+  transform: translateY(-10px) scale(1.05);
+}
+.trofeu-3d {
+  position: relative;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+}
+.trofeu-3d img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  z-index: 2;
+  position: relative;
+}
+.trofeu-glow {
+  position: absolute;
+  bottom: 0;
+  width: 50px;
+  height: 10px;
+  border-radius: 50%;
+  filter: blur(15px);
+  z-index: 1;
+  opacity: 0.8;
+}
+.trofeu-base {
+  background: linear-gradient(180deg, #333 0%, #111 100%);
+  border: 1px solid #555;
+  border-top: 2px solid var(--gold);
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+.trofeu-nome {
+  display: block;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.trofeu-ano {
+  display: block;
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* Tamanhos especificos */
+.trofeu-3d.larry-obrien { height: 140px; }
+.trofeu-3d.mvp { height: 130px; }
+.trofeu-3d.fmvp { height: 120px; }
+.trofeu-3d.executivo { height: 100px; }
+.trofeu-3d.conferencia { height: 110px; }
+
+/* Recordes */
+.recordes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.recorde-card {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.recorde-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+.recorde-card-inner {
+  background: #0c111a;
+  padding: 1.5rem;
+  border-radius: 10px;
+  height: 100%;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-top: 3px solid var(--border-color, var(--gold));
+  display: flex;
+  flex-direction: column;
+}
+.recorde-card-inner h4 {
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+.valor-gigante {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4rem;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(253, 185, 39, 0.3);
+}
+.recorde-jogador {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 0.5rem;
+}
+.recorde-data {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+.vs-text {
+  font-style: italic;
+  opacity: 0.8;
+}
+.no-record {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  gap: 0.5rem;
+  min-height: 100px;
+}
+.no-record i {
+  font-size: 2rem;
+}
+.no-record:hover {
+  color: var(--gold);
+}
+
+/* Modal TV */
+.modal-tv-overlay {
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.8);
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
 }

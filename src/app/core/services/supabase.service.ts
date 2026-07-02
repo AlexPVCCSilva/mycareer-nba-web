@@ -71,7 +71,8 @@ export interface ICampanhaFranquia {
   pf_lesao_desc?: string | null;
   c_lesao_desc?: string | null;
   sexto_homem_lesao_desc?: string | null;
-  draftado_lesao_desc?: string | null;
+  draftado_lesao_desc: string | null;
+  narrativa_ia?: string | null;
 }
 
 export interface IJogadorFotoCustom {
@@ -531,4 +532,50 @@ export class SupabaseService {
 
     if (error) throw error;
   }
+
+  // ==========================================
+  // TRANSAÇÕES (TRADE TREE / DRAFT TIMELINE)
+  // ==========================================
+
+  async getTransacoes(ligaId: string, franquia: string): Promise<ITransacao[]> {
+    const { data, error } = await this.supabase
+      .from('nba_transacoes')
+      .select('*')
+      .eq('liga_id', ligaId)
+      .eq('franquia', franquia)
+      .order('created_at', { ascending: true }); // Pode ser order('temporada') no frontend
+
+    if (error) throw error;
+    return data as ITransacao[];
+  }
+
+  async inserirTransacao(transacao: ITransacao): Promise<any> {
+    const { data, error } = await this.supabase
+      .from('nba_transacoes')
+      .insert([transacao]);
+    
+    if (error) throw error;
+    return data;
+  }
+
+  async deletarTransacao(id: string): Promise<any> {
+    const { data, error } = await this.supabase
+      .from('nba_transacoes')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return data;
+  }
+}
+
+export interface ITransacao {
+  id?: string;
+  liga_id: string;
+  franquia: string;
+  temporada: string;
+  tipo: string; // 'DRAFT', 'TRADE', 'FREE_AGENCY', 'EXTENSION'
+  jogador: string;
+  detalhes: string | null;
+  created_at?: string;
 }
