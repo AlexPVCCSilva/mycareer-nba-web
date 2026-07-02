@@ -1,8 +1,8 @@
 /* ============================================================
-   NBA TRACKER — Design System v2.0
+   NBA TRACKER â€” Design System v2.0
    Aesthetic: Luxury Sports Editorial
    Fonts: Bebas Neue (headings) + DM Sans (body)
-   Theme: Court Black × Gold × Chalk White
+   Theme: Court Black Ã— Gold Ã— Chalk White
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap');
@@ -12,7 +12,7 @@ body {
   margin: 0;
 }
 
-/* ─── TOKENS ──────────────────────────────────────────────── */
+/* â”€â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :host {
   font-family: 'DM Sans', sans-serif;
   color: var(--text-primary);
@@ -23,11 +23,11 @@ body {
   background: var(--court-black);
 }
 
-/* ─── LAYOUT BASE ─────────────────────────────────────────── */
+/* â”€â”€â”€ LAYOUT BASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tracker-container {
   padding: 2rem 2.5rem;
 
-  /* 🪄 MÁGICA: Quebra a restrição de qualquer componente pai e força 100% do monitor */
+  /* ðŸª„ MÃGICA: Quebra a restriÃ§Ã£o de qualquer componente pai e forÃ§a 100% do monitor */
   width: 100vw !important;
   max-width: 100vw !important;
   margin-left: calc(-50vw + 50%) !important;
@@ -39,7 +39,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ─── HEADER ──────────────────────────────────────────────── */
+/* â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tracker-header {
   display: flex;
   justify-content: space-between;
@@ -82,7 +82,7 @@ body {
   }
 }
 
-/* ─── BUTTON SYSTEM ───────────────────────────────────────── */
+/* â”€â”€â”€ BUTTON SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 %btn-base {
   display: inline-flex;
   align-items: center;
@@ -220,7 +220,7 @@ body {
   }
 }
 
-/* ─── TABS ────────────────────────────────────────────────── */
+/* â”€â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tabs-container {
   display: flex;
   gap: 4px;
@@ -318,22 +318,21 @@ body {
   }
 }
 
-/* ─── TEAM BANNER ─────────────────────────────────────────── */
-.team-banner {
+/* ———————————————————————————————————————————————— */
+.team-banner.compact {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem 2.5rem;
-  border-radius: 20px;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
+  border-radius: 16px;
   background: rgba(15, 23, 42, 0.7);
-  /* Dark slate glass base */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 40px -10px var(--team-glow, rgba(0, 0, 0, 0.5));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 15px 40px -10px var(--team-glow, rgba(0, 0, 0, 0.6));
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   /* Dynamic glowing gradient from the team color */
@@ -341,132 +340,241 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at top right, var(--team-gradient, rgba(255, 255, 255, 0.1)) 0%, transparent 65%);
-    opacity: 0.6;
+    background: radial-gradient(circle at top left, var(--team-gradient, rgba(255, 255, 255, 0.1)) 0%, transparent 60%);
+    opacity: 0.7;
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Halftone subtle texture */
+  /* Subtle texture / Noise */
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+    opacity: 0.05;
     pointer-events: none;
     z-index: 0;
+    mix-blend-mode: overlay;
   }
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 45px -10px var(--team-gradient, rgba(0, 0, 0, 0.6));
-  }
-
-  .banner-info {
+  .banner-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     position: relative;
     z-index: 1;
 
-    h3 {
-      margin: 0 0 0.4rem;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-      line-height: 1;
+    .banner-branding {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .compact-logo {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        
+        &.placeholder-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0,0,0,0.2);
+          border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.1);
+        }
+      }
+
+      .compact-title {
+        margin: 0;
+        font-family: var(--font-sports, 'Barlow Condensed', sans-serif);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #ffffff;
+        text-transform: uppercase;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    .banner-acoes {
+      display: flex;
+      gap: 0.75rem;
+
+      .btn-banner {
+        @extend %btn-base;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-family: var(--font-sports-body, 'DM Sans', sans-serif);
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+        
+        &.outline {
+          background: rgba(255,255,255,0.05);
+          color: #e2e8f0;
+          border: 1px solid rgba(255,255,255,0.2);
+          
+          &:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.4);
+            color: #fff;
+            transform: translateY(-1px);
+          }
+        }
+        
+        &.solid {
+          background: #f8fafc;
+          color: #0f172a;
+          border: 1px solid transparent;
+          
+          &:hover {
+            background: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+          }
+        }
+      }
+    }
+  }
+
+  .banner-bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1rem;
+    flex-wrap: wrap;
+    font-family: var(--font-sports-body, 'DM Sans', sans-serif);
+    font-size: 0.85rem;
+
+    .bottom-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .item-label {
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.75rem;
+    }
+
+    .item-content {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .trophy-case {
+      .item-content {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 0.3rem 0.6rem;
+        border-radius: 100px;
+        border: 1px solid rgba(245, 200, 66, 0.25);
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      }
+      
+      .nba-trophy-logo {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+        transition: transform 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.15) translateY(-2px);
+        }
+      }
+      
+      .medal-silver {
+        font-size: 1.1rem;
+        color: #e2e8f0;
+      }
+    }
+
+    .rafters-container {
+      .rafter-jersey {
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-sports);
+        font-weight: 800;
+        font-size: 0.8rem;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.4);
+        text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+        cursor: help;
+        transition: transform 0.2s;
+        
+        &:hover {
+          transform: translateY(-2px);
+        }
+      }
     }
 
     .banner-stats {
-      margin: 0;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.85);
-      letter-spacing: 0.5px;
-      font-family: 'DM Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      margin-left: auto;
+      color: #cbd5e1;
 
-      i {
-        color: var(--gold, #FDB927);
-        opacity: 0.9;
-        margin-right: 2px;
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        i { color: var(--gold, #FDB927); }
+        strong { color: #fff; font-weight: 700; }
+      }
+    }
+
+    .stat-separator {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      
+      &.divider {
+        width: 1px;
+        height: 16px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 0;
       }
     }
   }
 
-  .banner-acoes {
-    display: flex;
-    gap: 12px;
-    position: relative;
-    z-index: 1;
-
-    .btn-banner {
-      @extend %btn-base;
-      font-size: 0.9rem;
-      padding: 0.6rem 1.2rem;
-      border-radius: 10px;
-      transition: all 0.25s ease;
-
-      &.outline {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #fff;
-        backdrop-filter: blur(8px);
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
-          border-color: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-        }
-      }
-
-      &.solid {
-        background: #fff;
-        color: #0f172a;
-        font-weight: 700;
-        border: 1px solid transparent;
-
-        &:hover {
-          box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-        }
+  @media (max-width: 1024px) {
+    .banner-top-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      
+      .banner-acoes {
+        width: 100%;
+        .btn-banner { flex: 1; justify-content: center; }
       }
     }
-  }
-}
+    
+    .banner-bottom-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
 
-.banner-title-wrapper {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 0.4rem;
-}
-
-/* ─── TROPHY CASE ─────────────────────────────────────────── */
-.trophy-case {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 5px 10px;
-  border-radius: 30px;
-  border: 1px solid rgba(245, 200, 66, 0.25);
-  backdrop-filter: blur(6px);
-
-  .trophy-png {
-    width: 22px;
-    height: 22px;
-    filter: drop-shadow(0 2px 6px rgba(245, 200, 66, 0.5));
-    animation: floatTrophy 3s ease-in-out infinite alternate;
-  }
-
-  .medal-png {
-    width: 18px;
-    height: 18px;
-    opacity: 0.85;
-    filter: drop-shadow(0 1px 4px rgba(180, 180, 180, 0.4));
+      .banner-stats {
+        margin-left: 0;
+      }
+    }
   }
 }
 
@@ -480,7 +588,7 @@ body {
   }
 }
 
-/* ─── FORM PANEL ──────────────────────────────────────────── */
+/* â”€â”€â”€ FORM PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .form-temporada {
   background: var(--court-card);
   border: 1px solid var(--court-border);
@@ -582,7 +690,7 @@ body {
   }
 }
 
-/* ─── MODAL ACTIONS ───────────────────────────────────────── */
+/* â”€â”€â”€ MODAL ACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -597,7 +705,7 @@ body {
   gap: 8px;
 }
 
-/* ─── TABLES & ANIMATIONS (100% WIDTH + JUMP EFFECTS) ─────── */
+/* â”€â”€â”€ TABLES & ANIMATIONS (100% WIDTH + JUMP EFFECTS) â”€â”€â”€â”€â”€â”€â”€ */
 .top-scrollbar-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -610,7 +718,7 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--court-border);
   overflow-x: auto;
-  /* Deixa a tabela crescer o quanto for necessário, a página rola */
+  /* Deixa a tabela crescer o quanto for necessÃ¡rio, a pÃ¡gina rola */
   margin-bottom: 7rem;
   /* "Vazio" embaixo */
   margin-top: 5rem;
@@ -643,7 +751,7 @@ body {
   table-layout: auto;
   border-collapse: separate;
   border-spacing: 0 8px;
-  /* O espaço para a animação flutuante */
+  /* O espaÃ§o para a animaÃ§Ã£o flutuante */
   text-align: left;
   min-width: 100%;
   /* Garante que se ajusta na tela, mas scrolla apenas se a tela for muito pequena */
@@ -670,7 +778,7 @@ body {
     font-size: 0.8rem;
     vertical-align: middle;
     background: rgba(255, 255, 255, 0.02);
-    /* Fundo padrão da linha separada */
+    /* Fundo padrÃ£o da linha separada */
     border-top: 1px solid var(--court-border);
     border-bottom: 1px solid var(--court-border);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -689,7 +797,7 @@ body {
     border-bottom-right-radius: var(--radius-md);
   }
 
-  /* ANIMAÇÃO 3D NAS LINHAS */
+  /* ANIMAÃ‡ÃƒO 3D NAS LINHAS */
   tbody tr {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -736,7 +844,6 @@ body {
   }
 }
 
-/* ─── GOLDEN ROW (CHAMPION) ───────────────────────────────── */
 .linha-dourada {
   background: rgba(255, 255, 255, 0.02) !important;
   border-left: 3px solid var(--glow-color, #FDB927);
@@ -757,7 +864,7 @@ body {
   }
 }
 
-/* ─── SILVER ROW (RUNNER-UP) ──────────────────────────────── */
+/* â”€â”€â”€ SILVER ROW (RUNNER-UP) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .linha-cinza {
   td {
     background: rgba(148, 163, 184, 0.04) !important;
@@ -766,7 +873,7 @@ body {
 
   td strong {
     color: inherit;
-    /* Volta à cor normal para destacar no hover */
+    /* Volta Ã  cor normal para destacar no hover */
     transition: color 0.3s ease;
   }
 
@@ -777,11 +884,11 @@ body {
 
   &:hover td strong {
     color: #94a3b8;
-    /* Fica cinza brilhante só quando passas o rato */
+    /* Fica cinza brilhante sÃ³ quando passas o rato */
   }
 }
 
-/* ─── PLAYER CELL (MINI CARTÃO DE JOGADOR COMPACTO) ────────────────── */
+/* â”€â”€â”€ PLAYER CELL (MINI CARTÃƒO DE JOGADOR COMPACTO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tabela-compacta th {
   padding: 10px 6px !important;
   font-size: 0.75rem !important;
@@ -789,7 +896,7 @@ body {
   white-space: nowrap;
 }
 
-/* Controlar larguras das colunas de texto para elas não ficarem enormes e roubarem espaço dos jogadores */
+/* Controlar larguras das colunas de texto para elas nÃ£o ficarem enormes e roubarem espaÃ§o dos jogadores */
 .tabela-compacta th:nth-child(2) {
   width: 100px;
 }
@@ -827,7 +934,7 @@ body {
   width: 100px;
   /* Garante que todos os cards fiquem do mesmo tamanho exato */
   margin: 0 auto;
-  /* Centraliza na célula */
+  /* Centraliza na cÃ©lula */
 
   .micro-foto {
     width: 44px;
@@ -841,7 +948,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
 
-  /* HOVER NO CARTÃO DO JOGADOR */
+  /* HOVER NO CARTÃƒO DO JOGADOR */
   &:hover {
     transform: scale(1.05);
     background: rgba(255, 255, 255, 0.04);
@@ -869,7 +976,7 @@ body {
   .name-text {
     font-size: 0.75rem;
     max-width: 100%;
-    /* Permite ver o nome inteiro até a borda do card */
+    /* Permite ver o nome inteiro atÃ© a borda do card */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -998,10 +1105,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  white-space: normal; /* Permite quebrar a linha do texto longo */
+  white-space: normal;
+  /* Permite quebrar a linha do texto longo */
   text-align: center;
   line-height: 1.1;
-  width: 75px; /* Exatamente como o player-cell, bem compacto */
+  width: 75px;
+  /* Exatamente como o player-cell, bem compacto */
   margin: 0 auto;
 }
 
@@ -1029,7 +1138,7 @@ body {
   .champ-logo-base {
     position: relative;
     z-index: 2;
-    /* Fica na frente da animação */
+    /* Fica na frente da animaÃ§Ã£o */
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -1041,8 +1150,9 @@ body {
     position: absolute;
     inset: -4px;
     z-index: 1;
-    /* Fica por trás do logo */
-    overflow: hidden; /* FIX: Clipping para evitar flickering da barra de rolagem vertical */
+    /* Fica por trÃ¡s do logo */
+    overflow: hidden;
+    /* FIX: Clipping para evitar flickering da barra de rolagem vertical */
 
     -webkit-mask-image: var(--logo-url);
     mask-image: var(--logo-url);
@@ -1313,7 +1423,7 @@ body {
   padding: 0.8rem;
 }
 
-/* ─── HALL OF FAME ────────────────────────────────────────── */
+/* â”€â”€â”€ HALL OF FAME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hall-fama-section {
   margin-top: 2.5rem;
   background: var(--court-card);
@@ -1528,7 +1638,7 @@ body {
   letter-spacing: 1px;
 }
 
-/* ─── TIMELINE ────────────────────────────────────────────── */
+/* â”€â”€â”€ TIMELINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .timeline-container {
   position: relative;
   max-width: 760px;
@@ -1731,7 +1841,7 @@ body {
   }
 }
 
-/* ─── TOP 3 DASHBOARD ─────────────────────────────────────── */
+/* â”€â”€â”€ TOP 3 DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .top3-dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1866,7 +1976,7 @@ body {
   text-transform: capitalize;
 }
 
-/* ─── TOGGLE VER MAIS ─────────────────────────────────────── */
+/* â”€â”€â”€ TOGGLE VER MAIS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .toggle-container {
   display: flex;
   justify-content: center;
@@ -1893,7 +2003,7 @@ body {
   }
 }
 
-/* ─── TEAM SELECTOR GRID ──────────────────────────────────── */
+/* â”€â”€â”€ TEAM SELECTOR GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .times-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1952,7 +2062,7 @@ body {
   }
 }
 
-/* ─── IMAGE PREVIEW ───────────────────────────────────────── */
+/* â”€â”€â”€ IMAGE PREVIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .preview-imagem {
   margin-top: 10px;
   padding: 12px;
@@ -1969,7 +2079,7 @@ body {
   }
 }
 
-/* ─── MODAL ───────────────────────────────────────────────── */
+/* â”€â”€â”€ MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -2158,7 +2268,7 @@ body {
   }
 }
 
-/* ─── STATES ──────────────────────────────────────────────── */
+/* â”€â”€â”€ STATES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .loading-state {
   text-align: center;
   padding: 3rem;
@@ -2180,7 +2290,7 @@ body {
   }
 }
 
-/* ─── RESPONSIVE ──────────────────────────────────────────── */
+/* â”€â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 768px) {
   .tracker-container {
     padding: 1rem;
@@ -2246,7 +2356,7 @@ body {
   }
 }
 
-/* ─── MODAL CONFIGURAÇÕES ─────────────────────────────────── */
+/* â”€â”€â”€ MODAL CONFIGURAÃ‡Ã•ES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-content.modal-config {
   max-width: 860px;
   width: 95%;
@@ -2274,7 +2384,7 @@ body {
   padding: 0 1.25rem;
 }
 
-/* ── Lista lateral ── */
+/* â”€â”€ Lista lateral â”€â”€ */
 .config-franquias-lista {
   border-right: 1px solid var(--court-border);
   overflow-y: auto;
@@ -2324,7 +2434,7 @@ body {
   &.ativo {
     background: var(--court-card);
 
-    // Barra colorida lateral usando a variável CSS do time
+    // Barra colorida lateral usando a variÃ¡vel CSS do time
     &::before {
       content: '';
       position: absolute;
@@ -2374,7 +2484,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Formulário de edição ── */
+/* â”€â”€ FormulÃ¡rio de ediÃ§Ã£o â”€â”€ */
 .config-edicao-form {
   padding: 1.5rem;
   overflow-y: auto;
@@ -2563,7 +2673,7 @@ body {
   }
 }
 
-/* TIER LEGENDARY (90+) - Efeito Carta Giratória */
+/* TIER LEGENDARY (90+) - Efeito Carta GiratÃ³ria */
 .tier-legend {
   position: relative !important;
   overflow: hidden !important;
@@ -2586,7 +2696,7 @@ body {
   }
 }
 
-/* O Gradiente Giratório (fundo) */
+/* O Gradiente GiratÃ³rio (fundo) */
 .tier-legend {
   z-index: 1;
   /* Establishes a local stacking context */
@@ -2617,7 +2727,7 @@ body {
   /* Pushed behind the text, but above the glow */
 }
 
-/* Todo conteúdo interno deve ficar acima do miolo */
+/* Todo conteÃºdo interno deve ficar acima do miolo */
 .tier-legend> :not(.status-chip) {
   position: relative;
   z-index: 2;
@@ -2717,7 +2827,7 @@ body {
   }
 }
 
-/* ─── AI ASSISTANT BUTTONS ────────────────────────────────── */
+/* â”€â”€â”€ AI ASSISTANT BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-global-ai {
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: white;
@@ -2778,7 +2888,7 @@ body {
   }
 }
 
-/* ─── HISTÓRIA GERAL: DESTAQUE DO CAMPEÃO (USER TEAM) ─────── */
+/* â”€â”€â”€ HISTÃ“RIA GERAL: DESTAQUE DO CAMPEÃƒO (USER TEAM) â”€â”€â”€â”€â”€â”€â”€ */
 .linha-historia-destaque {
   background: rgba(255, 255, 255, 0.02) !important;
   border-left: 3px solid var(--glow-color, #FDB927);
@@ -2837,7 +2947,7 @@ body {
   }
 }
 
-/* ── Highlight: Players of My Team ────────────────────────── */
+/* â”€â”€ Highlight: Players of My Team â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes pulse-my-team {
   0% {
     box-shadow: 0 0 5px var(--team-color, #FDB927), inset 0 0 5px rgba(255, 255, 255, 0.05);
@@ -3166,7 +3276,7 @@ body {
   }
 }
 
-/* ─── SIDEBAR LAYOUT ─────────────────────────────────────────── */
+/* â”€â”€â”€ SIDEBAR LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dashboard-layout {
   display: flex;
   height: 100vh;
@@ -3258,7 +3368,8 @@ body {
 .sidebar-nav {
   padding: 1rem 0;
   flex: 1;
-  position: relative; /* OBRIGATÓRIO PARA O INDICADOR ABSOLUTO FUNCIONAR */
+  position: relative;
+  /* OBRIGATÃ“RIO PARA O INDICADOR ABSOLUTO FUNCIONAR */
 }
 
 .sidebar-indicator {
@@ -3288,7 +3399,8 @@ body {
   gap: 12px;
   width: 100%;
   padding: 0.75rem 1.5rem;
-  background: transparent !important; /* Força o fundo a ser transparente para o indicador brilhar */
+  background: transparent !important;
+  /* ForÃ§a o fundo a ser transparente para o indicador brilhar */
   border: none;
   border-left: 3px solid transparent;
   text-align: left;
@@ -3298,7 +3410,8 @@ body {
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative; /* OBRIGATÓRIO PARA FICAR ACIMA DO INDICADOR */
+  position: relative;
+  /* OBRIGATÃ“RIO PARA FICAR ACIMA DO INDICADOR */
   z-index: 1;
 
   .icon {
@@ -3312,7 +3425,7 @@ body {
   }
 
   &:hover {
-    background: rgba(255,255,255,0.03) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     color: var(--text-primary);
   }
 
@@ -3413,9 +3526,9 @@ body {
   }
 }
 
-/* ────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    RAFTERS (Camisas Aposentadas)
-──────────────────────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .rafters-container {
   display: flex;
   align-items: center;
@@ -3423,7 +3536,7 @@ body {
   margin-top: 1.5rem;
   padding: 0.6rem 1.2rem;
   min-height: 58px;
-  /* Força ambos os containers a terem a mesma altura */
+  /* ForÃ§a ambos os containers a terem a mesma altura */
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -3486,50 +3599,51 @@ body {
   }
 }
 
-/* ────────────────────────────────────────────────────────────
-   O OLIMPO (TOP 3 ÍDOLOS)
-──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   O OLIMPO (TOP 3 ÃDOLOS)
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spinGlowAngle {
+  0% {
+    --glow-angle: 0deg;
+  }
+
+  100% {
+    --glow-angle: 360deg;
+  }
+}
+
 .top-3-idolo {
-  /* Remove overflow to let the glow bleed if needed, but we keep it hidden to crop the gradient nicely */
   z-index: 1;
 
   &::after {
     content: '';
     position: absolute;
-    inset: 2px;
-    background: var(--court-surface);
+    inset: -2px;
     border-radius: inherit;
-    z-index: -1;
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 250%;
-    height: 250%;
-    background: conic-gradient(transparent, var(--glow-color, var(--gold)), transparent 30%);
-    transform: translate(-50%, -50%);
-    animation: spinGlow 3s linear infinite;
+    background: conic-gradient(from var(--glow-angle), transparent 30%, var(--glow-color, var(--gold)) 80%, transparent 100%);
     z-index: -2;
-    border-radius: 0;
+    animation: spinGlowAngle 4s linear infinite;
+
+    padding: 2px;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    box-shadow: 0 0 20px var(--glow-color, rgba(212, 175, 55, 0.4));
   }
 }
 
-@keyframes spinGlow {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-/* ────────────────────────────────────────────────────────────
-   MODAL DE EDIÇÃO DO ÍDOLO (Glassmorphism)
-──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   MODAL DE EDIÃ‡ÃƒO DO ÃDOLO (Glassmorphism)
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -3618,7 +3732,7 @@ body {
   }
 }
 
-/* ─── LUXURY MODALS (OVERRIDE/ADDITION) ──────────────────── */
+/* â”€â”€â”€ LUXURY MODALS (OVERRIDE/ADDITION) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-luxury-overlay {
   position: fixed;
   inset: 0;
@@ -3851,7 +3965,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
-/* ─── NOVA UI DE FINAIS (MATCHUP) ──────────────────── */
+/* â”€â”€â”€ NOVA UI DE FINAIS (MATCHUP) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .finals-matchup-container {
   display: flex;
   justify-content: space-between;
@@ -3865,7 +3979,7 @@ body {
   overflow: hidden;
 }
 
-/* Sombras radiais atrás de cada lado */
+/* Sombras radiais atrÃ¡s de cada lado */
 .finals-matchup-container::before {
   content: '';
   position: absolute;
@@ -3873,10 +3987,11 @@ body {
   left: 10%;
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
   transform: translateY(-50%);
   pointer-events: none;
 }
+
 .finals-matchup-container::after {
   content: '';
   position: absolute;
@@ -3884,7 +3999,7 @@ body {
   right: 10%;
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -3898,7 +4013,8 @@ body {
   width: 140px;
   cursor: pointer;
   transition: all 0.3s ease;
-  opacity: 0.5; /* Escurecido por padrão, se não for o campeão (ou se nada foi clicado) */
+  opacity: 0.5;
+  /* Escurecido por padrÃ£o, se nÃ£o for o campeÃ£o (ou se nada foi clicado) */
 
   &.is-champion {
     opacity: 1;
@@ -3917,8 +4033,8 @@ body {
 
 .invisible-team-input {
   width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   text-align: center;
   padding: 0.4rem;
@@ -3929,7 +4045,7 @@ body {
 
   &:focus {
     outline: none;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--gold);
     box-shadow: 0 0 10px rgba(253, 185, 39, 0.3);
   }
@@ -3939,12 +4055,12 @@ body {
   width: 80px;
   height: 80px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)) grayscale(50%);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)) grayscale(50%);
   transition: all 0.4s ease;
 }
 
 .matchup-side.is-champion .team-logo-normal {
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8)) grayscale(0%);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8)) grayscale(0%);
 }
 
 .matchup-side .champion-silhouette-container {
@@ -3970,8 +4086,15 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .matchup-scoreboard {
@@ -3988,18 +4111,18 @@ body {
   font-size: 1.5rem;
   letter-spacing: 2px;
   color: var(--text-muted);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .score-inputs {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .score-box {
@@ -4012,7 +4135,7 @@ body {
   font-size: 2.5rem;
   text-align: center;
   outline: none;
-  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 
   &:focus {
@@ -4026,6 +4149,7 @@ body {
     -webkit-appearance: none;
     margin: 0;
   }
+
   -moz-appearance: textfield;
 }
 
@@ -4035,7 +4159,7 @@ body {
   font-weight: 300;
 }
 
-/* ─── TABS DA FRANQUIA (Temporadas / Ídolos) ──────────────────── */
+/* â”€â”€â”€ TABS DA FRANQUIA (Temporadas / Ãdolos) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .franquia-tabs-container {
   display: flex;
   gap: 0.5rem;
@@ -4089,7 +4213,7 @@ body {
 }
 
 
-/* ─── SCROLLBAR LUXURY GERAL ──────────────────── */
+/* â”€â”€â”€ SCROLLBAR LUXURY GERAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -4110,7 +4234,7 @@ body {
 }
 
 /* ============================================================
-   MODAL LUXURY — ÍDOLOS (NBA TRACKER)
+   MODAL LUXURY â€” ÃDOLOS (NBA TRACKER)
    ============================================================ */
 
 .modal-luxury-overlay {
@@ -4154,7 +4278,7 @@ body {
     }
   }
 
-  /* ─── HEADER ──────────────────────────────────────────────── */
+  /* â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-header {
     padding: 1.5rem 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -4201,7 +4325,7 @@ body {
     }
   }
 
-  /* ─── CONTENT & INPUTS ────────────────────────────────────── */
+  /* â”€â”€â”€ CONTENT & INPUTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-content {
     padding: 2rem;
     overflow-y: auto;
@@ -4278,7 +4402,7 @@ body {
         font-weight: 500;
       }
 
-      /* Offset pro textarea não ficar estranho */
+      /* Offset pro textarea nÃ£o ficar estranho */
       textarea~label {
         top: 1.2rem;
       }
@@ -4299,7 +4423,7 @@ body {
       }
     }
 
-    /* ─── TROPHIES BOX ────────────────────────────────────────── */
+    /* â”€â”€â”€ TROPHIES BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .modal-trophies-container {
       background: linear-gradient(145deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -4340,7 +4464,7 @@ body {
     }
   }
 
-  /* ─── FOOTER & BUTTONS ────────────────────────────────────── */
+  /* â”€â”€â”€ FOOTER & BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-footer {
     padding: 1.5rem 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -4415,7 +4539,7 @@ body {
   }
 }
 
-/* ─── ANIMATIONS ────────────────────────────────────────────── */
+/* â”€â”€â”€ ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes overlayFadeIn {
   from {
     opacity: 0;
@@ -4441,7 +4565,7 @@ body {
 }
 
 /* ============================================================
-   MODAL LUXURY — ÍDOLOS (NBA TRACKER)
+   MODAL LUXURY â€” ÃDOLOS (NBA TRACKER)
    ============================================================ */
 
 .modal-luxury-overlay {
@@ -4485,7 +4609,7 @@ body {
     }
   }
 
-  /* ─── HEADER ──────────────────────────────────────────────── */
+  /* â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-header {
     padding: 1.5rem 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -4532,7 +4656,7 @@ body {
     }
   }
 
-  /* ─── CONTENT & INPUTS ────────────────────────────────────── */
+  /* â”€â”€â”€ CONTENT & INPUTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-content {
     padding: 2rem;
     overflow-y: auto;
@@ -4609,7 +4733,7 @@ body {
         font-weight: 500;
       }
 
-      /* Offset pro textarea não ficar estranho */
+      /* Offset pro textarea nÃ£o ficar estranho */
       textarea~label {
         top: 1.2rem;
       }
@@ -4630,7 +4754,7 @@ body {
       }
     }
 
-    /* ─── TROPHIES BOX ────────────────────────────────────────── */
+    /* â”€â”€â”€ TROPHIES BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .modal-trophies-container {
       background: linear-gradient(145deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%) !important;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -4671,7 +4795,7 @@ body {
     }
   }
 
-  /* ─── FOOTER & BUTTONS ────────────────────────────────────── */
+  /* â”€â”€â”€ FOOTER & BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .modal-luxury-footer {
     padding: 1.5rem 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -4746,7 +4870,7 @@ body {
   }
 }
 
-/* ─── ANIMATIONS ────────────────────────────────────────────── */
+/* â”€â”€â”€ ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes overlayFadeIn {
   from {
     opacity: 0;
@@ -4772,10 +4896,10 @@ body {
 }
 
 /* ============================================================
-   MODAL LUXURY — REGISTRO DE CAMPANHA (ELENCO/SEASON)
+   MODAL LUXURY â€” REGISTRO DE CAMPANHA (ELENCO/SEASON)
    ============================================================ */
 
-/* O :has() garante que a estilização só afete o modal que contém o formulário de time */
+/* O :has() garante que a estilizaÃ§Ã£o sÃ³ afete o modal que contÃ©m o formulÃ¡rio de time */
 .modal-overlay:has(.form-time) {
   position: fixed;
   inset: 0;
@@ -4813,7 +4937,7 @@ body {
     }
   }
 
-  /* ─── HEADER ──────────────────────────────────────────────── */
+  /* â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .section-header {
     padding: 1.5rem 2rem;
     background: rgba(0, 0, 0, 0.2);
@@ -4854,7 +4978,7 @@ body {
     }
   }
 
-  /* ─── SECTIONS & INPUTS (LABELS ESTÁTICOS) ────────────────── */
+  /* â”€â”€â”€ SECTIONS & INPUTS (LABELS ESTÃTICOS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .form-temporada {
     background: transparent !important;
     padding: 0;
@@ -4926,7 +5050,7 @@ body {
     }
   }
 
-  /* ─── HIERARQUIA DE ELENCO (CARDS DO QUINTETO/DRAFT) ──────── */
+  /* â”€â”€â”€ HIERARQUIA DE ELENCO (CARDS DO QUINTETO/DRAFT) â”€â”€â”€â”€â”€â”€â”€â”€ */
   .hierarquia-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -4967,7 +5091,7 @@ body {
     }
   }
 
-  /* ─── ROSTER PHOTO SECTION (UPLOADS DE FOTO) ──────────────── */
+  /* â”€â”€â”€ ROSTER PHOTO SECTION (UPLOADS DE FOTO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .roster-photo-section {
     padding-bottom: 1.5rem;
 
@@ -5150,7 +5274,7 @@ body {
     }
   }
 
-  /* ─── FOOTER ACTIONS ──────────────────────────────────────── */
+  /* â”€â”€â”€ FOOTER ACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .header-actions {
     padding: 1.5rem 2rem;
     background: rgba(0, 0, 0, 0.3);
@@ -5205,7 +5329,7 @@ body {
   }
 }
 
-/* ─── BUTTONS IDOLO (Adicionar / Atualizar) ─────────────────── */
+/* â”€â”€â”€ BUTTONS IDOLO (Adicionar / Atualizar) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-add-idolo {
   display: inline-flex;
   align-items: center;
@@ -5280,18 +5404,19 @@ body {
     }
   }
 }
+
 /* ==========================================================================
    2K MYTEAM / FUT STYLE PLAYER CARDS - RARITY TIERS
    Aplique estas classes no seu componente `.player-cell`
    ========================================================================== */
 
-/* Garante que o texto e a foto fiquem acima das camadas de animação */
-.player-cell > * {
+/* Garante que o texto e a foto fiquem acima das camadas de animaÃ§Ã£o */
+.player-cell>* {
   position: relative;
   z-index: 2;
 }
 
-/* 1. LEGEND (OVR 90 - 94) - Elegância e Ouro Suave */
+/* 1. LEGEND (OVR 90 - 94) - ElegÃ¢ncia e Ouro Suave */
 .player-cell.tier-legend {
   border: none;
   isolation: isolate;
@@ -5301,7 +5426,10 @@ body {
   &::before {
     content: '';
     position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
     z-index: -2;
     background: conic-gradient(from 0deg, transparent 70%, rgba(253, 185, 39, 0.9) 100%);
     animation: rotate-beam 3s linear infinite;
@@ -5317,7 +5445,7 @@ body {
   }
 }
 
-/* 2. MYTHIC (OVR 95 - 96) - Prisma Holográfico Radiante */
+/* 2. MYTHIC (OVR 95 - 96) - Prisma HologrÃ¡fico Radiante */
 .player-cell.tier-mythic {
   border: none;
   isolation: isolate;
@@ -5328,7 +5456,10 @@ body {
   &::before {
     content: '';
     position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
     z-index: -2;
     /* Prisma multi-colorido insano */
     background: conic-gradient(from 0deg, #ff00ea, #00f0ff, #ffea00, #00ff7f, #ff00ea);
@@ -5342,7 +5473,7 @@ body {
     z-index: -1;
     border-radius: calc(var(--radius-sm) - 2px);
     /* Fundo escuro + Holograma de Foil cortando agressivamente na diagonal */
-    background: 
+    background:
       linear-gradient(115deg, transparent 15%, rgba(255, 255, 255, 0.7) 25%, rgba(0, 255, 255, 0.5) 35%, rgba(255, 0, 234, 0.5) 45%, transparent 55%),
       linear-gradient(to bottom right, #090914, #121226);
     background-size: 300% 300%, 100% 100%;
@@ -5350,20 +5481,23 @@ body {
   }
 }
 
-/* 3. DARK MATTER (OVR 97 - 98) - Matéria Escura e Instabilidade Dimensional */
+/* 3. DARK MATTER (OVR 97 - 98) - MatÃ©ria Escura e Instabilidade Dimensional */
 .player-cell.tier-dark-matter {
   border: none;
   isolation: isolate;
   box-shadow: 0 0 35px rgba(138, 43, 226, 0.8), inset 0 0 10px rgba(0, 0, 0, 1);
   overflow: hidden;
-  /* Tremor removido a pedido do usuário */
-  
+  /* Tremor removido a pedido do usuÃ¡rio */
+
   &::before {
     content: '';
     position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
     z-index: -2;
-    /* Feixes reversos ultra-rápidos e agressivos */
+    /* Feixes reversos ultra-rÃ¡pidos e agressivos */
     background: conic-gradient(from 0deg, #000 0%, #ff00ff 10%, #000 20%, #8a2be2 30%, #000 50%, #ff00ff 60%, #000 70%, #8a2be2 80%, #000 100%);
     animation: rotate-beam 0.5s linear infinite reverse;
   }
@@ -5374,7 +5508,7 @@ body {
     inset: 2px;
     z-index: -1;
     border-radius: calc(var(--radius-sm) - 2px);
-    /* Buraco negro supermassivo sugando o fundo com saturação pesada */
+    /* Buraco negro supermassivo sugando o fundo com saturaÃ§Ã£o pesada */
     background: radial-gradient(circle at 50% 50%, #000 20%, #2b0052 60%, #110022 100%);
     box-shadow: inset 0 0 25px rgba(255, 0, 255, 0.8);
     animation: dark-matter-void 0.6s infinite alternate cubic-bezier(0.8, 0, 0.2, 1);
@@ -5387,28 +5521,33 @@ body {
   isolation: isolate;
   /* Aura colossal dourada e branca */
   box-shadow: 0 0 50px rgba(255, 215, 0, 1), 0 0 100px rgba(255, 255, 255, 0.6), inset 0 0 15px rgba(255, 215, 0, 1);
-  /* Levitação dramática e expansão de aura */
+  /* LevitaÃ§Ã£o dramÃ¡tica e expansÃ£o de aura */
   animation: goat-divine-float 1.2s infinite alternate ease-in-out;
   overflow: hidden;
 
-  /* Garante legibilidade máxima do texto sobre o fundo super brilhante */
+  /* Garante legibilidade mÃ¡xima do texto sobre o fundo super brilhante */
   .player-badge {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 1), 0 0 15px rgba(0, 0, 0, 1), 0 0 5px rgba(0, 0, 0, 1);
-    
+
     .name-text {
       font-weight: 800;
       color: #fff;
     }
+
     .ovr-value {
-      color: #ffd700; /* Destaca o OVR 99 em dourado absoluto */
-      text-shadow: 0 0 15px rgba(255,215,0,1), 0 2px 4px #000;
+      color: #ffd700;
+      /* Destaca o OVR 99 em dourado absoluto */
+      text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 2px 4px #000;
     }
   }
 
   &::before {
     content: '';
     position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
     z-index: -2;
     /* Feixe espesso de pura luz divina (Ouro e Branco) girando alucinadamente */
     background: conic-gradient(from 0deg, #fff 0%, #ffd700 15%, #ff8c00 25%, #fff 40%, #ffd700 50%, #ff8c00 65%, #fff 80%, #ffd700 90%, #fff 100%);
@@ -5419,11 +5558,12 @@ body {
   &::after {
     content: '';
     position: absolute;
-    inset: 3px; /* Borda 3px (mais grossa que os outros tiers) para ser muito mais imponente */
+    inset: 3px;
+    /* Borda 3px (mais grossa que os outros tiers) para ser muito mais imponente */
     z-index: -1;
     border-radius: calc(var(--radius-sm) - 3px);
-    /* Foil Divino que passa cortando + Fundo negro dourado + Explosão central */
-    background: 
+    /* Foil Divino que passa cortando + Fundo negro dourado + ExplosÃ£o central */
+    background:
       linear-gradient(135deg, transparent 20%, rgba(255, 255, 255, 0.8) 25%, rgba(255, 215, 0, 0.8) 30%, transparent 35%),
       radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 215, 0, 0.5) 40%, transparent 80%),
       linear-gradient(0deg, #100b00 0%, #302000 50%, #100b00 100%);
@@ -5437,46 +5577,982 @@ body {
    KEYFRAMES GERAIS PARA AS CARTAS
    ========================================================================== */
 
+
+
 @keyframes rotate-beam {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes mythic-float {
-  0% { transform: translateY(0); box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2); }
-  100% { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 255, 255, 0.7); }
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+  }
+
+  100% {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.7);
+  }
 }
 
 @keyframes mythic-foil-fast {
-  0% { background-position: 250% 0, 0 0; }
-  100% { background-position: -50% 0, 0 0; }
+  0% {
+    background-position: 250% 0, 0 0;
+  }
+
+  100% {
+    background-position: -50% 0, 0 0;
+  }
 }
 
 @keyframes dark-matter-tremor {
-  0% { transform: translate(0.5px, 0.5px) rotate(0.1deg); }
-  25% { transform: translate(-0.5px, 0.5px) rotate(-0.1deg); }
-  50% { transform: translate(-0.5px, -0.5px) rotate(0.1deg); }
-  75% { transform: translate(0.5px, -0.5px) rotate(-0.1deg); }
-  100% { transform: translate(0.5px, 0.5px) rotate(0.1deg); }
+  0% {
+    transform: translate(0.5px, 0.5px) rotate(0.1deg);
+  }
+
+  25% {
+    transform: translate(-0.5px, 0.5px) rotate(-0.1deg);
+  }
+
+  50% {
+    transform: translate(-0.5px, -0.5px) rotate(0.1deg);
+  }
+
+  75% {
+    transform: translate(0.5px, -0.5px) rotate(-0.1deg);
+  }
+
+  100% {
+    transform: translate(0.5px, 0.5px) rotate(0.1deg);
+  }
 }
 
 @keyframes dark-matter-void {
-  0% { background-size: 100% 100%; filter: saturate(1.2); box-shadow: inset 0 0 15px #ff00ff; }
-  100% { background-size: 150% 150%; filter: saturate(2); box-shadow: inset 0 0 45px #8a2be2; }
+  0% {
+    background-size: 100% 100%;
+    filter: saturate(1.2);
+    box-shadow: inset 0 0 15px #ff00ff;
+  }
+
+  100% {
+    background-size: 150% 150%;
+    filter: saturate(2);
+    box-shadow: inset 0 0 45px #8a2be2;
+  }
 }
 
 @keyframes goat-divine-float {
-  0% { transform: translateY(0) scale(1.01); box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 255, 255, 0.3); }
-  100% { transform: translateY(-4px) scale(1.05); box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 255, 255, 0.8); }
+  0% {
+    transform: translateY(0) scale(1.01);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 255, 255, 0.3);
+  }
+
+  100% {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 255, 255, 0.8);
+  }
 }
 
 @keyframes goat-heavenly-fire {
-  0% { filter: brightness(1) contrast(1); box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.6); }
-  100% { filter: brightness(1.6) contrast(1.2); box-shadow: inset 0 0 80px rgba(255, 255, 255, 1); }
+  0% {
+    filter: brightness(1) contrast(1);
+    box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+
+  100% {
+    filter: brightness(1.6) contrast(1.2);
+    box-shadow: inset 0 0 80px rgba(255, 255, 255, 1);
+  }
 }
 
 @keyframes goat-foil-flash {
-  0% { background-position: 250% 0, 50% 0, 0 0; }
-  100% { background-position: -50% 0, 50% 100%, 0 0; }
+  0% {
+    background-position: 250% 0, 50% 0, 0 0;
+  }
+
+  100% {
+    background-position: -50% 0, 50% 100%, 0 0;
+  }
 }
 
+
+/* --- ESTATÍSTICAS AVANÇADAS: DINASTIA E RIVALIDADE --- */
+.stats-dashboard {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dynasty-chart-container,
+.rivalry-container {
+  background: var(--court-card);
+  border: 1px solid var(--court-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+
+  h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--court-border2);
+    padding-bottom: 0.5rem;
+
+    i {
+      color: var(--gold);
+    }
+  }
+}
+
+.chart-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+.rivalry-matchup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  .team-side {
+    img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.15) rotate(-5deg);
+    }
+  }
+
+  .vs-badge {
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(229, 57, 53, 0.2) 0%, transparent 70%);
+      z-index: -1;
+    }
+  }
+}
+
+
+@keyframes pulse-soft {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 199, 44, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 199, 44, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 199, 44, 0);
+  }
+}
+
+@keyframes goatGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.4);
+    border-color: rgba(255, 215, 0, 1);
+  }
+
+  100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.5);
+  }
+}
+
+.roster-photo-card.aura-goat {
+  animation: goatGlow 2s infinite ease-in-out;
+  position: relative;
+  overflow: visible;
+  z-index: 2;
+  background: linear-gradient(145deg, rgba(20, 20, 20, 1) 0%, rgba(40, 30, 0, 1) 100%);
+}
+
+.roster-photo-card.aura-goat::before {
+  content: "99 OVR";
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  font-weight: 900;
+  font-style: italic;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+  transform: rotate(5deg);
+  z-index: 10;
+  letter-spacing: -0.5px;
+}
+
+
+@keyframes pulse-soft {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 199, 44, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 199, 44, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 199, 44, 0);
+  }
+}
+
+
+/* RAFTERS (Camisas Aposentadas) */
+.rafters-container {
+  margin-bottom: 2rem;
+  background: linear-gradient(to bottom, rgba(10, 10, 15, 0.9), rgba(15, 23, 42, 0.4));
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border-top: 4px solid var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+
+.rafters-title {
+  text-align: center;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.rafters-roof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.rafter-jersey {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.rafter-jersey:nth-child(even) {
+  animation-delay: 1s;
+}
+
+.jersey-string {
+  width: 2px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.jersey-body {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background-color: var(--team-primary, #333);
+  border: 3px solid var(--team-secondary, #fff);
+  border-radius: 4px 4px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  clip-path: polygon(15% 0%, 85% 0%, 100% 20%, 90% 100%, 10% 100%, 0% 20%);
+}
+
+.jersey-name {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  color: var(--team-secondary, #fff);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jersey-number {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--team-secondary, #fff);
+  line-height: 1;
+}
+
+/* HALL OF FAME PLAQUE */
+.lenda-card.hall-of-fame-plaque {
+  background: linear-gradient(135deg, #b9935a 0%, #d4af37 50%, #aa8036 100%);
+  border: 3px solid #6b4c1a;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  position: relative;
+  color: #3b2a0c;
+}
+
+.lenda-card.hall-of-fame-plaque::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid rgba(107, 76, 26, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.plaque-screws {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.screw {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #6b4c1a;
+  border-radius: 50%;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5), 1px 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.screw:nth-child(1) {
+  top: 0;
+  left: 0;
+}
+
+.screw:nth-child(2) {
+  top: 0;
+  right: 0;
+}
+
+.screw:nth-child(3) {
+  bottom: 0;
+  left: 0;
+}
+
+.screw:nth-child(4) {
+  bottom: 0;
+  right: 0;
+}
+
+.lenda-card.hall-of-fame-plaque h4 {
+  color: #2a1e09;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
+  font-family: 'Times New Roman', serif;
+  text-transform: uppercase;
+}
+
+.lenda-card.hall-of-fame-plaque .lenda-badge {
+  background: #2a1e09;
+  color: #d4af37;
+  border-color: #6b4c1a;
+}
+
+.lenda-card.hall-of-fame-plaque .ovr-label,
+.lenda-card.hall-of-fame-plaque .lenda-stats-row {
+  color: #4a3512;
+}
+
+.lenda-card.hall-of-fame-plaque .lenda-foto-wrapper {
+  border-color: #6b4c1a;
+  background: #000;
+}
+
+
+/* ÃƒÂRVORE DE TROCAS */
+.trade-tree-container {
+  display: flex;
+  align-items: stretch;
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid rgba(255, 199, 44, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+  gap: 15px;
+}
+
+.trade-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 1.5rem;
+  padding: 0 10px;
+}
+
+.trade-team-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.trade-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.trade-players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trade-player-badge {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --elevation-1: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --elevation-2: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --elevation-3: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --elevation-4: 0 25px 50px rgba(0, 0, 0, 0.25);
+  --font-sports: 'Barlow Condensed', sans-serif;
+  --font-sports-body: 'Barlow', sans-serif;
+}
+
+/* =========================================================
+   REDESIGN: RAFTERS (Teto do GinÃ¡sio)
+========================================================= */
+.rafters-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: visible;
+  /* To allow floating jerseys to pop out if needed */
+  background: radial-gradient(circle at top, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 25, 0.95) 100%);
+  background-image:
+    radial-gradient(circle at top, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 25, 0.95) 100%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  border-radius: var(--radius-xl, 16px);
+  padding: 3rem 1.5rem;
+  margin-bottom: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.5), var(--elevation-2);
+}
+
+.rafters-title {
+  text-align: center;
+  color: var(--gold, #FFD700);
+  font-family: var(--font-sports);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: -1rem;
+  margin-bottom: 3rem;
+  text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.rafters-roof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  perspective: 1000px;
+}
+
+.rafter-jersey {
+  position: relative;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-style: preserve-3d;
+  animation: floatRafterPremium 4s ease-in-out infinite;
+
+  /* Sombra projetada no chao simulando altura Z */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(60deg);
+    width: 60px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    filter: blur(8px);
+    border-radius: 50%;
+    animation: shadowPulsePremium 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+}
+
+.rafter-jersey .jersey-body {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background-color: var(--team-primary, #333);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 100%);
+  border: 3px solid var(--team-secondary, #fff);
+  border-radius: 4px 4px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.2);
+  clip-path: polygon(15% 0%, 85% 0%, 100% 20%, 90% 100%, 10% 100%, 0% 20%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rafter-jersey:hover .jersey-body {
+  transform: scale(1.1) rotateY(10deg);
+}
+
+.rafter-jersey .jersey-number {
+  font-family: var(--font-sports);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--team-secondary, #fff);
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
+.rafter-jersey .jersey-name {
+  font-family: var(--font-sports);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+@keyframes floatRafterPremium {
+
+  0%,
+  100% {
+    transform: translateY(0) rotateZ(0deg);
+  }
+
+  25% {
+    transform: translateY(-8px) rotateZ(1deg);
+  }
+
+  50% {
+    transform: translateY(4px) rotateZ(0deg);
+  }
+
+  75% {
+    transform: translateY(-4px) rotateZ(-1deg);
+  }
+}
+
+@keyframes shadowPulsePremium {
+
+  0%,
+  100% {
+    transform: translateX(-50%) rotateX(60deg) scale(1);
+    opacity: 0.6;
+  }
+
+  25% {
+    transform: translateX(-50%) rotateX(60deg) scale(0.8);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateX(-50%) rotateX(60deg) scale(1.1);
+    opacity: 0.7;
+  }
+
+  75% {
+    transform: translateX(-50%) rotateX(60deg) scale(0.9);
+    opacity: 0.5;
+  }
+}
+
+
+/* =========================================================
+   REDESIGN: BENTO GRID HALL OF FAME
+========================================================= */
+
+.lendas-grid {
+  display: grid;
+  /* Bento Grid auto-fit, but allows spanning */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: minmax(320px, auto);
+  grid-auto-flow: dense;
+  /* Fill holes nicely */
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+/* Placa dimensional layering */
+.lenda-card.hall-of-fame-plaque {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 16px;
+  padding: 1.5rem;
+  padding-top: 4rem;
+  /* Spacing for the overlapping image */
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--elevation-2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.1s ease-out, box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  text-align: center;
+  overflow: visible;
+  /* CRITICAL for 3D image pop-out */
+}
+
+/* Placa Dourada / Bronze Metálica no Fundo */
+.lenda-card.hall-of-fame-plaque::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(145deg,
+      rgba(212, 175, 55, 0.25) 0%,
+      rgba(139, 101, 8, 0.1) 40%,
+      rgba(0, 0, 0, 0.6) 100%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  z-index: -1;
+  transition: opacity 0.3s;
+}
+
+/* Efeito Hover na Placa */
+.lenda-card.hall-of-fame-plaque:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--elevation-4), 0 20px 40px rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.4);
+  z-index: 2;
+}
+
+.lenda-card.hall-of-fame-plaque:hover::before {
+  opacity: 1;
+  background: linear-gradient(145deg,
+      rgba(212, 175, 55, 0.35) 0%,
+      rgba(139, 101, 8, 0.15) 40%,
+      rgba(0, 0, 0, 0.6) 100%);
+}
+
+/* Efeito Holográfico - Mouse Tracking */
+.holo-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle at var(--bg-x, 50%) var(--bg-y, 50%),
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.lenda-card.hall-of-fame-plaque:hover .holo-glow {
+  opacity: 1;
+}
+
+/* Imagem 3D Pop-out */
+.lenda-card.hall-of-fame-plaque .lenda-foto-wrapper {
+  position: absolute;
+  top: -40px;
+  /* Sai do card */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #1e293b;
+  /* Borda da cor do card */
+  box-shadow: var(--elevation-3);
+  background: var(--glow-color, rgba(212, 175, 55, 0.1));
+  overflow: hidden;
+  z-index: 10;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lenda-card.hall-of-fame-plaque:hover .lenda-foto-wrapper {
+  transform: translateX(-50%) translateY(-15px) scale(1.15);
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6), 0 0 30px var(--glow-color, rgba(212, 175, 55, 0.3));
+}
+
+.lenda-card.hall-of-fame-plaque .lenda-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* InformaÃ§Ãµes */
+.lenda-card.hall-of-fame-plaque .lenda-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  /* Abaixo da foto sobreposta */
+  transform: translateZ(20px);
+}
+
+.lenda-card.hall-of-fame-plaque .lenda-info h4 {
+  font-family: var(--font-sports);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lenda-card.hall-of-fame-plaque .lenda-badge {
+  font-family: var(--font-sports-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: rgba(212, 175, 55, 0.15);
+  color: #fcd34d;
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Layout dos prÃªmios (Mini Grid) */
+.lenda-stats-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.lenda-awards-mini {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
+}
+
+.award-mini-icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-sports-body);
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+
+  img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+/* Motivo da indicaÃ§Ã£o */
+.lenda-historia {
+  font-family: var(--font-sports-body);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Bento Box: Top 3 Cards Span */
+/* Makes the first 2 or 3 items larger if space permits */
+@media (min-width: 1024px) {
+  .lendas-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .top-3-idolo:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+@media (min-width: 1440px) {
+  .lendas-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .top-3-idolo:nth-child(1) {
+    grid-column: span 2;
+  }
+
+  .top-3-idolo:nth-child(2) {
+    grid-column: span 2;
+  }
+}
+
+/* OVR no Bento Box */
+.lenda-ovr-max {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+
+  .ovr-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .ovr-value {
+    font-family: var(--font-sports);
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+}
+
+/* =========================================================
+   TOP 5 ÃDOLOS (4Âº E 5Âº LUGAR) - ANIMAÃ‡ÃƒO DE BRILHO (SHIMMER)
+========================================================= */
+.top-5-idolo {
+  z-index: 1;
+}
+
+.top-5-idolo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.2) 25%,
+      var(--glow-color, rgba(212, 175, 55, 0.4)) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 80%);
+  background-size: 200% auto;
+  z-index: -1;
+  animation: shinePremiumCard 5s linear infinite;
+
+  /* Mask to keep it only on the border, similar to Top 3 but softer */
+  padding: 2px;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  opacity: 0.8;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+@keyframes shinePremiumCard {
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
+}

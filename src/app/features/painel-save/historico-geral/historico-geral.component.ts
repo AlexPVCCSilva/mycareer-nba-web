@@ -11,6 +11,17 @@ import {
 } from '../../../core/services/supabase.service';
 import { IdolCalculatorService, JogadorStatsFranquia } from '../../../core/services/idol-calculator.service';
 import { marked } from 'marked';
+import { NBA_HISTORICAL_LOGOS } from '../../../core/constants/nba-historical-logos';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+
+export interface CustomLogoHistory {
+  ano_inicio: number;
+  ano_fim: number;
+  url: string;
+}
 
 interface IJogadorElencoFotoItem {
   posicao: string;
@@ -190,10 +201,10 @@ const NBA_PLAYERS: { [key: string]: string } = {
   "jamaal wilkes": "78523", "bill walton": "78450", "maurice cheeks": "76383"
 };
 
-const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: string } } = {
-  "seattle supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
-  "supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
-  "sonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A" },
+const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: string; logoUrl?: string } } = {
+  "seattle supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
+  "supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
+  "sonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
   "new jersey nets": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
   "new jersey": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
   "charlotte bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C" },
@@ -255,6 +266,10 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: stri
 export class HistoricoGeralComponent implements OnInit {
   // Mobile Menu State
   menuAberto = window.innerWidth > 900;
+  
+  // Chart.js State
+  @ViewChild('dynastyChart') dynastyChartRef!: ElementRef;
+  dynastyChartInstance: Chart | null = null;
   
   // Wizard State (Modal Campanha)
   wizardSegmentCampanha: 'resultados' | 'elenco' | 'fotos' = 'resultados';
@@ -384,16 +399,19 @@ export class HistoricoGeralComponent implements OnInit {
 // ── Configurações da Liga ──────────────────────────────────
 mostrarModalConfiguracoes = false;
 franquiaEditandoId: string | null = null;
-franquiaEditandoForm: {
-  nome: string;
-  corHex: string;
-  logo_url: string | null;
-} = { nome: '', corHex: '#552583', logo_url: null };
+  franquiaEditandoForm: {
+    nome: string;
+    corHex: string;
+    corSecundaria: string;
+    logo_url: string | null;
+    historico_logos: CustomLogoHistory[];
+    rival_id?: string | null;
+  } = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null, historico_logos: [], rival_id: null };
 salvandoEdicaoFranquia = false;
 
   // AQUI FICAVAM AS VARIÁVEIS DUPLICADAS, AGORA ESTÃO LIMPAS:
   mostrarModalFranquia = false;
-  novaFranquia = { nome: '', corHex: '#552583', logo_url: null as string | null };
+  novaFranquia = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null as string | null };
   salvandoFranquia = false;
 
   mostrarFormulario = false;
@@ -811,7 +829,144 @@ salvandoEdicaoFranquia = false;
       }
       this.carregandoTime = false;
       this.cdr.detectChanges();
+      
+      // Renderiza o gráfico após a aba e campanhas carregarem
+      setTimeout(() => this.renderDynastyChart(), 100);
     }
+  }
+
+  renderDynastyChart() {
+    if (this.dynastyChartInstance) {
+      this.dynastyChartInstance.destroy();
+      this.dynastyChartInstance = null;
+    }
+
+    if (!this.dynastyChartRef || !this.dynastyChartRef.nativeElement) return;
+    
+    // Sort campaigns chronologically for the chart
+    const campanhasOrdenadas = [...this.campanhasTime].sort((a, b) => {
+      return a.temporada.localeCompare(b.temporada);
+    });
+
+    if (campanhasOrdenadas.length === 0) return;
+
+    const labels = campanhasOrdenadas.map(c => c.temporada);
+    const winsData = campanhasOrdenadas.map(c => {
+      if (!c.recorde_wl) return 0;
+      const parts = c.recorde_wl.split('-');
+      return parts.length > 0 ? parseInt(parts[0], 10) || 0 : 0;
+    });
+    const seedData = campanhasOrdenadas.map(c => c.rank_conferencia || null);
+
+    const backgroundColors = campanhasOrdenadas.map(c => 
+      c.resultado_playoffs?.toLowerCase().includes('campeão') ? '#FFD700' : 'rgba(255, 255, 255, 0.2)'
+    );
+    const borderColors = campanhasOrdenadas.map(c => 
+      c.resultado_playoffs?.toLowerCase().includes('campeão') ? '#FFD700' : 'rgba(255, 255, 255, 0.8)'
+    );
+
+    const pointRadius = campanhasOrdenadas.map(c => 
+      c.resultado_playoffs?.toLowerCase().includes('campeão') ? 6 : 4
+    );
+
+    const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
+    const corTime = timeAtivo?.cor_hex || '#552583';
+    
+    // Buscar a cor secundária (se existir) na const NBA_TEAMS_INFO
+    let corSecundaria = 'rgba(255, 255, 255, 0.4)';
+    if (timeAtivo && timeAtivo.nome) {
+      const nomeLower = timeAtivo.nome.toLowerCase();
+      // tenta achar se alguma chave do NBA_TEAMS_INFO está no nome
+      const chaveEncontrada = Object.keys(NBA_TEAMS_INFO).find(k => nomeLower.includes(k));
+      if (chaveEncontrada && NBA_TEAMS_INFO[chaveEncontrada].sec) {
+        corSecundaria = NBA_TEAMS_INFO[chaveEncontrada].sec;
+      }
+    }
+
+    const ctx = this.dynastyChartRef.nativeElement.getContext('2d');
+    this.dynastyChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Vitórias',
+            data: winsData,
+            borderColor: corTime,
+            backgroundColor: 'transparent',
+            borderWidth: 3,
+            pointBackgroundColor: backgroundColors,
+            pointBorderColor: borderColors,
+            pointRadius: pointRadius,
+            pointHoverRadius: 8,
+            tension: 0.3,
+            yAxisID: 'y'
+          },
+          {
+            label: 'Seed (Classificação)',
+            data: seedData,
+            borderColor: corSecundaria,
+            borderDash: [5, 5],
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            pointBackgroundColor: corSecundaria,
+            pointBorderColor: 'transparent',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            tension: 0.3,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { 
+            display: true,
+            labels: { color: '#ccc', font: { size: 10 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const idx = context.dataIndex;
+                const camp = campanhasOrdenadas[idx];
+                if (context.datasetIndex === 0) {
+                  return `Vitórias: ${camp.recorde_wl || '?'} - ${camp.resultado_playoffs || 'N/A'}`;
+                } else {
+                  return `Seed: ${camp.rank_conferencia || 'N/A'}`;
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: true,
+            max: 82,
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#ccc' }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            reverse: true,
+            min: 1,
+            max: 15,
+            grid: { drawOnChartArea: false }, // only draw grid for one axis
+            ticks: { color: 'rgba(255, 255, 255, 0.6)', stepSize: 1 }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#ccc', maxRotation: 45, minRotation: 45 }
+          }
+        }
+      }
+    });
   }
 
   async adicionarCampanhaTime() {
@@ -864,12 +1019,12 @@ salvandoEdicaoFranquia = false;
 
   fecharModalFranquia() {
     this.mostrarModalFranquia = false;
-    this.novaFranquia = { nome: '', corHex: '#552583', logo_url: null };
+    this.novaFranquia = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null };
     this.modoPersonalizado = false;
   }
 
   async salvarTimePadrao(time: any) {
-    this.novaFranquia = { nome: time.nome, corHex: time.corHex, logo_url: null };
+    this.novaFranquia = { nome: time.nome, corHex: time.corHex, corSecundaria: time.corSecundaria || '#000000', logo_url: null };
     await this.salvarNovaFranquia(); 
   }
 
@@ -885,6 +1040,7 @@ salvandoEdicaoFranquia = false;
         this.ligaId!,
         this.novaFranquia.nome,
         this.novaFranquia.corHex,
+        this.novaFranquia.corSecundaria,
         this.novaFranquia.logo_url
       );
       
@@ -1022,6 +1178,34 @@ salvandoEdicaoFranquia = false;
   abrirModalIdolo(idolo: any) {
     this.idoloSelecionado = { ...idolo }; // Cria uma cópia para edição local
     this.idoloSelecionado = this.enriquecerLendaComEstatisticas(this.idoloSelecionado);
+  }
+
+  onLendaMouseMove(e: MouseEvent) {
+    const card = e.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = (y - centerY) / 10;
+    const rotateY = (centerX - x) / 10;
+
+    card.style.setProperty('--x', `${x}px`);
+    card.style.setProperty('--y', `${y}px`);
+    card.style.setProperty('--bg-x', `${(x / rect.width) * 100}%`);
+    card.style.setProperty('--bg-y', `${(y / rect.height) * 100}%`);
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  }
+
+  onLendaMouseLeave(e: MouseEvent) {
+    const card = e.currentTarget as HTMLElement;
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    card.style.setProperty('--x', `50%`);
+    card.style.setProperty('--y', `50%`);
+    card.style.setProperty('--bg-x', '50%');
+    card.style.setProperty('--bg-y', '50%');
   }
 
   fecharModalIdolo() {
@@ -1364,7 +1548,12 @@ salvandoEdicaoFranquia = false;
 
   getNomeAbaAtiva(): string {
     const franquia = this.franquias.find(f => f.id === this.abaAtiva);
-    return franquia ? franquia.nome : 'Franquia';
+    return franquia ? franquia.nome : '';
+  }
+
+  getLogoFranquiaAtiva(): string | null {
+    const franquia = this.franquias.find(f => f.id === this.abaAtiva);
+    return franquia ? this.getLogoDisplay(franquia.logo_url) : null;
   }
 
   getCorAbaAtiva(): string {
@@ -1373,6 +1562,11 @@ salvandoEdicaoFranquia = false;
   }
 
   getCorSecundariaAbaAtiva(): string {
+    const franquia = this.franquias.find(f => f.id === this.abaAtiva);
+    if (franquia?.cor_secundaria && franquia.cor_secundaria !== '#000000') {
+      return franquia.cor_secundaria;
+    }
+
     const nomeTime = this.getNomeAbaAtiva().toLowerCase();
     if (this.cacheCorSec[nomeTime]) {
       return this.cacheCorSec[nomeTime];
@@ -1639,20 +1833,117 @@ salvandoEdicaoFranquia = false;
     this.topDPOYs = Object.keys(contagemDPOY).map(nome => ({ nome, total: contagemDPOY[nome] })).sort((a, b) => b.total - a.total);
   }
 
-  getLogoTime(nomeTime: string | null | undefined): string | null {
+  getLogoDisplay(logoUrl: string | null | undefined): string | null {
+    if (!logoUrl) return null;
+    if (logoUrl.startsWith('{') || logoUrl.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(logoUrl);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed[parsed.length - 1].url;
+        if (parsed.atual) return parsed.atual;
+        if (parsed.historico && parsed.historico.length > 0) return parsed.historico[parsed.historico.length - 1].url;
+        return null;
+      } catch (e) {
+        return logoUrl;
+      }
+    }
+    return logoUrl;
+  }
+
+  getRivalFranquiaAtiva(): string | null {
+    if (this.abaAtiva === 'geral') return null;
+    const franquia = this.franquias.find(f => f.id === this.abaAtiva);
+    if (!franquia || !franquia.logo_url) return null;
+    if (franquia.logo_url.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(franquia.logo_url);
+        return parsed.rival_id || null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  getRivalNome(): string | null {
+    const rivalId = this.getRivalFranquiaAtiva();
+    if (!rivalId) return null;
+    const rival = this.franquias.find(f => f.id === rivalId);
+    return rival ? rival.nome : null;
+  }
+
+  getLogoTime(nomeTime: string | null | undefined, temporadaStr?: string): string | null {
     if (!nomeTime || nomeTime === '—' || nomeTime === '-') return null;
     const busca = nomeTime.toLowerCase().trim();
+    if (!busca) return null;
     
     // 1. Tenta achar a logo customizada salva no banco
     const franquiaBanco = this.franquias.find(f => f.nome.toLowerCase().includes(busca) || busca.includes(f.nome.toLowerCase()));
     if (franquiaBanco && franquiaBanco.logo_url) {
-      return franquiaBanco.logo_url;
+      const urlRaw = franquiaBanco.logo_url;
+      // Verifica se é JSON
+      if (urlRaw.startsWith('{') || urlRaw.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(urlRaw);
+          let atual = parsed.atual || null;
+          let historico: CustomLogoHistory[] = parsed.historico || [];
+          
+          if (Array.isArray(parsed)) {
+            historico = parsed;
+            atual = null;
+          }
+
+          if (temporadaStr) {
+            const anoMatch = String(temporadaStr).match(/^(\d{4})/);
+            if (anoMatch) {
+              const anoConsulta = parseInt(anoMatch[1], 10);
+              // Procura a logo histórica cujo ano esteja entre ano_inicio e ano_fim
+              const logosValidas = historico.filter(h => 
+                h.ano_inicio <= anoConsulta && 
+                (h.ano_fim === undefined || h.ano_fim === null || h.ano_fim >= anoConsulta)
+              );
+              if (logosValidas.length > 0) {
+                // Se houver múltiplas válidas (sobreposição), pega a com maior ano_inicio
+                const logoCorreta = logosValidas.reduce((prev, curr) => (curr.ano_inicio > prev.ano_inicio ? curr : prev));
+                return logoCorreta.url;
+              }
+            }
+          }
+          if (atual) return atual;
+          if (historico.length > 0) return historico[historico.length - 1].url;
+          return null;
+        } catch (e) {
+          return urlRaw; // Fallback se JSON for inválido
+        }
+      }
+      return urlRaw; // Logo simples
     }
 
-    // 2. Se não achar, usa as oficiais da ESPN
+    // 2. Se a temporada for fornecida, busca a logo histórica correta para o ano
+    if (temporadaStr) {
+      // Temporadas normalmente são "1997-98", extraímos o 1997
+      const anoMatch = String(temporadaStr).match(/^(\d{4})/);
+      if (anoMatch) {
+        const ano = parseInt(anoMatch[1], 10);
+        const chaveHistorica = Object.keys(NBA_HISTORICAL_LOGOS).find(k => busca.includes(k) || k.includes(busca));
+        if (chaveHistorica) {
+          const logosRetros = NBA_HISTORICAL_LOGOS[chaveHistorica];
+          const logoEncontrada = logosRetros.find(l => ano >= l.start && ano <= l.end);
+          if (logoEncontrada) {
+            return logoEncontrada.url;
+          }
+        }
+      }
+    }
+
+    // 3. Se não achar histórica, usa as oficiais da ESPN (Atuais)
     const chaves = Object.keys(NBA_TEAMS_INFO).sort((a, b) => b.length - a.length);
     const chave = chaves.find(k => busca.includes(k) || k.includes(busca));
-    return chave ? `https://a.espncdn.com/i/teamlogos/nba/500/${NBA_TEAMS_INFO[chave].abrev}.png` : null;
+    if (chave) {
+      const customLogo = NBA_TEAMS_INFO[chave].logoUrl;
+      if (customLogo) return customLogo;
+      return `https://a.espncdn.com/i/teamlogos/nba/500/${NBA_TEAMS_INFO[chave].abrev}.png`;
+    }
+    return null;
   }
 
   isMeuTimeCampeao(nomeTime: string | null | undefined): boolean {
@@ -1901,6 +2192,23 @@ salvandoEdicaoFranquia = false;
   editarLembranca(memory: any) {
     this.editandoIdLembranca = memory.id;
     this.novaLembranca = { ...memory };
+    
+    // Parse Trade Tree se aplicável
+    try {
+      if (this.novaLembranca.descricao && this.novaLembranca.descricao.includes('{"_isTradeTree":true')) {
+        const tradeData = JSON.parse(this.novaLembranca.descricao);
+        this.novaLembranca.isTrade = true;
+        this.novaLembranca.tradeTimeA = tradeData.timeA || '';
+        this.novaLembranca.tradeJogadoresA = tradeData.jogadoresA ? tradeData.jogadoresA.join(', ') : '';
+        this.novaLembranca.tradeTimeB = tradeData.timeB || '';
+        this.novaLembranca.tradeJogadoresB = tradeData.jogadoresB ? tradeData.jogadoresB.join(', ') : '';
+      } else {
+        this.novaLembranca.isTrade = false;
+      }
+    } catch(e) {
+      this.novaLembranca.isTrade = false;
+    }
+
     this.mostrarFormularioLembranca = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1949,15 +2257,45 @@ salvandoEdicaoFranquia = false;
     return marked.parse(texto) as string;
   }
 
+  isTradeTree(descricao: string): boolean {
+    return !!descricao && descricao.includes('{"_isTradeTree":true');
+  }
+
+  parseTradeTree(descricao: string): any {
+    try {
+      return JSON.parse(descricao);
+    } catch(e) {
+      return null;
+    }
+  }
+
   async adicionarLembranca() {
     if (!this.novaLembranca.titulo || !this.novaLembranca.data_evento) {
       alert('Preencha os dados obrigatórios!');
       return;
     }
+    
+    // Serializar Árvore de Trocas
+    if (this.novaLembranca.isTrade) {
+      const tradeData = {
+        _isTradeTree: true,
+        timeA: this.novaLembranca.tradeTimeA || '',
+        jogadoresA: (this.novaLembranca.tradeJogadoresA || '').split(',').map((s: string) => s.trim()).filter((s: string) => s),
+        timeB: this.novaLembranca.tradeTimeB || '',
+        jogadoresB: (this.novaLembranca.tradeJogadoresB || '').split(',').map((s: string) => s.trim()).filter((s: string) => s)
+      };
+      this.novaLembranca.descricao = JSON.stringify(tradeData);
+    }
+    
     this.salvandoLembranca = true;
     try {
-      const dadosParaSalvar = { ...this.novaLembranca, liga_id: this.ligaId };
-      delete dadosParaSalvar.id; // Remover ID caso exista, para evitar conflitos no insert/update
+      const dadosParaSalvar = { 
+        data_evento: this.novaLembranca.data_evento,
+        titulo: this.novaLembranca.titulo,
+        descricao: this.novaLembranca.descricao,
+        imagem_url: this.novaLembranca.imagem_url,
+        liga_id: this.ligaId 
+      };
 
       if (this.editandoIdLembranca) {
         await this.supabaseService.atualizarLembranca(this.editandoIdLembranca, dadosParaSalvar);
@@ -2215,22 +2553,45 @@ salvandoEdicaoFranquia = false;
 
 abrirModalConfiguracoes(): void {
   this.franquiaEditandoId = null;
-  this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+  this.franquiaEditandoForm = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null, historico_logos: [], rival_id: null };
   this.mostrarModalConfiguracoes = true;
 }
 
 fecharModalConfiguracoes(): void {
   this.mostrarModalConfiguracoes = false;
   this.franquiaEditandoId = null;
-  this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+  this.franquiaEditandoForm = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null, historico_logos: [], rival_id: null };
 }
 
 selecionarFranquiaParaEditar(franquia: any): void {
   this.franquiaEditandoId = franquia.id;
+  let atualUrl = franquia.logo_url;
+  let parsedHistory: CustomLogoHistory[] = [];
+  let parsedRival: string | null = null;
+  
+  if (atualUrl && (atualUrl.startsWith('{') || atualUrl.startsWith('['))) {
+    try {
+      const parsed = JSON.parse(atualUrl);
+      if (Array.isArray(parsed)) {
+        parsedHistory = parsed;
+        atualUrl = null;
+      } else {
+        atualUrl = parsed.atual || null;
+        parsedHistory = parsed.historico || [];
+        parsedRival = parsed.rival_id || null;
+      }
+    } catch (e) {
+      // ignore parse error
+    }
+  }
+
   this.franquiaEditandoForm = {
-    nome:     franquia.nome,
-    corHex:   franquia.cor_hex,
-    logo_url: franquia.logo_url ?? null,
+    nome: franquia.nome,
+    corHex: franquia.cor_hex || '#552583',
+    corSecundaria: franquia.cor_secundaria || '#000000',
+    logo_url: atualUrl,
+    historico_logos: parsedHistory,
+    rival_id: parsedRival
   };
 }
 
@@ -2249,6 +2610,38 @@ removerLogoEdicaoFranquia(): void {
   this.franquiaEditandoForm.logo_url = null;
 }
 
+// Histórico de logos (novos métodos)
+novaLogoAno = '';
+novaLogoAnoFim = '';
+processarNovaLogoHistorica(event: any): void {
+  if (!this.novaLogoAno || isNaN(Number(this.novaLogoAno))) {
+    alert('Por favor, informe o ano de início antes de selecionar a imagem.');
+    return;
+  }
+  if (!this.novaLogoAnoFim || isNaN(Number(this.novaLogoAnoFim))) {
+    alert('Por favor, informe o ano de fim antes de selecionar a imagem.');
+    return;
+  }
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.franquiaEditandoForm.historico_logos.push({
+      ano_inicio: Number(this.novaLogoAno),
+      ano_fim: Number(this.novaLogoAnoFim),
+      url: e.target.result
+    });
+    this.novaLogoAno = '';
+    this.novaLogoAnoFim = '';
+    this.cdr.detectChanges();
+  };
+  reader.readAsDataURL(file);
+}
+
+removerLogoHistorica(index: number): void {
+  this.franquiaEditandoForm.historico_logos.splice(index, 1);
+}
+
 async salvarEdicaoFranquia(): Promise<void> {
   if (!this.franquiaEditandoId) return;
   if (!this.franquiaEditandoForm.nome?.trim()) {
@@ -2258,10 +2651,25 @@ async salvarEdicaoFranquia(): Promise<void> {
 
   this.salvandoEdicaoFranquia = true;
   try {
+    let finalLogoUrl = this.franquiaEditandoForm.logo_url;
+    
+    // Sempre salva como JSON se houver histórico de logos ou um rival definido
+    if ((this.franquiaEditandoForm.historico_logos && this.franquiaEditandoForm.historico_logos.length > 0) || this.franquiaEditandoForm.rival_id) {
+      if (this.franquiaEditandoForm.historico_logos) {
+        this.franquiaEditandoForm.historico_logos.sort((a, b) => a.ano_inicio - b.ano_inicio);
+      }
+      finalLogoUrl = JSON.stringify({
+        atual: this.franquiaEditandoForm.logo_url,
+        historico: this.franquiaEditandoForm.historico_logos || [],
+        rival_id: this.franquiaEditandoForm.rival_id || null
+      });
+    }
+
     const payload = {
       nome:     this.franquiaEditandoForm.nome.trim(),
       cor_hex:  this.franquiaEditandoForm.corHex,
-      logo_url: this.franquiaEditandoForm.logo_url,
+      cor_secundaria: this.franquiaEditandoForm.corSecundaria,
+      logo_url: finalLogoUrl,
     };
 
     await this.supabaseService.atualizarFranquia(this.franquiaEditandoId, payload);
@@ -2274,7 +2682,7 @@ async salvarEdicaoFranquia(): Promise<void> {
     }
 
     this.franquiaEditandoId = null;
-    this.franquiaEditandoForm = { nome: '', corHex: '#552583', logo_url: null };
+    this.franquiaEditandoForm = { nome: '', corHex: '#552583', corSecundaria: '#000000', logo_url: null, historico_logos: [], rival_id: null };
     this.cdr.detectChanges();
   } catch (error) {
     console.error('Erro ao atualizar franquia:', error);

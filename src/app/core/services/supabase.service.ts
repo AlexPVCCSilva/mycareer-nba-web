@@ -245,10 +245,10 @@ export class SupabaseService {
     return data;
   }
 
-  async criarFranquia(ligaId: string, nome: string, corHex: string, logoUrl: string | null = null) {
+  async criarFranquia(ligaId: string, nome: string, corHex: string, corSecundaria: string = '#000000', logoUrl: string | null = null) {
     const { data, error } = await this.supabase
       .from('franquias_liga')
-      .insert([{ liga_id: ligaId, nome, cor_hex: corHex,logo_url: logoUrl }])
+      .insert([{ liga_id: ligaId, nome, cor_hex: corHex, cor_secundaria: corSecundaria, logo_url: logoUrl }])
       .select();
 
     if (error) throw error;
@@ -354,7 +354,7 @@ export class SupabaseService {
 
   async atualizarFranquia(
   id: string,
-  dados: Partial<{ nome: string; cor_hex: string; logo_url: string | null }>
+  dados: Partial<{ nome: string; cor_hex: string; cor_secundaria: string; logo_url: string | null }>
 ) {
   const { data, error } = await this.supabase
     .from('franquias_liga')
