@@ -650,44 +650,141 @@
               </div>
 
               <div class="form-section">
-                <h4>Quinteto Titular, 6º Homem e Draft</h4>
-                <div class="hierarquia-grid">
-                  <div class="hierarquia-card" *ngFor="let campo of camposHierarquiaElenco; trackBy: trackByCampo">
-                    <div class="input-group">
-                      <label style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>{{ campo.label }}</span>
-                        <label class="lesao-checkbox-label"
-                          style="text-transform: none; font-size: 0.7rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                          <input type="checkbox" [(ngModel)]="isLesionado[campo.key]"> 🏥 Lesionado?
-                        </label>
+                <h4>Elenco Titular (Depth Chart)</h4>
+                
+                <div class="depth-chart-court">
+                  <!-- PG -->
+                  <div class="court-slot court-slot-pg">
+                    <div class="slot-header"><span class="slot-pos">PG</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['pg']"> <i class="fas fa-medkit"></i>
                       </label>
-                      <div class="jogador-ovr-row">
-                        <input type="text" class="jogador-nome-input" [(ngModel)]="novaCampanha[campo.key]"
-                          [placeholder]="'Nome do ' + campo.label">
-                        <input type="number" class="jogador-ovr-input" [(ngModel)]="novaCampanha[campo.ovrKey]" min="40"
-                          max="99" placeholder="OVR" [attr.aria-label]="'Overall de ' + campo.label">
-                      </div>
-                      <div class="jogador-lesao-detalhes" *ngIf="isLesionado[campo.key]"
-                        style="display: flex; gap: 8px; margin-top: 4px;">
-                        <input type="number" class="jogador-lesao-input" [(ngModel)]="novaCampanha[campo.lesaoKey]"
-                          min="1" max="99" placeholder="-OVR" title="Queda OVR" [attr.aria-label]="'Queda de OVR'">
-                        <input type="text" class="jogador-lesao-desc-input" [(ngModel)]="descLesao[campo.key]"
-                          placeholder="Ex: Torceu o tornozelo (opcional)" style="flex: 1;">
-                      </div>
                     </div>
-                    <div class="input-group">
-                      <label>Status no Elenco</label>
-                      <select [(ngModel)]="novaCampanha[campo.statusKey]">
-                        <option *ngFor="let statusOpt of statusElencoOptions" [value]="statusOpt.value">
-                          {{ statusOpt.label }}
-                        </option>
-                      </select>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['pg']">
+                      <img [src]="getFotoJogador(novaCampanha['pg'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['pg']" placeholder="Armador">
+                    <input type="number" [(ngModel)]="novaCampanha['pg_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['pg']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['pg_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['pg']" placeholder="Lesão" style="flex: 1;">
                     </div>
                   </div>
-                  <div class="input-group" style="grid-column:span 2">
-                    <label>Observações</label>
-                    <input type="text" [(ngModel)]="novaCampanha.observacoes" placeholder="Trocas, lesões, destaques…">
+
+                  <!-- SG -->
+                  <div class="court-slot court-slot-sg">
+                    <div class="slot-header"><span class="slot-pos">SG</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['sg']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['sg']">
+                      <img [src]="getFotoJogador(novaCampanha['sg'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['sg']" placeholder="Ala-Armador">
+                    <input type="number" [(ngModel)]="novaCampanha['sg_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['sg']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['sg_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['sg']" placeholder="Lesão" style="flex: 1;">
+                    </div>
                   </div>
+
+                  <!-- SF -->
+                  <div class="court-slot court-slot-sf">
+                    <div class="slot-header"><span class="slot-pos">SF</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['sf']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['sf']">
+                      <img [src]="getFotoJogador(novaCampanha['sf'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['sf']" placeholder="Ala">
+                    <input type="number" [(ngModel)]="novaCampanha['sf_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['sf']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['sf_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['sf']" placeholder="Lesão" style="flex: 1;">
+                    </div>
+                  </div>
+
+                  <!-- PF -->
+                  <div class="court-slot court-slot-pf">
+                    <div class="slot-header"><span class="slot-pos">PF</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['pf']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['pf']">
+                      <img [src]="getFotoJogador(novaCampanha['pf'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['pf']" placeholder="Ala-Pivô">
+                    <input type="number" [(ngModel)]="novaCampanha['pf_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['pf']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['pf_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['pf']" placeholder="Lesão" style="flex: 1;">
+                    </div>
+                  </div>
+
+                  <!-- C -->
+                  <div class="court-slot court-slot-c">
+                    <div class="slot-header"><span class="slot-pos">C</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['c']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['c']">
+                      <img [src]="getFotoJogador(novaCampanha['c'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['c']" placeholder="Pivô">
+                    <input type="number" [(ngModel)]="novaCampanha['c_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['c']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['c_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['c']" placeholder="Lesão" style="flex: 1;">
+                    </div>
+                  </div>
+                </div>
+                
+                <h4 style="margin-top: 1rem;">Banco e Outros</h4>
+                <div class="bench-area">
+                  <!-- 6º Homem -->
+                  <div class="court-slot" style="position: relative; width: 100%;">
+                    <div class="slot-header"><span class="slot-pos" style="color: #cbd5e1; font-size: 0.9rem;">6º HOMEM</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['sexto_homem']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['sexto_homem']">
+                      <img [src]="getFotoJogador(novaCampanha['sexto_homem'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['sexto_homem']" placeholder="Nome">
+                    <input type="number" [(ngModel)]="novaCampanha['sexto_homem_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['sexto_homem']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['sexto_homem_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['sexto_homem']" placeholder="Lesão" style="flex: 1;">
+                    </div>
+                  </div>
+                  <!-- Draftado -->
+                  <div class="court-slot" style="position: relative; width: 100%;">
+                    <div class="slot-header"><span class="slot-pos" style="color: #cbd5e1; font-size: 0.9rem;">DRAFT</span> 
+                      <label class="lesao-checkbox-label" style="text-transform: none; font-size: 0.65rem; color: #ff6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" [(ngModel)]="isLesionado['draftado']"> <i class="fas fa-medkit"></i>
+                      </label>
+                    </div>
+                    <div class="slot-photo-container" *ngIf="novaCampanha['draftado']">
+                      <img [src]="getFotoJogador(novaCampanha['draftado'])" class="slot-player-photo" alt="Foto">
+                    </div>
+                    <input type="text" [(ngModel)]="novaCampanha['draftado']" placeholder="Pick(s)">
+                    <input type="number" [(ngModel)]="novaCampanha['draftado_ovr']" min="40" max="99" placeholder="OVR">
+                    <div *ngIf="isLesionado['draftado']" class="lesao-flex-row">
+                      <input type="number" [(ngModel)]="novaCampanha['draftado_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
+                      <input type="text" [(ngModel)]="descLesao['draftado']" placeholder="Lesão" style="flex: 1;">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 1rem;">
+                  <label>Observações</label>
+                  <input type="text" [(ngModel)]="novaCampanha.observacoes" placeholder="Trocas, lesões, destaques…">
                 </div>
               </div>
 

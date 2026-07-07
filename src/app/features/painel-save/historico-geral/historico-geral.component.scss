@@ -7045,3 +7045,143 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
 }
+
+
+/* --- DEPTH CHART COURT (NOVO FORM DE ELENCO) --- */
+.depth-chart-court {
+  position: relative;
+  width: 100%;
+  height: 680px;
+  background: #1e293b;
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.depth-chart-court::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  border: 3px solid rgba(255,193,7,0.3);
+  border-radius: 50%;
+}
+
+.depth-chart-court::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 190px;
+  background: rgba(255,193,7,0.1);
+  border: 2px solid rgba(255,193,7,0.4);
+  border-bottom: none;
+}
+
+.court-slot {
+  position: absolute;
+  width: 160px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  z-index: 10;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.court-slot .slot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 0.3rem;
+}
+
+.court-slot .slot-pos {
+  color: var(--gold);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.court-slot input[type='text'], .court-slot input[type='number'] {
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  color: white;
+  padding: 0.4rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.court-slot input:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+.court-slot-pg { top: 20px; left: 50%; transform: translateX(-50%); }
+.court-slot-sg { top: 180px; right: 20px; }
+.court-slot-sf { top: 180px; left: 20px; }
+.court-slot-pf { bottom: 30px; left: 25%; transform: translateX(-50%); }
+.court-slot-c { bottom: 30px; right: 25%; transform: translateX(50%); }
+
+.bench-area {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  background: rgba(255,255,255,0.02);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 768px) {
+  .depth-chart-court {
+    height: auto;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .depth-chart-court::before, .depth-chart-court::after { display: none; }
+  .court-slot {
+    position: relative;
+    top: auto !important; left: auto !important; right: auto !important; transform: none !important;
+    width: 100%;
+  }
+}
+
+.slot-photo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+.slot-player-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  background: rgba(0,0,0,0.3);
+}
+
+.court-slot, .court-slot * {
+  box-sizing: border-box;
+}
+.lesao-flex-row {
+  display: flex;
+  gap: 4px;
+}
+.lesao-flex-row input {
+  margin-bottom: 0 !important;
+}
