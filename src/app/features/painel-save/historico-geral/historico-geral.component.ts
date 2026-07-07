@@ -207,13 +207,14 @@ const NBA_TEAMS_INFO: { [key: string]: { abrev: string; sec: string; prim?: stri
   "seattle supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
   "supersonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
   "sonics": { abrev: "sea", sec: "#FFC72C", prim: "#00653A", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Seattle_SuperSonics_logo.svg/400px-Seattle_SuperSonics_logo.svg.png" },
-  "new jersey nets": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
-  "new jersey": { abrev: "nj", sec: "#A71930", prim: "#002B5C" },
-  "charlotte bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C" },
-  "bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C" },
-  "vancouver grizzlies": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
-  "vancouver": { abrev: "van", sec: "#BC945C", prim: "#00B2A9" },
-  "washington bullets": { abrev: "wsh", sec: "#E31837", prim: "#002B5C" },
+  "new jersey nets": { abrev: "nj", sec: "#A71930", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/New_Jersey_Nets_Logo_1997-2012.svg/300px-New_Jersey_Nets_Logo_1997-2012.svg.png" },
+  "new jersey": { abrev: "nj", sec: "#A71930", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/New_Jersey_Nets_Logo_1997-2012.svg/300px-New_Jersey_Nets_Logo_1997-2012.svg.png" },
+  "charlotte bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Charlotte_Bobcats_logo.svg/400px-Charlotte_Bobcats_logo.svg.png" },
+  "bobcats": { abrev: "bob", sec: "#F26F21", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/2/23/Charlotte_Bobcats_logo.svg/400px-Charlotte_Bobcats_logo.svg.png" },
+  "vancouver grizzlies": { abrev: "van", sec: "#BC945C", prim: "#00B2A9", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Vancouver_Grizzlies_logo.svg/400px-Vancouver_Grizzlies_logo.svg.png" },
+  "vancouver": { abrev: "van", sec: "#BC945C", prim: "#00B2A9", logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1e/Vancouver_Grizzlies_logo.svg/400px-Vancouver_Grizzlies_logo.svg.png" },
+  "washington bullets": { abrev: "wsh", sec: "#E31837", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Washington_Bullets_logo.svg/400px-Washington_Bullets_logo.svg.png" },
+  "bullets": { abrev: "wsh", sec: "#E31837", prim: "#002B5C", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Washington_Bullets_logo.svg/400px-Washington_Bullets_logo.svg.png" },
   "hawks": { abrev: "atl", sec: "#C1D32F", prim: "#E03A3E" },
   "boston celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
   "celtics": { abrev: "bos", sec: "#BA9653", prim: "#007A33" },
@@ -1996,11 +1997,15 @@ salvandoEdicaoFranquia = false;
   }
 
   getRivalNome(): string | null {
-    const rivalId = this.getRivalFranquiaAtiva();
-    if (!rivalId) return null;
-    const rival = this.franquias.find(f => f.id === rivalId);
-    return rival ? rival.nome : null;
+    const rivalValor = this.getRivalFranquiaAtiva();
+    if (!rivalValor) return null;
+    const rival = this.franquias.find(f => f.id === rivalValor);
+    return rival ? rival.nome : rivalValor; // Retorna o nome diretamente se não for um ID UUID
   }
+
+  nbaTeamsList: string[] = [
+    'Atlanta Hawks', 'Boston Celtics', 'Brooklyn Nets', 'Charlotte Hornets', 'Chicago Bulls', 'Cleveland Cavaliers', 'Dallas Mavericks', 'Denver Nuggets', 'Detroit Pistons', 'Golden State Warriors', 'Houston Rockets', 'Indiana Pacers', 'Los Angeles Clippers', 'Los Angeles Lakers', 'Memphis Grizzlies', 'Miami Heat', 'Milwaukee Bucks', 'Minnesota Timberwolves', 'New Orleans Pelicans', 'New York Knicks', 'Oklahoma City Thunder', 'Orlando Magic', 'Philadelphia 76ers', 'Phoenix Suns', 'Portland Trail Blazers', 'Sacramento Kings', 'San Antonio Spurs', 'Toronto Raptors', 'Utah Jazz', 'Washington Wizards', 'Seattle SuperSonics', 'New Jersey Nets', 'Vancouver Grizzlies', 'Charlotte Bobcats', 'Washington Bullets'
+  ];
 
   getLogoTime(nomeTime: string | null | undefined, temporadaStr?: string): string | null {
     if (!nomeTime || nomeTime === '—' || nomeTime === '-') return null;
@@ -3234,16 +3239,173 @@ Regras ESTRITAS:
     }
   }
 
+  transacoesTimeline: any[] = [];
+  rivaisHistoricos: any[] = [];
+
   async carregarTransacoes(nomeFranquia: string) {
     if (!this.ligaId) return;
     try {
       this.transacoes = await this.supabaseService.getTransacoes(this.ligaId, nomeFranquia);
+      this.atualizarListasComputadas();
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Erro ao carregar transações:', error);
       this.transacoes = [];
+      this.atualizarListasComputadas();
       this.cdr.detectChanges();
     }
+  }
+
+  atualizarListasComputadas() {
+    this.transacoesTimeline = this.transacoes.filter(t => t.tipo !== 'PLAYOFF_SERIES');
+    this.rivaisHistoricos = this.calcularRivaisHistoricos();
+  }
+
+  // MODAL DE SÉRIES DE PLAYOFFS E RIVALIDADES
+  // ====================================================
+  mostrarModalPlayoffSeries = false;
+  novaPlayoffSeries = {
+    temporada: '',
+    fase: '1ª Rodada',
+    adversario: '',
+    placar: '',
+    resultado: 'Vitória',
+    destaque: ''
+  };
+
+  abrirModalPlayoffSeries(prefillTemporada: string = '') {
+    this.novaPlayoffSeries = {
+      temporada: prefillTemporada,
+      fase: '1ª Rodada',
+      adversario: '',
+      placar: '',
+      resultado: 'Vitória',
+      destaque: ''
+    };
+    this.mostrarModalPlayoffSeries = true;
+  }
+
+  fecharModalPlayoffSeries() {
+    this.mostrarModalPlayoffSeries = false;
+  }
+
+  mostrarModalPlayoffRun = false;
+  playoffRunTemporada = '';
+  playoffRunSeries: any[] = [];
+
+  abrirPlayoffRunModal(temporada: string) {
+    this.playoffRunTemporada = temporada;
+    const series = this.transacoes.filter(t => t.tipo === 'PLAYOFF_SERIES' && t.temporada === temporada);
+    
+    // Sort phases: 1ª Rodada -> Semifinal de Conferência -> Final de Conferência -> Finais da NBA
+    const ordem = ['1ª Rodada', 'Semifinal de Conferência', 'Final de Conferência', 'Finais da NBA'];
+    
+    this.playoffRunSeries = series.map(s => {
+      let det = {};
+      try { det = JSON.parse(s.detalhes || '{}'); } catch(e){}
+      return {
+        id: s.id,
+        adversario: s.jogador,
+        fase: (det as any).fase || '',
+        placar: (det as any).placar || '',
+        resultado: (det as any).resultado || '',
+        destaque: (det as any).destaque || ''
+      };
+    }).sort((a, b) => ordem.indexOf(a.fase) - ordem.indexOf(b.fase));
+
+    this.mostrarModalPlayoffRun = true;
+  }
+
+  fecharModalPlayoffRun() {
+    this.mostrarModalPlayoffRun = false;
+  }
+
+  deletarPlayoffSeries(id: string) {
+    if (confirm('Tem certeza que deseja deletar esta série de playoffs?')) {
+      this.supabaseService.deletarTransacao(id).then(async () => {
+        const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
+        if (timeAtivo) {
+          await this.carregarTransacoes(timeAtivo.nome);
+          this.abrirPlayoffRunModal(this.playoffRunTemporada); // refresh modal
+        }
+      });
+    }
+  }
+
+  async salvarPlayoffSeries() {
+    if (!this.novaPlayoffSeries.temporada || !this.novaPlayoffSeries.adversario) {
+      alert('Preencha a temporada e o adversário.');
+      return;
+    }
+    const transacao: any = {
+      liga_id: this.ligaId!,
+      franquia: this.getNomeAbaAtiva(),
+      temporada: this.novaPlayoffSeries.temporada,
+      tipo: 'PLAYOFF_SERIES',
+      jogador: this.novaPlayoffSeries.adversario,
+      detalhes: JSON.stringify({
+        fase: this.novaPlayoffSeries.fase,
+        placar: this.novaPlayoffSeries.placar,
+        resultado: this.novaPlayoffSeries.resultado,
+        destaque: this.novaPlayoffSeries.destaque
+      })
+    };
+
+    try {
+      await this.supabaseService.inserirTransacao(transacao);
+      this.fecharModalPlayoffSeries();
+      if (this.abaAtiva && this.abaAtiva !== 'geral' && this.abaAtiva !== 'lembrancas') {
+        const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
+        if (timeAtivo) {
+          await this.carregarTransacoes(timeAtivo.nome);
+        }
+      }
+      this.cdr.detectChanges();
+    } catch (err: any) {
+      console.error(err);
+      alert('Erro ao salvar série de playoffs: ' + err.message);
+    }
+  }
+
+  calcularRivaisHistoricos(): any[] {
+    const series = this.transacoes.filter(t => t.tipo === 'PLAYOFF_SERIES');
+    const rivaisMap: { [key: string]: any } = {};
+
+    for (const s of series) {
+      const adv = s.jogador;
+      if (!rivaisMap[adv]) {
+        rivaisMap[adv] = {
+          nomeAdversario: adv,
+          vitorias: 0,
+          derrotas: 0,
+          ultimaTemporada: s.temporada,
+          series: []
+        };
+      }
+      let detalhesObj: any = {};
+      try {
+         detalhesObj = JSON.parse(s.detalhes || '{}');
+      } catch (e) {}
+
+      const vitoria = detalhesObj.resultado === 'Vitória';
+      if (vitoria) rivaisMap[adv].vitorias++;
+      else rivaisMap[adv].derrotas++;
+
+      if (s.temporada > rivaisMap[adv].ultimaTemporada) {
+         rivaisMap[adv].ultimaTemporada = s.temporada;
+      }
+
+      rivaisMap[adv].series.push({
+        id: s.id,
+        temporada: s.temporada,
+        fase: detalhesObj.fase || '',
+        resultado: detalhesObj.resultado || '',
+        placar: detalhesObj.placar || '',
+        destaque: detalhesObj.destaque || ''
+      });
+    }
+
+    return Object.values(rivaisMap).sort((a, b) => (b.vitorias + b.derrotas) - (a.vitorias + a.derrotas));
   }
 
 }
