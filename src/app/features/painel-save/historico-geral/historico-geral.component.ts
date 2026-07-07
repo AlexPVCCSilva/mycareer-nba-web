@@ -716,6 +716,10 @@ salvandoEdicaoFranquia = false;
       this.temaEscuro = false;
       document.documentElement.setAttribute('data-theme', 'light');
     }
+    
+    // Recupera a chave do Gemini caso exista
+    this.geminiApiKey = this.geminiService.getApiKey() || '';
+
     await this.carregarHistorico();
     await this.carregarFranquias();
     await this.carregarFotosJogadoresCustom();
@@ -3074,12 +3078,56 @@ Regras ESTRITAS:
     this.gerandoManchete = false;
   }
 
-  gerarMancheteTemporada() {
-    // empty mock to satisfy compiler
+  async gerarMancheteTemporada() {
+    if (!this.campanhaManchete) return;
+    if (!this.geminiService.isConfigurado()) {
+      alert('Configure a chave da API do Gemini nas configurações da franquia antes de gerar a manchete.');
+      return;
+    }
+
+    this.gerandoManchete = true;
+    try {
+      const tempGlobal = this.temporadas.find(t => t.temporada === this.campanhaManchete.temporada);
+      
+      const payload = {
+        franquia: this.campanhaManchete.franquia,
+        temporada: this.campanhaManchete.temporada,
+        recorde_wl: this.campanhaManchete.recorde_wl,
+        rank_conferencia: this.campanhaManchete.rank_conferencia,
+        resultado_playoffs: this.campanhaManchete.resultado_playoffs,
+        jogadores_chave: `${this.campanhaManchete.pg || ''}, ${this.campanhaManchete.sg || ''}, ${this.campanhaManchete.sf || ''}`,
+        campeao_nba: tempGlobal?.campeao_nba,
+        mvp: tempGlobal?.mvp,
+        dpoy: tempGlobal?.dpoy
+      };
+
+      const texto = await this.geminiService.gerarResumoTemporada(payload);
+      this.campanhaManchete.narrativa_ia = texto;
+
+      // Salva no banco de dados para persistência
+      if (this.campanhaManchete.id) {
+        await this.supabaseService.supabase
+          .from('campanhas_franquias')
+          .update({ narrativa_ia: texto })
+          .eq('id', this.campanhaManchete.id);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao gerar manchete. Verifique o console ou a sua chave da API.');
+    } finally {
+      this.gerandoManchete = false;
+      this.cdr.detectChanges();
+    }
   }
 
   salvarGeminiApiKey() {
-    // empty mock
+    if (this.geminiApiKey && this.geminiApiKey.trim()) {
+      this.geminiService.salvarApiKey(this.geminiApiKey.trim());
+      alert('Chave da API do Gemini salva com sucesso!');
+    } else {
+      this.geminiService.removerApiKey();
+      alert('Chave da API do Gemini removida!');
+    }
   }
 
   gerandoInfografico: boolean = false;
@@ -3160,10 +3208,14 @@ Regras ESTRITAS:
       this.fecharModalTransacao();
       if (this.abaAtiva && this.abaAtiva !== 'geral' && this.abaAtiva !== 'lembrancas') {
         const timeAtivo = this.franquias.find(f => f.id === this.abaAtiva);
-        if (timeAtivo) await this.carregarTransacoes(timeAtivo.nome);
+        if (timeAtivo) {
+          await this.carregarTransacoes(timeAtivo.nome);
+        }
       }
-    } catch (err) {
+      this.cdr.detectChanges();
+    } catch (err: any) {
       console.error('Erro ao salvar transação', err);
+      alert('Erro ao salvar no banco (Timeline): ' + (err.message || 'Erro desconhecido. Verifique se a tabela nba_transacoes foi criada corretamente no Supabase.'));
     }
   }
 
@@ -3186,9 +3238,11 @@ Regras ESTRITAS:
     if (!this.ligaId) return;
     try {
       this.transacoes = await this.supabaseService.getTransacoes(this.ligaId, nomeFranquia);
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Erro ao carregar transações:', error);
       this.transacoes = [];
+      this.cdr.detectChanges();
     }
   }
 

@@ -51,7 +51,7 @@ export class GeminiService {
     const key = this.getApiKey();
     if (key) {
       this.genAI = new GoogleGenerativeAI(key);
-      // Utilizando o alias exato que funciona com o token do Google Cloud do usuário
+      // Utilizando o alias oficial do Google para o modelo Flash Latest
       this.model = this.genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
     }
   }
