@@ -1,151 +1,125 @@
 /* ================================================================
-   LOGIN — NBA 2K / eSports Design System
-   Theme  : Split Layout × OLED Dark × Glassmorphism Premium
+   LOGIN — NBA 2K / Luxury Sports Editorial Design System
+   Theme  : Fullscreen Immersive × Premium Glassmorphism
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;900&display=swap');
 
-:root {
-  --bg-void:        #020408;
-  --bg-deep:        #070d18;
-  --gold:           #FDB927;
-  --gold-dim:       #C9950F;
-  --gold-glow:      rgba(253, 185, 39, 0.4);
-  --text-primary:   #FFFFFF;
-  --text-secondary: #94A3B8;
-  --text-muted:     #64748B;
-  --bg-input:       rgba(255, 255, 255, 0.03);
-  --bg-input-hover: rgba(255, 255, 255, 0.06);
-  --border-glass:   rgba(255, 255, 255, 0.08);
-  --error-soft:     rgba(239, 68, 68, 0.15);
+:host {
+  --color-primary: #18181B;
+  --color-on-primary: #FFFFFF;
+  --color-accent: #D4AF37; /* Luxury Gold */
+  --color-accent-glow: rgba(212, 175, 55, 0.4);
+  --color-background: #09090B;
+  --color-foreground: #FAFAFA;
+  --color-muted: #E8ECF0;
+  
+  --bg-input: rgba(255, 255, 255, 0.05);
+  --bg-input-hover: rgba(255, 255, 255, 0.09);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --error-soft: rgba(220, 38, 38, 0.15);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.login-split-container {
+.login-immersive-container {
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  background: var(--bg-void);
-  font-family: 'DM Sans', sans-serif;
-  color: var(--text-primary);
+  background: var(--color-background);
+  font-family: 'Inter', sans-serif;
+  color: var(--color-foreground);
   overflow: hidden;
+  position: relative;
 }
 
-/* ── Left Side: Cinematic Visual ───────────────────────────── */
-.login-visual {
-  flex: 1.2;
-  position: relative;
+/* ── Cinematic Background ───────────────────────────── */
+.cinematic-bg {
+  position: absolute;
+  inset: 0;
   background: url('https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(2,4,8,0.7) 0%, rgba(7,13,24,0.9) 100%);
-    mix-blend-mode: multiply;
-  }
+  z-index: 0;
   
-  .visual-overlay {
+  .bg-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, transparent 0%, var(--bg-void) 100%);
-    opacity: 0.8;
+    background: linear-gradient(105deg, rgba(9, 9, 11, 0.95) 0%, rgba(9, 9, 11, 0.7) 45%, rgba(9, 9, 11, 0.4) 100%);
   }
+}
 
-  .visual-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 2rem;
-    animation: fadeScaleIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+.immersive-content-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem;
+}
 
+/* ── Left Side: Editorial Typography ───────────────────────────── */
+.editorial-titles {
+  flex: 1.2;
+  padding-right: 4rem;
+  animation: fadeUpIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  
   .brand-huge {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 7rem;
-    font-weight: 900;
-    line-height: 0.85;
-    letter-spacing: -2px;
-    color: rgba(255, 255, 255, 0.95);
-    text-transform: uppercase;
-    text-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    font-family: 'Playfair Display', serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-on-primary);
     
-    span {
-      font-size: 4rem;
-      letter-spacing: 12px;
-      color: var(--gold);
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--color-accent);
       display: block;
-      margin-top: 10px;
-      text-shadow: 0 0 30px var(--gold-glow);
+      margin-bottom: 1.5rem;
+    }
+    
+    .highlight {
+      font-style: italic;
+      color: var(--color-accent);
     }
   }
-
-  .brand-tagline {
-    margin-top: 2rem;
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    letter-spacing: 2px;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
 }
 
-@keyframes fadeScaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Right Side: Form Area ─────────────────────────────────── */
 .login-form-area {
-  flex: 1;
-  min-width: 450px;
-  max-width: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: var(--bg-void);
-  position: relative;
-  
-  /* Mesh gradient background effect */
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle at 50% 50%, rgba(29, 66, 138, 0.15), transparent 60%),
-                radial-gradient(circle at 80% 20%, rgba(253, 185, 39, 0.1), transparent 40%);
-    animation: rotateMesh 30s linear infinite;
-    pointer-events: none;
-  }
-}
-
-@keyframes rotateMesh {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  flex: 0.8;
+  max-width: 500px;
+  width: 100%;
 }
 
 .login-card {
   width: 100%;
-  max-width: 420px;
-  position: relative;
-  z-index: 10;
   
-  /* Premium Glassmorphism */
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(30px) saturate(1.5);
-  -webkit-backdrop-filter: blur(30px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 3rem 2.5rem;
-  box-shadow: 
-    0 24px 64px rgba(0,0,0,0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* Luxury Glassmorphism */
+  background: rgba(24, 24, 27, 0.6);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 3.5rem 3rem;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  animation: fadeScaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+  opacity: 0;
+}
+
+@keyframes fadeScaleIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .login-logo-mobile {
@@ -153,22 +127,21 @@
 }
 
 .form-header {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   text-align: left;
   
   h2 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #FFF;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--color-on-primary);
     margin-bottom: 0.5rem;
   }
   
   .login-subtitle {
-    color: var(--text-secondary);
+    color: #A1A1AA;
     font-size: 1rem;
+    font-weight: 300;
   }
 }
 
@@ -176,24 +149,24 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 
   label {
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    transition: color 0.3s;
+    letter-spacing: 2px;
+    color: #A1A1AA;
+    transition: color 0.3s ease;
   }
 
-  &:focus-within label { color: var(--gold); }
+  &:focus-within label { color: var(--color-on-primary); }
 }
 
 .input-wrapper {
@@ -201,68 +174,70 @@
   
   .input-icon {
     position: absolute;
-    left: 1rem;
+    left: 1.25rem;
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.1rem;
-    opacity: 0.5;
-    transition: all 0.3s;
+    opacity: 0.4;
+    transition: all 0.3s ease;
   }
 }
 
 .input-glassmorphic {
   width: 100%;
-  padding: 1rem 1rem 1rem 2.8rem;
+  padding: 1.1rem 1rem 1.1rem 3.2rem;
   background: var(--bg-input);
   border: 1px solid var(--border-glass);
   border-radius: 12px;
-  color: #FFF;
-  font-family: 'DM Sans', sans-serif;
+  color: var(--color-on-primary);
+  font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 400;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
 
-  &::placeholder { color: rgba(255,255,255,0.2); }
+  &::placeholder { color: rgba(255,255,255,0.3); font-weight: 300; }
 
   &:hover:not(:focus) {
     background: var(--bg-input-hover);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   &:focus {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(253, 185, 39, 0.15);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
     
     & + .input-icon, & ~ .input-icon {
       opacity: 1;
+      color: var(--color-accent);
     }
   }
 }
 
 /* ── Epic Submit Button ────────────────────────────────────── */
 .btn-gold-epic {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   position: relative;
   width: 100%;
   padding: 1.1rem;
-  background: linear-gradient(135deg, #FDB927, #E8A81F);
+  background: var(--color-accent);
   border: none;
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 24px rgba(253, 185, 39, 0.25);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
   
   .btn-text {
     position: relative;
     z-index: 2;
-    color: #000;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 900;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
   }
 
   .btn-glow {
@@ -275,9 +250,9 @@
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(253, 185, 39, 0.4);
-    
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.35);
+    background: #E8C14B;
     .btn-glow { transform: translateX(100%); }
   }
 
@@ -286,54 +261,84 @@
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    filter: grayscale(0.5);
+    filter: grayscale(0.8);
   }
 }
 
 .error-msg {
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   background: var(--error-soft);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 12px;
   color: #FCA5A5;
   font-size: 0.9rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  &::before {
+    content: '⚠️';
+  }
 }
 
 .toggle-text {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   text-align: center;
-  color: var(--text-secondary);
+  color: #A1A1AA;
   font-size: 0.95rem;
 
   .text-gold {
-    color: var(--gold);
-    font-weight: 700;
+    color: var(--color-accent);
+    font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     margin-left: 6px;
     transition: all 0.3s;
 
     &:hover {
-      text-shadow: 0 0 12px var(--gold-glow);
+      text-shadow: 0 0 12px var(--color-accent-glow);
       color: #FFF;
     }
   }
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 968px) {
-  .login-visual { display: none; }
-  
-  .login-form-area {
-    min-width: 100%;
-    padding: 1.5rem;
+@media (max-width: 1024px) {
+  .immersive-content-wrapper {
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
   }
 
+  .editorial-titles {
+    flex: none;
+    padding-right: 0;
+    text-align: center;
+    margin-bottom: 3rem;
+    
+    .brand-huge {
+      font-size: 3.5rem;
+      br { display: none; }
+    }
+  }
+
+  .login-form-area {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .editorial-titles { display: none; }
+  
+  .immersive-content-wrapper { padding: 1rem; }
+  
   .login-card {
     padding: 2.5rem 1.5rem;
+    border: none;
+    background: rgba(24, 24, 27, 0.85);
   }
 
   .login-logo-mobile {
@@ -345,7 +350,7 @@
       font-size: 3rem;
       background: rgba(255,255,255,0.05);
       padding: 1rem;
-      border-radius: 20px;
+      border-radius: 50%;
       border: 1px solid rgba(255,255,255,0.1);
     }
   }

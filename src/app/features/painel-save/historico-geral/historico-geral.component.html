@@ -665,6 +665,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['pg']" placeholder="Armador">
                     <input type="number" [(ngModel)]="novaCampanha['pg_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['pg_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['pg']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['pg_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['pg']" placeholder="Lesão" style="flex: 1;">
@@ -683,6 +686,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['sg']" placeholder="Ala-Armador">
                     <input type="number" [(ngModel)]="novaCampanha['sg_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['sg_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['sg']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['sg_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['sg']" placeholder="Lesão" style="flex: 1;">
@@ -701,6 +707,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['sf']" placeholder="Ala">
                     <input type="number" [(ngModel)]="novaCampanha['sf_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['sf_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['sf']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['sf_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['sf']" placeholder="Lesão" style="flex: 1;">
@@ -719,6 +728,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['pf']" placeholder="Ala-Pivô">
                     <input type="number" [(ngModel)]="novaCampanha['pf_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['pf_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['pf']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['pf_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['pf']" placeholder="Lesão" style="flex: 1;">
@@ -737,6 +749,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['c']" placeholder="Pivô">
                     <input type="number" [(ngModel)]="novaCampanha['c_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['c_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['c']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['c_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['c']" placeholder="Lesão" style="flex: 1;">
@@ -758,6 +773,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['sexto_homem']" placeholder="Nome">
                     <input type="number" [(ngModel)]="novaCampanha['sexto_homem_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['sexto_homem_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['sexto_homem']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['sexto_homem_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['sexto_homem']" placeholder="Lesão" style="flex: 1;">
@@ -775,6 +793,9 @@
                     </div>
                     <input type="text" [(ngModel)]="novaCampanha['draftado']" placeholder="Pick(s)">
                     <input type="number" [(ngModel)]="novaCampanha['draftado_ovr']" min="40" max="99" placeholder="OVR">
+                      <select [(ngModel)]="novaCampanha['draftado_status']" class="status-select" style="width: 100%; margin-top: 5px; padding: 0.3rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: white; font-size: 0.8rem;">
+                        <option *ngFor="let opt of statusElencoOptions" [value]="opt.value">{{ opt.label }}</option>
+                      </select>
                     <div *ngIf="isLesionado['draftado']" class="lesao-flex-row">
                       <input type="number" [(ngModel)]="novaCampanha['draftado_lesao']" min="1" max="99" placeholder="-OVR" style="width: 45%;">
                       <input type="text" [(ngModel)]="descLesao['draftado']" placeholder="Lesão" style="flex: 1;">
@@ -1073,69 +1094,104 @@
 
 
           <!-- Legends grid -->
-          <div class="lendas-grid" *ngIf="lendasTime.length > 0" role="list">
-            <div class="lenda-card hall-of-fame-plaque" role="listitem"
-              *ngFor="let lenda of lendasTime; let i = index; trackBy: trackById" [class.top-3-idolo]="i < 3"
-              (click)="abrirModalIdolo(lenda)" [ngStyle]="i < 3 ? {'--glow-color': getCorAbaAtiva()} : {}">
+          <div class="idolos-podium-container" *ngIf="lendasTime.length > 0">
+            <!-- TOP 3 PODIUM -->
+            <div class="top3-idolos-grid" role="list" style="display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 20px !important; width: 100% !important; flex-wrap: nowrap !important; overflow: visible !important; padding-top: 25px !important; padding-bottom: 20px;">
+              <div class="lenda-card hall-of-fame-plaque podium-card" role="listitem" style="flex: 1 !important; min-width: 250px !important; max-width: 33% !important; margin: 0 !important;"
+                *ngFor="let lenda of lendasTime | slice:0:3; let i = index; trackBy: trackById"
+                [ngClass]="{'top1-gold': i === 0, 'top2-silver': i === 1, 'top3-bronze': i === 2}"
+                (click)="abrirModalIdolo(lenda)">
 
-              <div class="plaque-screws">
-                <div class="screw"></div>
-                <div class="screw"></div>
-                <div class="screw"></div>
-                <div class="screw"></div>
-              </div>
+                <div class="plaque-screws">
+                  <div class="screw"></div><div class="screw"></div><div class="screw"></div><div class="screw"></div>
+                </div>
 
-              <div class="lenda-foto-wrapper">
-                <img [src]="getFotoJogador(lenda.nome)" [alt]="lenda.nome" class="lenda-foto">
-              </div>
+                <div class="medal-ribbon" *ngIf="i === 0"><i class="fas fa-crown"></i> 1º Maior</div>
+                <div class="medal-ribbon" *ngIf="i === 1"><i class="fas fa-medal"></i> 2º Maior</div>
+                <div class="medal-ribbon" *ngIf="i === 2"><i class="fas fa-award"></i> 3º Maior</div>
 
-              <div class="lenda-info">
-                <h4>{{ lenda.nome }}</h4>
-                <span class="lenda-badge">{{ lenda.categoria }}</span>
-
-                <div class="lenda-stats-row">
-                  <span class="lenda-ovr-max" *ngIf="lenda.maxOvr > 0">
-                    <span class="ovr-label">Auge</span>
-                    <span class="ovr-value" [ngClass]="getOvrClass(lenda.maxOvr)">{{ lenda.maxOvr }} OVR</span>
-                  </span>
-
-                  <div class="lenda-awards-mini"
-                    *ngIf="lenda.anosTitulos?.length > 0 || lenda.anosMvp?.length > 0 || lenda.anosDpoy?.length > 0 || lenda.anosRoy?.length > 0 || lenda.anosSexto?.length > 0">
-                    <span class="award-mini-icon" *ngIf="lenda.anosTitulos?.length > 0"
-                      [title]="lenda.anosTitulos.length + 'x Campeão'">
-                      <img src="assets/trofeu.png" alt="Troféu"> {{ lenda.anosTitulos.length }}x
-                    </span>
-                    <span class="award-mini-icon" *ngIf="lenda.anosMvp?.length > 0"
-                      [title]="lenda.anosMvp.length + 'x MVP'">
-                      <img src="assets/mvptrofeu.png" alt="MVP"> {{ lenda.anosMvp.length }}x
-                    </span>
-                    <span class="award-mini-icon" *ngIf="lenda.anosDpoy?.length > 0"
-                      [title]="lenda.anosDpoy.length + 'x DPOY'">
-                      <img src="assets/dpoy.png" alt="DPOY"> {{ lenda.anosDpoy.length }}x
-                    </span>
-                    <span class="award-mini-icon" *ngIf="lenda.anosRoy?.length > 0"
-                      [title]="lenda.anosRoy.length + 'x ROY'">
-                      <img src="assets/roy.png" alt="ROY"> {{ lenda.anosRoy.length }}x
-                    </span>
-                    <span class="award-mini-icon" *ngIf="lenda.anosSexto?.length > 0"
-                      [title]="lenda.anosSexto.length + 'x 6TH Man'">
-                      <img src="assets/6man.png" alt="6th"> {{ lenda.anosSexto.length }}x
-                    </span>
+                <div class="foto-center-container" style="display: flex; justify-content: center; width: 100%; margin-bottom: 1rem; margin-top: 1rem;">
+                  <div class="lenda-foto-wrapper">
+                    <img [src]="getFotoJogador(lenda.nome)" [alt]="lenda.nome" class="lenda-foto">
                   </div>
                 </div>
 
-                <p class="lenda-historia" *ngIf="lenda.motivo">"{{ lenda.motivo }}"</p>
+                <div class="lenda-info">
+                  <h4>{{ lenda.nome }}</h4>
+                  <span class="lenda-badge">{{ lenda.categoria }}</span>
 
-                <div class="lenda-footer" *ngIf="lenda.numero_camisa || true">
-                  <span class="lenda-jersey-badge-bottom" aria-label="Número da camisa aposentada"
-                    *ngIf="lenda.numero_camisa">
-                    #{{ lenda.numero_camisa }}
-                  </span>
-                  <button class="btn-icon-ia"
-                    style="margin-top: 0.5rem; width: 100%; padding: 0.4rem; justify-content: center; background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3);"
-                    (click)="$event.stopPropagation(); abrirGraficoEvolucao(lenda)">
-                    <i class="fas fa-chart-line"></i> Evolução OVR
-                  </button>
+                  <div class="lenda-stats-row">
+                    <span class="lenda-ovr-max" *ngIf="lenda.maxOvr > 0">
+                      <span class="ovr-label">Auge</span>
+                      <span class="ovr-value" [ngClass]="getOvrClass(lenda.maxOvr)">{{ lenda.maxOvr }} OVR</span>
+                    </span>
+
+                    <div class="lenda-awards-mini"
+                      *ngIf="lenda.anosTitulos?.length > 0 || lenda.anosMvp?.length > 0 || lenda.anosDpoy?.length > 0 || lenda.anosRoy?.length > 0 || lenda.anosSexto?.length > 0">
+                      <span class="award-mini-icon" *ngIf="lenda.anosTitulos?.length > 0"
+                        [title]="lenda.anosTitulos.length + 'x Campeão'">
+                        <i class="fas fa-trophy" style="color:#FFD700"></i> {{ lenda.anosTitulos.length }}x
+                      </span>
+                      <span class="award-mini-icon" *ngIf="lenda.anosMvp?.length > 0"
+                        [title]="lenda.anosMvp.length + 'x MVP'">
+                        <i class="fas fa-star" style="color:#facc15"></i> {{ lenda.anosMvp.length }}x
+                      </span>
+                      <span class="award-mini-icon" *ngIf="lenda.anosDpoy?.length > 0"
+                        [title]="lenda.anosDpoy.length + 'x DPOY'">
+                        <i class="fas fa-shield-alt" style="color:#60a5fa"></i> {{ lenda.anosDpoy.length }}x
+                      </span>
+                      <span class="award-mini-icon" *ngIf="lenda.anosRoy?.length > 0"
+                        [title]="lenda.anosRoy.length + 'x ROY'">
+                        <i class="fas fa-baby" style="color:#fbbf24"></i> {{ lenda.anosRoy.length }}x
+                      </span>
+                      <span class="award-mini-icon" *ngIf="lenda.anosSexto?.length > 0"
+                        [title]="lenda.anosSexto.length + 'x 6º Homem'">
+                        <i class="fas fa-chair" style="color:#94a3b8"></i> {{ lenda.anosSexto.length }}x
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- THE REST OF IDOLS -->
+            <div class="lendas-grid rest-of-idols" role="list" *ngIf="lendasTime.length > 3" style="margin-top: 3rem;">
+              <div class="lenda-card hall-of-fame-plaque regular-plaque" role="listitem"
+                *ngFor="let lenda of lendasTime | slice:3; let i = index; trackBy: trackById"
+                (click)="abrirModalIdolo(lenda)">
+
+                <div class="plaque-screws">
+                  <div class="screw"></div><div class="screw"></div><div class="screw"></div><div class="screw"></div>
+                </div>
+
+                <div class="foto-center-container" style="display: flex; justify-content: center; width: 100%; margin-bottom: 1rem;">
+                  <div class="lenda-foto-wrapper">
+                    <img [src]="getFotoJogador(lenda.nome)" [alt]="lenda.nome" class="lenda-foto">
+                  </div>
+                </div>
+
+                <div class="lenda-info">
+                  <h4>{{ lenda.nome }}</h4>
+                  <span class="lenda-badge">{{ lenda.categoria }}</span>
+
+                  <div class="lenda-stats-row">
+                    <span class="lenda-ovr-max" *ngIf="lenda.maxOvr > 0">
+                      <span class="ovr-label">Auge</span>
+                      <span class="ovr-value" [ngClass]="getOvrClass(lenda.maxOvr)">{{ lenda.maxOvr }} OVR</span>
+                    </span>
+
+                    <div class="lenda-awards-mini"
+                      *ngIf="lenda.anosTitulos?.length > 0 || lenda.anosMvp?.length > 0 || lenda.anosDpoy?.length > 0 || lenda.anosRoy?.length > 0 || lenda.anosSexto?.length > 0">
+                      <span class="award-mini-icon" *ngIf="lenda.anosTitulos?.length > 0"
+                        [title]="lenda.anosTitulos.length + 'x Campeão'">
+                        <i class="fas fa-trophy" style="color:#FFD700"></i> {{ lenda.anosTitulos.length }}x
+                      </span>
+                      <span class="award-mini-icon" *ngIf="lenda.anosMvp?.length > 0"
+                        [title]="lenda.anosMvp.length + 'x MVP'">
+                        <i class="fas fa-star" style="color:#facc15"></i> {{ lenda.anosMvp.length }}x
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1304,27 +1360,115 @@
           </div>
 
           <div class="prateleira-container" [style.--team-glow]="getCorAbaAtiva() + '40'">
-            <div class="prateleira" *ngIf="trofeusFranquia.length > 0; else semTrofeus">
-              <div class="trofeu-item" *ngFor="let trofeu of trofeusFranquia" (click)="abrirTrofeuVitrine(trofeu)"
-                style="cursor: pointer; transition: transform 0.3s ease;">
-                <div class="trofeu-3d" [ngClass]="trofeu.tipo">
-                  <img [src]="trofeu.icon" alt="Troféu">
-                  <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
-                </div>
-                <div class="trofeu-base">
-                  <span class="trofeu-nome">{{trofeu.jogador}}</span>
-                  <span class="trofeu-ano">{{trofeu.ano}}</span>
-                </div>
-              </div>
-            </div>
-            <ng-template #semTrofeus>
-              <div class="empty-state-luxury"
-                style="padding: 4rem 2rem; text-align: center; color: var(--text-secondary);">
+              
+              <div *ngIf="trofeusFranquia.length === 0" class="empty-state-luxury" style="padding: 4rem 2rem; text-align: center; color: var(--text-secondary);">
                 <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                 <p>Nenhum troféu ou prêmio registrado para esta franquia ainda.</p>
               </div>
-            </ng-template>
-          </div>
+
+              <!-- Títulos da NBA -->
+              <div class="trofeu-section" *ngIf="trofeusNBA.length > 0">
+                <h4 class="trofeu-section-title">Campeonatos da NBA</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusNBA" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Títulos de Conferência -->
+              <div class="trofeu-section" *ngIf="trofeusConf.length > 0">
+                <h4 class="trofeu-section-title">Títulos de Conferência</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusConf" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MVP da Temporada -->
+              <div class="trofeu-section" *ngIf="trofeusMvp.length > 0">
+                <h4 class="trofeu-section-title">MVP da Temporada</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusMvp" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Finals MVP -->
+              <div class="trofeu-section" *ngIf="trofeusFmvp.length > 0">
+                <h4 class="trofeu-section-title">MVP das Finais</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusFmvp" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Defensive Player of the Year -->
+              <div class="trofeu-section" *ngIf="trofeusDefesa.length > 0">
+                <h4 class="trofeu-section-title">Defensor do Ano (DPOY)</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusDefesa" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Outros Prêmios -->
+              <div class="trofeu-section" *ngIf="trofeusOutros.length > 0">
+                <h4 class="trofeu-section-title">Outros Prêmios</h4>
+                <div class="prateleira">
+                  <div class="trofeu-item" *ngFor="let trofeu of trofeusOutros" (click)="abrirTrofeuVitrine(trofeu)">
+                    <div class="trofeu-3d" [ngClass]="trofeu.tipo">
+                      <img [src]="trofeu.icon" alt="Troféu">
+                      <div class="trofeu-glow" [style.background]="getCorAbaAtiva()"></div>
+                    </div>
+                    <div class="trofeu-base">
+                      <span class="trofeu-nome">{{trofeu.jogador}}</span>
+                      <span class="trofeu-ano">{{trofeu.ano}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
         </div>
 
         <!-- ABA: RECORDES DE 1 JOGO -->

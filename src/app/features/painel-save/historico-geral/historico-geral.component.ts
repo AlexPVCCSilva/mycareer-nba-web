@@ -316,6 +316,13 @@ export class HistoricoGeralComponent implements OnInit {
   
   // --- Trindade da Imersão ---
   trofeusFranquia: any[] = [];
+  get trofeusNBA() { return this.trofeusFranquia.filter(t => t.tipo === 'larry-obrien'); }
+  get trofeusConf() { return this.trofeusFranquia.filter(t => t.tipo === 'conferencia'); }
+  get trofeusMvp() { return this.trofeusFranquia.filter(t => t.tipo === 'mvp'); }
+  get trofeusFmvp() { return this.trofeusFranquia.filter(t => t.tipo === 'fmvp'); }
+  get trofeusDefesa() { return this.trofeusFranquia.filter(t => t.tipo === 'dpoy'); }
+  get trofeusOutros() { return this.trofeusFranquia.filter(t => ['roy', '6man', 'executivo'].includes(t.tipo)); }
+  
   categoriasRecordes = [
     { id: 'pontos', titulo: 'Mais Pontos' },
     { id: 'rebotes', titulo: 'Mais Rebotes' },
@@ -354,7 +361,7 @@ export class HistoricoGeralComponent implements OnInit {
     try {
       await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
       const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
-      this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
+      this.lendasTime = lendasBrutas.filter((l:any) => l.score !== -1000).map((l:any) => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
     } catch (error) {
       console.error('Erro ao forçar sincronização de ídolos:', error);
       alert('Não foi possível sincronizar os ídolos neste momento.');
@@ -872,7 +879,7 @@ salvandoEdicaoFranquia = false;
           await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
           
           const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId!, timeAtivo.nome);
-          this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
+          this.lendasTime = lendasBrutas.filter((l:any) => l.score !== -1000).map((l:any) => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
           
           await this.carregarTrindadeDaImersao(timeAtivo.nome);
           await this.carregarTransacoes(timeAtivo.nome);
@@ -1126,7 +1133,7 @@ salvandoEdicaoFranquia = false;
       // Sincroniza logo após salvar uma nova campanha
       await this.sincronizarEAtualizarIdolos(timeAtivo.nome);
       const lendasBrutas = await this.supabaseService.getHallDaFamaDaFranquia(this.ligaId, timeAtivo.nome);
-      this.lendasTime = lendasBrutas.map(l => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
+      this.lendasTime = lendasBrutas.filter((l:any) => l.score !== -1000).map((l:any) => this.enriquecerLendaComEstatisticas(l)).sort((a, b) => (b.score || 0) - (a.score || 0));
     } catch (error) {
       console.error('Erro ao salvar elenco:', error);
       alert('Erro ao salvar no banco.');
@@ -1404,15 +1411,20 @@ salvandoEdicaoFranquia = false;
     }
   }
 
-  async deletarIdolo() {
+    async deletarIdolo() {
     if (!this.idoloSelecionado || this.idoloSelecionado.isNovo) return;
     if (!confirm(`Tem certeza que deseja excluir a lenda ${this.idoloSelecionado.nome}?`)) return;
 
     this.salvandoIdoloEditado = true;
     try {
-      await this.supabaseService.deletarIdoloUnico(this.idoloSelecionado.id);
+      // Ao invés de deletar (o que faria o auto-sync recriar), nós "banimos" setando score = -1000
+      await this.supabaseService.supabase.from('hall_da_fama')
+        .update({ score: -1000, categoria: 'REMOVIDO' })
+        .eq('id', this.idoloSelecionado.id);
+        
       this.lendasTime = this.lendasTime.filter(l => l.id !== this.idoloSelecionado.id);
       this.fecharModalIdolo();
+      alert('Ídolo excluído com sucesso! Ele não aparecerá mais.');
     } catch (error) {
       console.error('Erro ao deletar ídolo:', error);
       alert('Não foi possível excluir o ídolo.');
@@ -1507,9 +1519,14 @@ salvandoEdicaoFranquia = false;
 
     for (const [nomeLimpado, stats] of Object.entries(statsJogadores)) {
       const resultado = this.idolCalculator.calcularStatusIdolo(stats);
-      const lendaExistente = lendasExistentes.find(l => SupabaseService.normalizarNomeJogador(l.nome) === nomeLimpado);
+              const lendaExistente = lendasExistentes.find(l => SupabaseService.normalizarNomeJogador(l.nome) === nomeLimpado);
+  
+        // Pula se a lenda foi "excluída" pelo usuário (score -1000)
+        if (lendaExistente && lendaExistente.score === -1000) {
+          continue;
+        }
 
-      if (resultado.isIdolo) {
+        if (resultado.isIdolo) {
         const nomeDisplay = nomeFormatadoMap[nomeLimpado] || nomeLimpado;
         
         let finalScore = resultado.scoreTotal;
@@ -2905,48 +2922,165 @@ fecharTV() {
 }
 
 async iniciarDebateTV() {
-  if (!this.tvTemporadaAno) return;
-  this.gerandoTV = true;
-  this.tvScript = '';
-  this.cdr.detectChanges();
-  
-  const franquia = this.getNomeAbaAtiva();
-  const tempAtual = this.campanhasTime.find(c => c.temporada === this.tvTemporadaAno);
-  const tempGlobal = this.temporadas.find(c => c.temporada === this.tvTemporadaAno);
-  
-  const campeao = tempGlobal ? tempGlobal.campeao_nba : 'Desconhecido';
-  const fmvp = tempGlobal ? tempGlobal.finals_mvp : 'Nenhum';
-  const resultadoTime = tempAtual ? tempAtual.resultado_playoffs : 'Fora dos Playoffs';
-  
-  const prompt = `Simule um debate esportivo AO VIVO do programa de TV "Inside the NBA" ou equivalente. 
-O ano do debate é ${this.tvTemporadaAno}. Você deve usar 2 a 3 comentaristas famosos da NBA apropriados para essa EXATA época (Ex: anos 90 = Bob Costas/Marv Albert; anos 2000 = Stephen A; modernos = Shaq, Barkley e Ernie Johnson).
-Eles vão discutir ferozmente a situação atual do time ${franquia}. 
-O ${franquia} terminou a temporada com o seguinte resultado: ${resultadoTime}. O Campeão da NBA daquele ano foi o ${campeao} com o MVP das finais ${fmvp}.
-Regras ESTRITAS:
-1. Comece com a apresentação do âncora da época.
-2. Formato de roteiro de teatro (ex: **Shaq:** Eu te digo uma coisa, Ernie...).
-3. Se o ${franquia} não ganhou o título, eles DEVEM criticar a franquia (ou defender se for passador de pano). Se o ${franquia} foi campeão, elogiem bastante.
-4. Mantenha os bordões originais de cada um traduzidos para o português (ex: "Turrável", "Anéis, Chuck", "BBQ Chicken Alert", ou bordões do Marv Albert).
-5. Máximo de 5 a 6 interações no total! Curto e hilário. Sem crases de markdown no retorno, retorne apenas o roteiro em texto puro.`;
-
-  try {
-    if ((this.geminiService as any)['model']) {
-        const result = await (this.geminiService as any)['model'].generateContent(prompt);
-        let texto = result.response.text();
-        if (texto.startsWith('\`\`\`')) {
-            texto = texto.split('\\n').slice(1, -1).join('\\n');
-        }
-        this.tvScript = texto;
-    } else {
-        this.tvScript = "**Erro:** Satélite fora do ar (Gemini API não conectada).";
-    }
-  } catch (e) {
-    this.tvScript = "**Erro de Transmissão:** " + e;
-  } finally {
-    this.gerandoTV = false;
+    if (!this.tvTemporadaAno) return;
+    this.gerandoTV = true;
+    this.tvScript = '';
     this.cdr.detectChanges();
+    
+    const franquia = this.getNomeAbaAtiva();
+    const tempAtual = this.campanhasTime.find(c => c.temporada === this.tvTemporadaAno);
+    const tempGlobal = this.temporadas.find(c => c.temporada === this.tvTemporadaAno);
+    
+    const campeao = tempGlobal ? tempGlobal.campeao_nba : 'Desconhecido';
+    const fmvp = tempGlobal ? tempGlobal.finals_mvp : 'Nenhum';
+    const resultadoTime = tempAtual ? tempAtual.resultado_playoffs : 'Fora dos Playoffs';
+    
+    // 1. Histórico Anteriores
+    let historicoTexto = "";
+    const anoAtualStr = String(this.tvTemporadaAno).match(/\d{4}$/) ? String(this.tvTemporadaAno).match(/\d{4}$/)![0] : this.tvTemporadaAno;
+    const anoAtualNum = parseInt(anoAtualStr, 10);
+    
+    const campanhasAnteriores = this.campanhasTime.filter(c => {
+      const cAno = String(c.temporada).match(/\d{4}$/) ? String(c.temporada).match(/\d{4}$/)![0] : c.temporada;
+      return parseInt(cAno, 10) < anoAtualNum;
+    }).sort((a,b) => {
+      const anoA = parseInt(String(a.temporada).match(/\d{4}$/) ? String(a.temporada).match(/\d{4}$/)![0] : a.temporada, 10);
+      const anoB = parseInt(String(b.temporada).match(/\d{4}$/) ? String(b.temporada).match(/\d{4}$/)![0] : b.temporada, 10);
+      return anoA - anoB;
+    });
+
+    if (campanhasAnteriores.length > 0) {
+      historicoTexto = campanhasAnteriores.map(c => `Ano ${c.temporada}: V-D ${c.recorde_wl}, Resultado: ${c.resultado_playoffs}`).join('; ');
+    } else {
+      historicoTexto = "Sem dados anteriores.";
+    }
+
+    // Comparação com a temporada passada
+    let mudancasTexto = "";
+    if (campanhasAnteriores.length > 0 && tempAtual) {
+      const tempPassada = campanhasAnteriores[campanhasAnteriores.length - 1]; // Última temporada
+      const posicoes = ['pg', 'sg', 'sf', 'pf', 'c'];
+      const mudancas: string[] = [];
+      posicoes.forEach(pos => {
+        const antigo = (tempPassada as any)[pos];
+        const novo = (tempAtual as any)[pos];
+        if (antigo && novo && antigo !== novo) {
+          mudancas.push(`Na posição ${pos.toUpperCase()}, saiu ${antigo} e entrou ${novo}.`);
+        }
+      });
+      if (mudancas.length > 0) {
+        mudancasTexto = mudancas.join(' ');
+      } else {
+        mudancasTexto = "O time titular não teve mudanças relevantes em relação ao ano passado.";
+      }
+    }
+
+    // 2. Lesões na Época (Lidas direto da tabela do ano)
+    let lesoesTexto = "";
+    if (tempAtual) {
+      const posicoes = ['pg', 'sg', 'sf', 'pf', 'c', 'sexto_homem', 'draftado'];
+      const lesoesReais: string[] = [];
+      posicoes.forEach(pos => {
+        const drop = (tempAtual as any)[`${pos}_lesao`];
+        const nome = (tempAtual as any)[pos];
+        const desc = (tempAtual as any)[`${pos}_lesao_desc`];
+        if (drop && nome) {
+          lesoesReais.push(`${nome} se machucou (${desc || 'lesão grave'}), sofrendo uma queda drástica de ${drop} no OVR, destruindo a química do time.`);
+        }
+      });
+      if (lesoesReais.length > 0) {
+        lesoesTexto = lesoesReais.join(' | ');
+      }
+    }
+
+    // 3. Memória do Programa Anterior
+    let memoriaAnteriorTexto = "";
+    if (campanhasAnteriores.length > 0 && this.lembrancas) {
+      const anoPassado = campanhasAnteriores[campanhasAnteriores.length - 1].temporada;
+      const debateAntigo = this.lembrancas.find(l => l.data_evento === anoPassado && l.titulo === 'Inside the NBA Debate');
+      if (debateAntigo && debateAntigo.descricao) {
+        memoriaAnteriorTexto = debateAntigo.descricao;
+      }
+    }
+
+    const prompt = `Simule um debate esportivo AO VIVO do "Inside the NBA" da TNT. 
+O ano do debate é ${this.tvTemporadaAno}. Você DEVE encarnar a personalidade de Ernie Johnson, Charles Barkley (Chuck), Shaquille O'Neal (Shaq) e Kenny "The Jet" Smith.
+
+Assunto Principal: A situação do time ${franquia} na temporada ${this.tvTemporadaAno}.
+Resultado final do time neste ano: ${resultadoTime}.
+O Campeão da NBA daquele ano foi o ${campeao} com o MVP das finais ${fmvp}.
+
+[CONTEXTO HISTÓRICO DO TIME ANTES DESTE ANO (Use para fundamentar as críticas ou elogios)]:
+${historicoTexto}
+
+[MUDANÇAS NO ELENCO EM RELAÇÃO AO ANO PASSADO]:
+${mudancasTexto}
+
+[NOTÍCIAS DE LESÕES IMPORTANTES NESTA ÉPOCA (Se houver, use como desculpa ou motivo do fracasso)]:
+${lesoesTexto ? lesoesTexto : 'Nenhuma lesão grave registrada.'}
+
+[ROTEIRO DO PROGRAMA DO ANO PASSADO (Seja CONTINUIDADE disso)]:
+${memoriaAnteriorTexto ? memoriaAnteriorTexto : 'Nenhum registro do ano passado.'}
+
+!!! REGRA CRÍTICA DE IDIOMA E ESTILO !!!
+O roteiro geral é em Português do Brasil (PT-BR) dublado, MAS VOCÊ É PROIBIDO DE TRADUZIR:
+1. Nomes de Times da NBA (Sempre fale Lakers, Bulls, Celtics, Heat, etc).
+2. Termos Técnicos e Gírias de Basquete (Sempre use: Dunk, Three-peat, MVP, Hooper, Draft, Pick and Roll, Crossover, Posterize).
+Não traduza "Three-peat" para "Tricampeonato", diga "Three-peat". Não traduza "Dunk" para "Enterrada".
+
+Você está autorizado a usar palavrões no calor da emoção (ex: "porra", "caralho", "puta que pariu", "fodeu"), mas evite gírias forçadas de regiões específicas. Mantenha um tom natural de transmissão informal.
+
+Regras de Personalidade Dublada:
+1. Ernie (Ernani): Sempre profissional, tenta controlar a bagunça, passa os dados e chama os outros. Não fala palavrão.
+2. Chuck (Barkley): Ranzinza, crítico, acha que os hoopers de hoje são frouxos. Xinga muito. Gosta de fazer previsões furadas gritando "Eu ga-ran-to!". 
+3. Shaq: Sensível a críticas, adora zoar o Chuck. Defende muito os pivôs e critica quem não joga físico. Ele NÃO deve ficar repetindo que tem anéis o tempo todo, foque na análise do jogo dele.
+4. Kenny: Tenta dar uma de analista tático sério ("Deixa eu ir pro telão ali, Ernani..."). Ele NÃO deve ficar contando histórias do Houston Rockets, foque na tática atual.
+
+Instruções Finais:
+- Formato de roteiro de teatro (ex: **Shaq:** Eu te digo uma coisa, Ernani...).
+- DE EXTREMA IMPORTÂNCIA: Se houver roteiro do ano passado, COBREM UM AO OUTRO pelas promessas ou análises feitas! Ex: "Ano passado o Chuck falou que X não jogava nada, e olha aí!". Dê continuidade à narrativa.
+- Se houve mudanças de elenco, eles DEVEM criticar se a troca foi ruim ou elogiar a diretoria se a troca foi boa.
+- Se o ${franquia} não ganhou o título, Chuck deve destruí-los nas críticas e culpar a diretoria.
+- Máximo de 6 a 8 interações curtas, hilárias, termos de basquete em inglês e alguns palavrões.
+- Sem crases de markdown no retorno, retorne apenas o roteiro em texto puro.
+`;
+
+    try {
+      if ((this.geminiService as any)['model']) {
+          const result = await (this.geminiService as any)['model'].generateContent(prompt);
+          let texto = result.response.text();
+          if (texto.startsWith('```')) {
+              texto = texto.split('\n').slice(1, -1).join('\n');
+          }
+          this.tvScript = texto;
+
+          // Salvar ou atualizar memória no banco de dados para continuidade
+          if (this.lembrancas) {
+            const debateAtual = this.lembrancas.find(l => String(l.data_evento) === String(this.tvTemporadaAno) && l.titulo === 'Inside the NBA Debate');
+            if (debateAtual && debateAtual.id) {
+              await this.supabaseService.atualizarLembranca(debateAtual.id, { descricao: this.tvScript });
+            } else {
+              await this.supabaseService.salvarLembranca({
+                liga_id: this.ligaId,
+                data_evento: String(this.tvTemporadaAno),
+                titulo: 'Inside the NBA Debate',
+                descricao: this.tvScript,
+                imagem_url: ''
+              });
+            }
+            await this.carregarLembrancas();
+          }
+
+      } else {
+          this.tvScript = "**Erro:** Satélite fora do ar (Gemini API não conectada).";
+      }
+    } catch (e) {
+      console.error('Erro ao gerar TV', e);
+      this.tvScript = "**Erro:** Sinal perdido.";
+    } finally {
+      this.gerandoTV = false;
+    }
   }
-}
 
   renderMarkdown(text: string) {
     if (!text) return '';
